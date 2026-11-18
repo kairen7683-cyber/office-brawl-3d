@@ -11,7 +11,7 @@
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link rel="icon" type="image/png" href="./icons/favicon.png" />
-  <title>칼퇴전쟁 3D: 웹툰 오피스 대난투</title>
+  <title>칼퇴전쟁 3D: 멀티플레이 임원 참교육 대난투</title>
   <style>
     * {
       box-sizing: border-box;
@@ -28,6 +28,18 @@
       background: #0b0f19;
       font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", sans-serif;
       touch-action: none;
+      color: #f8fafc;
+    }
+    button, input {
+      font: inherit;
+      outline: none;
+    }
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: inherit;
     }
     #gameCanvas {
       display: block;
@@ -35,356 +47,427 @@
       height: 100%;
     }
 
-    /* Sleek Modern Glassmorphic Surfaces */
-    .glass-panel {
-      background: rgba(13, 18, 30, 0.68);
+    /* Core Layout Utilities (100% Zero-CDN Offline Ready) */
+    .fixed { position: fixed; }
+    .absolute { position: absolute; }
+    .relative { position: relative; }
+    .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+    .inset-x-0 { left: 0; right: 0; }
+    .top-0 { top: 0; }
+    .bottom-0 { bottom: 0; }
+    .flex { display: flex; }
+    .hidden { display: none !important; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .items-end { align-items: flex-end; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .pointer-events-none { pointer-events: none; }
+    .pointer-events-auto { pointer-events: auto; }
+    .overflow-hidden { overflow: hidden; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Sleek Glassmorphic UI System */
+    .glass {
+      background: rgba(12, 17, 29, 0.72);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.09);
     }
 
-    .install-cta-btn {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(6, 182, 212, 0.92));
-      border: 1px solid rgba(167, 243, 208, 0.55);
-      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-      color: #041311;
-      transition: transform 0.1s ease, filter 0.15s ease;
+    .pill-btn {
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      transition: transform 0.08s ease, filter 0.12s ease;
     }
-    .install-cta-btn:hover { filter: brightness(1.08); }
-    .install-cta-btn:active { transform: scale(0.93); }
+    .pill-btn:active { transform: scale(0.93); }
 
-    /* Tactile Modern Action RPG / Brawler Controls */
+    .cta-emerald {
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      border: 1px solid rgba(167, 243, 208, 0.6);
+      color: #031512;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    }
+    .cta-violet {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      border: 1px solid rgba(244, 114, 182, 0.55);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+    }
+    .cta-amber {
+      background: linear-gradient(135deg, #fbbf24, #f97316);
+      border: 1px solid rgba(254, 240, 138, 0.65);
+      color: #1c0f02;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.38);
+    }
+
+    /* Radial Action Controls */
     .ctrl-sat {
       position: absolute;
-      width: 58px;
-      height: 58px;
+      width: 56px;
+      height: 56px;
       border-radius: 9999px;
-      background: radial-gradient(circle at 30% 25%, rgba(38, 49, 74, 0.88), rgba(13, 18, 30, 0.92));
+      background: radial-gradient(circle at 30% 25%, rgba(42, 55, 84, 0.90), rgba(12, 17, 29, 0.94));
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1.5px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      border: 1.5px solid rgba(255, 255, 255, 0.19);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.22);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #f8fafc;
-      transition: transform 0.08s cubic-bezier(0.2, 0.9, 0.3, 1), border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: transform 0.07s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    .ctrl-sat:active, .ctrl-sat.pressed {
-      transform: scale(0.90);
+    .ctrl-sat:active, .ctrl-sat.pressed { transform: scale(0.89); }
+    .ctrl-sat.active-ring {
+      border-color: #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.42), inset 0 1px 2px rgba(255, 255, 255, 0.35);
     }
-    .ctrl-sat.ready-highlight {
-      border-color: rgba(56, 189, 248, 0.85);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+    .ctrl-sat.chair-ring {
+      border-color: #fbbf24;
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.42);
     }
 
     .ctrl-main {
       position: absolute;
-      right: 6px;
-      bottom: 6px;
-      width: 92px;
-      height: 92px;
+      right: 4px;
+      bottom: 4px;
+      width: 90px;
+      height: 90px;
       border-radius: 9999px;
       background: radial-gradient(circle at 32% 24%, #fb7185 0%, #e11d48 58%, #9f1239 100%);
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      box-shadow:
-        0 10px 28px rgba(225, 29, 72, 0.48),
-        0 0 0 5px rgba(15, 23, 42, 0.55),
-        inset 0 2px 4px rgba(255, 255, 255, 0.45);
+      border: 2px solid rgba(255, 255, 255, 0.38);
+      box-shadow: 0 10px 28px rgba(225, 29, 72, 0.48), 0 0 0 5px rgba(12, 17, 29, 0.55), inset 0 2px 4px rgba(255, 255, 255, 0.45);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      transition: transform 0.07s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.08s ease;
+      transition: transform 0.07s ease, filter 0.08s ease;
     }
-    .ctrl-main:active, .ctrl-main.pressed {
-      transform: scale(0.91);
-      filter: brightness(1.12);
+    .ctrl-main:active, .ctrl-main.pressed { transform: scale(0.90); filter: brightness(1.12); }
+
+    @keyframes feverPulse {
+      0%, 100% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.55); transform: scale(1); }
+      50% { box-shadow: 0 0 26px rgba(250, 204, 21, 0.9); transform: scale(1.07); }
+    }
+    .ult-ready {
+      background: radial-gradient(circle at 30% 25%, #fde047, #10b981 75%) !important;
+      color: #051611 !important;
+      border-color: #fef08a !important;
+      animation: feverPulse 0.85s infinite ease-in-out;
     }
 
-    /* Floating Comic Popups & Webtoon Speech Bubbles */
+    /* Floating 3D->2D Tags, Boss Nameplates & Damage Popups */
+    .boss-tag {
+      position: absolute;
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+      background: rgba(10, 14, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 10px;
+      padding: 3px 8px 4px;
+      min-width: 86px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      z-index: 18;
+    }
+    .player-tag {
+      position: absolute;
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #e0f2fe;
+      white-space: nowrap;
+      z-index: 19;
+    }
+    .speech-pill {
+      position: absolute;
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+      background: rgba(255, 255, 255, 0.96);
+      color: #0f172a;
+      border: 1.5px solid #0f172a;
+      border-radius: 999px;
+      padding: 3.5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.28);
+      z-index: 22;
+    }
+    .speech-pill.hurt { background: #fef08a; color: #991b1b; }
+    .speech-pill.emote { background: #6366f1; color: #ffffff; border-color: rgba(255,255,255,0.5); font-size: 12px; }
+
     .comic-pop {
       position: absolute;
       pointer-events: none;
       font-weight: 900;
       letter-spacing: -0.02em;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.65), -1.5px -1.5px 0 #090d16, 1.5px -1.5px 0 #090d16, -1.5px 1.5px 0 #090d16, 1.5px 1.5px 0 #090d16;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7), -1.5px -1.5px 0 #090d16, 1.5px -1.5px 0 #090d16, -1.5px 1.5px 0 #090d16, 1.5px 1.5px 0 #090d16;
       transform: translate(-50%, -50%);
-      animation: floatDmg 0.72s cubic-bezier(0.16, 1.25, 0.3, 1) forwards;
+      animation: popUp 0.72s cubic-bezier(0.16, 1.25, 0.3, 1) forwards;
       white-space: nowrap;
-      z-index: 25;
+      z-index: 26;
     }
-    @keyframes floatDmg {
+    @keyframes popUp {
       0% { opacity: 0; transform: translate(-50%, -20%) scale(0.45) rotate(var(--r, -5deg)); }
       20% { opacity: 1; transform: translate(-50%, -65%) scale(1.18) rotate(var(--r, -5deg)); }
       80% { opacity: 1; transform: translate(-50%, -105%) scale(1.0) rotate(var(--r, -5deg)); }
       100% { opacity: 0; transform: translate(-50%, -135%) scale(0.9) rotate(var(--r, -5deg)); }
     }
 
-    .webtoon-bubble {
-      position: absolute;
-      pointer-events: none;
-      background: rgba(255, 255, 255, 0.96);
-      color: #0f172a;
-      border: 1.5px solid rgba(15, 23, 42, 0.85);
-      border-radius: 999px;
-      padding: 4px 11px;
-      font-size: 11.5px;
-      font-weight: 800;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-      transform: translate(-50%, -100%);
-      white-space: nowrap;
-      transition: opacity 0.14s ease;
+    @media (max-width: 640px) {
+      .hide-mobile { display: none !important; }
     }
-    .webtoon-bubble.hurt {
-      background: #fef08a;
-      color: #991b1b;
-      border-color: #7f1d1d;
-    }
-    .webtoon-bubble.npc-cheer {
-      background: rgba(16, 185, 129, 0.95);
-      color: #ffffff;
-      border-color: rgba(255,255,255,0.4);
-      font-size: 10.5px;
-      padding: 3px 9px;
-    }
-
-    @keyframes feverGlow {
-      0%, 100% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.55), inset 0 1px 2px rgba(255,255,255,0.5); transform: scale(1); }
-      50% { box-shadow: 0 0 28px rgba(250, 204, 21, 0.85), inset 0 1px 3px rgba(255,255,255,0.8); transform: scale(1.06); }
-    }
-    .ult-ready {
-      background: radial-gradient(circle at 30% 25%, #fde047, #10b981 75%) !important;
-      color: #090d16 !important;
-      border-color: #fef08a !important;
-      animation: feverGlow 0.85s infinite ease-in-out;
-    }
-
-    /* Offline-first fallback utilities so installed PWA works 100% in airplane mode */
-    .fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}
-    .inset-0{top:0;right:0;bottom:0;left:0}.inset-x-0{left:0;right:0}.inset-y-0{top:0;bottom:0}
-    .top-0{top:0}.bottom-0{bottom:0}.left-0{left:0}.right-0{right:0}.top-24{top:6rem}.bottom-2{bottom:.5rem}.bottom-3{bottom:.75rem}.left-2\.5{left:.625rem}.right-2\.5{right:.625rem}
-    .z-20{z-index:20}.z-30{z-index:30}.z-40{z-index:40}.z-50{z-index:50}
-    .flex{display:flex}.hidden{display:none}.block{display:block}.flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.shrink-0{flex-shrink:0}.min-w-0{min-width:0}
-    .items-center{align-items:center}.items-start{align-items:flex-start}.items-end{align-items:flex-end}
-    .justify-center{justify-content:center}.justify-between{justify-content:space-between}
-    .gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-3\.5{gap:.875rem}
-    .p-1\.5{padding:.375rem}.p-3{padding:.75rem}.p-3\.5{padding:.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.pb-5{padding-bottom:1.25rem}
-    .px-1\.5{padding-left:.375rem;padding-right:.375rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-3\.5{padding-left:.875rem;padding-right:.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}
-    .py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}
-    .mb-1{margin-bottom:.25rem}.mb-3{margin-bottom:.75rem}.mt-0\.5{margin-top:.125rem}.mt-1{margin-top:.25rem}.mt-4{margin-top:1rem}
-    .w-full{width:100%}.h-full{height:100%}.w-8{width:2rem}.h-8{height:2rem}.w-12{width:3rem}.h-12{height:3rem}.w-28{width:7rem}.h-28{height:7rem}.w-36{width:9rem}.h-36{height:9rem}.w-48{width:12rem}.h-48{height:12rem}.h-2\.5{height:.625rem}.h-3{height:.75rem}.w-px{width:1px}
-    .max-w-sm{max-width:24rem}.max-w-\[320px\]{max-width:320px}
-    .rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}
-    .overflow-hidden{overflow:hidden}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .pointer-events-none{pointer-events:none}.pointer-events-auto{pointer-events:auto}
-    .text-white{color:#fff}.text-slate-200{color:#e2e8f0}.text-slate-300{color:#cbd5e1}.text-slate-950{color:#020617}.text-amber-200{color:#fde68a}.text-amber-300{color:#fcd34d}.text-amber-400{color:#fbbf24}.text-rose-400{color:#fb7185}.text-cyan-200{color:#a5f3fc}.text-cyan-300{color:#67e8f9}.text-sky-200{color:#bae6fd}.text-emerald-300{color:#6ee7b7}
-    .text-xs{font-size:.75rem;line-height:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-base{font-size:1rem}.text-lg{font-size:1.125rem}.text-2xl{font-size:1.5rem}
-    .font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-black{font-weight:900}.font-mono{font-family:monospace}
-    .text-center{text-align:center}.leading-none{line-height:1}.tracking-tight{letter-spacing:-.025em}.tracking-widest{letter-spacing:.1em}
-    .opacity-0{opacity:0}.object-cover{object-fit:cover}
-
-
-    /* Complete compiled utility classes (Zero external CDN, 0ms FOUC) */
-    button{background:none;border:none;padding:0;font:inherit;cursor:pointer}
-    .-rotate-90{transform:rotate(-90deg)}.-translate-x-1\/2{transform:translateX(-50%)}.-translate-y-2{transform:translateY(-.5rem)}
-    .left-1\/2{left:50%}.w-3\.5{width:.875rem}.h-3\.5{height:.875rem}.pt-1\.5{padding-top:.375rem}
-    .border{border-width:1px;border-style:solid}.border-t{border-top-width:1px;border-top-style:solid}
-    .border-white{border-color:#fff}.border-white\/10{border-color:rgba(255,255,255,.1)}.border-white\/20{border-color:rgba(255,255,255,.2)}.border-white\/30{border-color:rgba(255,255,255,.3)}.border-amber-400\/60{border-color:rgba(251,191,36,.6)}
-    .bg-black\/65{background-color:rgba(0,0,0,.65)}.bg-white\/5{background-color:rgba(255,255,255,.05)}.bg-white\/10{background-color:rgba(255,255,255,.1)}.bg-white\/15{background-color:rgba(255,255,255,.15)}.bg-white\/80{background-color:rgba(255,255,255,.8)}
-    .bg-rose-500\/90{background-color:rgba(244,63,94,.9)}.bg-slate-900\/25{background-color:rgba(15,23,42,.25)}.bg-slate-950\/35{background-color:rgba(2,6,23,.35)}
-    .backdrop-blur-sm{backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}.backdrop-blur-md{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-    .bg-gradient-to-b{background-image:linear-gradient(to bottom,rgba(255,255,255,.95),rgba(203,213,225,.9))}
-    #bossHpFill{background-image:linear-gradient(to right,#f43f5e,#fb923c,#fcd34d)}
-    #comboHud{background-image:linear-gradient(to right,#fbbf24,#f43f5e)}
-    .text-\[9px\]{font-size:9px;line-height:1.1}.text-\[9\.5px\]{font-size:9.5px;line-height:1.1}.text-\[10px\]{font-size:10px;line-height:1.2}.text-\[11px\]{font-size:11px;line-height:1.25}.text-\[11\.5px\]{font-size:11.5px;line-height:1.25}
-    .text-white\/75{color:rgba(255,255,255,.75)}.text-sky-300{color:#7dd3fc}.leading-relaxed{line-height:1.6}
-    .opacity-45{opacity:.45}.shadow-lg{box-shadow:0 10px 15px -3px rgba(0,0,0,.35)}.shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}.shadow-\[0_4px_16px_rgba\(0\,0\,0\,0\.5\)\]{box-shadow:0 4px 16px rgba(0,0,0,.5)}.drop-shadow{filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
-    .space-y-2\.5>*+*{margin-top:.625rem}
-    .transition{transition:all .15s ease}.transition-all{transition:all .2s ease}.transition-opacity{transition:opacity .15s ease}.transition-transform{transition:transform .1s ease}
-    .duration-75{transition-duration:75ms}.duration-100{transition-duration:.1s}.duration-150{transition-duration:.15s}.duration-200{transition-duration:.2s}.duration-500{transition-duration:.5s}
-    @media(min-width:768px){.md\:p-4{padding:1rem}.md\:text-sm{font-size:.875rem}.md\:text-xl{font-size:1.25rem}}
-    @media(min-width:1024px){.lg\:flex{display:flex}}
-
   </style>
 </head>
 <body>
   <canvas id="gameCanvas"></canvas>
 
-  <!-- 2D Projected Speech Bubbles & Hit Popups -->
-  <div id="overlayLayer" class="fixed inset-0 pointer-events-none overflow-hidden z-20">
-    <div id="bossBubble" class="webtoon-bubble" style="opacity:0;"></div>
-    <div id="npcBubble0" class="webtoon-bubble npc-cheer" style="opacity:0;"></div>
-    <div id="npcBubble1" class="webtoon-bubble npc-cheer" style="opacity:0;"></div>
+  <!-- Floating 2D World Labels Layer -->
+  <div id="overlayLayer" class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index:20;">
+    <!-- 4 Simultaneous Executive Floating Nameplates & HP Bars -->
+    <div id="bossTag0" class="boss-tag"></div>
+    <div id="bossTag1" class="boss-tag"></div>
+    <div id="bossTag2" class="boss-tag"></div>
+    <div id="bossTag3" class="boss-tag"></div>
+    <div id="speechBubble" class="speech-pill" style="opacity:0;"></div>
+    <div id="remoteLabels"></div>
   </div>
 
-  <!-- SLEEK TOP HUD -->
-  <div class="fixed top-0 left-0 right-0 p-3 md:p-4 flex items-start justify-between gap-2.5 pointer-events-none z-30">
-    <!-- Top-Left: Sleek Radar Minimap & Zone Pill -->
-    <div class="flex flex-col items-start gap-1.5">
-      <div class="glass-panel rounded-2xl p-1.5 relative">
-        <canvas id="radarCanvas" width="98" height="82" class="rounded-xl block"></canvas>
-        <div class="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between text-[9px] font-bold text-white/75">
-          <span id="zoneBadge">영업본부</span>
-          <span class="text-rose-400">● 타겟</span>
+  <!-- ==================== TOP SLEEK HUD ==================== -->
+  <div class="fixed top-0 inset-x-0 flex items-start justify-between pointer-events-none" style="padding: max(10px, env(safe-area-inset-top)) 12px 8px; z-index:30; gap:8px;">
+    <!-- Top-Left: Expanded 7-Zone HQ Radar + Cash & Power-Up Button -->
+    <div class="flex flex-col items-start pointer-events-auto" style="gap:6px;">
+      <div class="glass" style="border-radius:16px; padding:6px; position:relative;">
+        <canvas id="radarCanvas" width="116" height="92" style="display:block; border-radius:11px;"></canvas>
+        <div class="flex items-center justify-between" style="margin-top:4px; padding:0 2px; font-size:9.5px; font-weight:800;">
+          <span id="zoneLabel" style="color:#7dd3fc;">중앙 로비</span>
+          <span style="color:#fbbf24;">👑대표 · 🐗본부장</span>
         </div>
+      </div>
+
+      <!-- Severance Cash & One-Tap Fist Upgrade! -->
+      <div class="glass flex items-center" style="border-radius:999px; padding:4px 6px 4px 11px; gap:8px;">
+        <div>
+          <div style="font-size:9px; color:#94a3b8; font-weight:700;">비자금·위자료</div>
+          <div id="cashHud" style="font-size:12.5px; font-weight:900; color:#4ade80; font-family:monospace;">₩0</div>
+        </div>
+        <button id="btnUpgrade" class="pill-btn cta-amber" style="height:28px; padding:0 9px; font-size:10.5px;">
+          <span>💪</span>
+          <span id="upgradeLabel">주먹강화 LV.1</span>
+        </button>
       </div>
     </div>
 
-    <!-- Top-Center: Boss Health Bar (Action RPG Style with Trailing Damage Bar) -->
-    <div class="glass-panel rounded-2xl px-3.5 py-2 flex-1 max-w-[320px] text-white">
-      <div class="flex items-center justify-between gap-2 mb-1">
-        <div class="flex items-center gap-1.5 min-w-0">
-          <span id="bossLvPill" class="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-rose-500/90 text-white shrink-0">LV.1</span>
-          <span id="bossNameHud" class="text-xs md:text-sm font-extrabold tracking-tight truncate">꼰대 김부장</span>
+    <!-- Top-Center: Sudden Office Event Banner & Nearest Target Boss Bar -->
+    <div class="flex flex-col items-center" style="flex:1; max-width:330px; gap:6px;">
+      <div class="glass" style="width:100%; border-radius:16px; padding:7px 12px;">
+        <div class="flex items-center justify-between" style="margin-bottom:4px; gap:6px;">
+          <div class="flex items-center truncate" style="gap:5px;">
+            <span id="focusRankBadge" style="padding:2px 6px; border-radius:6px; font-size:10px; font-weight:900; background:#e11d48;">부장</span>
+            <span id="focusBossName" class="truncate" style="font-size:12.5px; font-weight:900;">꼰대 김부장</span>
+          </div>
+          <span id="koHud" style="font-size:11px; font-weight:800; color:#fcd34d; flex-shrink:0;">참교육 0</span>
         </div>
-        <span id="koBadgeHud" class="text-[11px] font-bold text-amber-300 shrink-0">참교육 0</span>
+        <div style="position:relative; width:100%; height:9px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden;">
+          <div id="hpTrail" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.8); border-radius:999px; transition:width 0.45s ease;"></div>
+          <div id="hpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#f43f5e,#fb923c,#fde047); border-radius:999px; transition:width 0.08s ease;"></div>
+        </div>
       </div>
-      <!-- Dual-layer HP bar (white delayed trail + vibrant crimson fill) -->
-      <div class="relative w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
-        <div id="bossHpTrail" class="absolute inset-y-0 left-0 bg-white/80 rounded-full transition-all duration-500" style="width:100%"></div>
-        <div id="bossHpFill" class="absolute inset-y-0 left-0 bg-gradient-to-r from-rose-500 via-orange-400 to-amber-300 rounded-full transition-all duration-75" style="width:100%"></div>
+
+      <!-- Random Sudden Corporate Event Ticker -->
+      <div id="eventTicker" class="glass hidden" style="border-radius:999px; padding:4px 12px; border-color:rgba(250,204,21,0.65); font-size:11px; font-weight:800; color:#fef08a; text-align:center;">
+        📢 돌발 미션 진행중!
       </div>
     </div>
 
-    <!-- Top-Right: Wanted Level, Combo & Sleek Utility Pills -->
-    <div class="flex flex-col items-end gap-1.5 pointer-events-auto">
-      <div class="glass-panel rounded-full px-3 py-1 flex items-center gap-2 text-xs">
-        <span id="wantedHud" class="tracking-widest text-[11px] text-amber-400">★☆☆☆☆</span>
-        <span class="w-px h-3 bg-white/15"></span>
-        <span id="fpsPill" class="font-mono text-[10px] text-slate-300">60 FPS</span>
-      </div>
-
-      <div class="flex items-center gap-1.5">
-        <button id="btnInstallPwa" class="install-cta-btn rounded-full px-3 h-8 flex items-center gap-1 text-[11.5px] font-black tracking-tight" title="홈 화면에 앱으로 설치">
+    <!-- Top-Right: Multiplayer Room Pill, PWA Install & Quick Emotes -->
+    <div class="flex flex-col items-end pointer-events-auto" style="gap:6px;">
+      <div class="flex items-center" style="gap:5px;">
+        <button id="btnMulti" class="pill-btn cta-violet" title="실시간 멀티플레이 방 설정 및 친구 초대">
+          <span id="multiDot" style="width:7px; height:7px; border-radius:99px; background:#4ade80; display:inline-block;"></span>
+          <span id="multiCountText">멀티 1명</span>
+        </button>
+        <button id="btnInstallPwa" class="pill-btn cta-emerald" title="홈 화면에 앱 설치">
           <span>📲</span>
-          <span id="installBtnLabel">앱 설치</span>
-        </button>
-        <button id="btnSound" class="glass-panel rounded-full w-8 h-8 flex items-center justify-center text-xs text-white hover:bg-white/10 active:scale-90 transition" title="사운드">
-          🔊
-        </button>
-        <button id="btnReset" class="glass-panel rounded-full px-2.5 h-8 flex items-center justify-center text-[11px] font-bold text-slate-200 hover:bg-white/10 active:scale-90 transition" title="사무실 리셋">
-          🔄 복구
+          <span id="installBtnLabel">설치</span>
         </button>
       </div>
 
-      <div id="comboHud" class="opacity-0 transition-opacity duration-150 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-rose-500 text-slate-950 font-black text-xs shadow-lg">
+      <div class="flex items-center" style="gap:5px;">
+        <button id="btnAiParty" class="glass pill-btn" style="height:28px; font-size:10.5px; color:#a5f3fc;" title="AI 동료 다굴 파티원 ON/OFF">
+          🤖 동료지원 ON
+        </button>
+        <button id="btnSound" class="glass pill-btn" style="height:28px; width:30px; padding:0; justify-content:center;">🔊</button>
+        <button id="btnReset" class="glass pill-btn" style="height:28px; padding:0 8px; font-size:10.5px; color:#cbd5e1;">🔄</button>
+      </div>
+
+      <!-- Quick Multiplayer Emote Bar -->
+      <div class="glass flex items-center" style="border-radius:999px; padding:2px 5px; gap:2px;">
+        <button class="emote-btn" data-emote="🔥 다굴쳐!!" style="padding:3px 6px; font-size:12px;" title="다굴쳐!">🔥</button>
+        <button class="emote-btn" data-emote="😂 ㅋㅋㅋㅋ" style="padding:3px 6px; font-size:12px;" title="ㅋㅋㅋ">😂</button>
+        <button class="emote-btn" data-emote="💰 대표 금고털자!" style="padding:3px 6px; font-size:12px;" title="금고털자!">💰</button>
+        <button class="emote-btn" data-emote="🍻 칼퇴 가즈아!!" style="padding:3px 6px; font-size:12px;" title="칼퇴!">🍻</button>
+      </div>
+
+      <div id="comboBadge" style="opacity:0; transition:opacity 0.15s; padding:2px 10px; border-radius:999px; background:linear-gradient(90deg,#fbbf24,#f43f5e); color:#090d16; font-size:11px; font-weight:900;">
         3 COMBO!
       </div>
     </div>
   </div>
 
-  <!-- PWA Install Guide & Fullscreen Modal -->
-  <div id="pwaModal" class="fixed inset-0 bg-black/65 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="glass-panel rounded-3xl max-w-sm w-full p-5 text-white border border-white/20 shadow-2xl">
-      <div class="flex items-center justify-between gap-3 mb-3">
-        <div class="flex items-center gap-3">
-          <img src="./icons/icon-192.png" alt="칼퇴전쟁 3D" class="w-12 h-12 rounded-2xl shadow-lg border border-white/30 object-cover" />
-          <div>
-            <div class="text-sm font-black tracking-tight">칼퇴전쟁 3D 앱 설치</div>
-            <div class="text-[11px] text-emerald-300 font-semibold">오프라인 60FPS · 전체화면 지원</div>
+  <!-- ==================== MULTIPLAYER LOBBY & INVITE MODAL ==================== -->
+  <div id="multiModal" class="fixed inset-0 hidden items-center justify-center pointer-events-auto" style="background:rgba(4,7,15,0.72); backdrop-filter:blur(6px); padding:16px; z-index:55;">
+    <div class="glass" style="max-width:370px; width:100%; border-radius:24px; padding:20px;">
+      <div class="flex items-center justify-between" style="margin-bottom:12px;">
+        <div>
+          <div style="font-size:16px; font-weight:900;">👥 실시간 멀티플레이 참교육방</div>
+          <div id="netStatusSub" style="font-size:11px; color:#4ade80; font-weight:700; margin-top:2px;">● 글로벌 실시간 채널 연결됨</div>
+        </div>
+        <button id="btnCloseMulti" style="width:30px; height:30px; border-radius:99px; background:rgba(255,255,255,0.1); font-weight:800;">✕</button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:12px;">
+        <div>
+          <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:4px;">내 사원명 (머리 위 표시)</label>
+          <input id="inputNick" maxlength="10" style="width:100%; height:36px; border-radius:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0 11px; font-weight:800;" />
+        </div>
+
+        <div>
+          <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:4px;">방 코드 (같은 코드 입력 시 즉시 합류! 기본: OPEN)</label>
+          <div class="flex" style="gap:6px;">
+            <input id="inputRoom" maxlength="12" style="flex:1; height:36px; border-radius:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fde047; padding:0 11px; font-weight:900; text-transform:uppercase;" />
+            <button id="btnJoinRoom" class="pill-btn cta-violet" style="height:36px; border-radius:10px; padding:0 14px;">변경/입장</button>
           </div>
         </div>
-        <button id="btnClosePwaModal" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold">✕</button>
-      </div>
 
-      <div id="pwaModalBody" class="text-xs text-slate-200 space-y-2.5 leading-relaxed bg-white/5 rounded-2xl p-3.5 border border-white/10">
-        <div>📱 <b class="text-amber-300">아이폰 / 아이패드 (Safari)</b><br/>하단 <b class="text-white">공유 버튼 [↑]</b> 터치 후 <b class="text-emerald-300">'홈 화면에 추가'</b>를 선택하면 네이티브 앱처럼 설치됩니다.</div>
-        <div class="pt-1.5 border-t border-white/10">🤖 <b class="text-cyan-300">안드로이드 / PC (Chrome·Edge)</b><br/>브라우저 우측 상단 메뉴(<b class="text-white">⋮</b>) 또는 주소창 우측의 <b class="text-emerald-300">'앱 설치 / 홈 화면에 추가'</b>를 눌러주세요.</div>
-      </div>
+        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:10px; border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:11px; font-weight:800; color:#a5f3fc; margin-bottom:4px;">접속 중인 참교육 동지 목록</div>
+          <div id="peerListBox" style="font-size:11.5px; color:#e2e8f0; line-height:1.6;">나 (방장)</div>
+        </div>
 
-      <div class="mt-4 flex gap-2">
-        <button id="btnEnterFullscreen" class="flex-1 py-2.5 rounded-xl install-cta-btn text-xs font-black">
-          ⛶ 지금 전체화면으로 플레이
-        </button>
-        <button id="btnDismissPwa" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-200">
-          닫기
+        <button id="btnCopyInvite" class="pill-btn cta-emerald" style="width:100%; height:40px; border-radius:12px; justify-content:center; font-size:12.5px;">
+          🔗 카톡·친구 초대 링크 복사하기
         </button>
       </div>
     </div>
   </div>
 
-  <!-- KO / Clear Cinematic Toast -->
-  <div id="koToast" class="fixed inset-x-0 top-24 flex justify-center pointer-events-none z-40 opacity-0 transition-all duration-200 transform -translate-y-2">
-    <div class="glass-panel border-amber-400/60 rounded-2xl px-5 py-2.5 text-center">
-      <div id="koToastTitle" class="text-lg md:text-xl font-black text-amber-300 tracking-tight">결재 완료! 김부장 참교육 성공!</div>
-      <div id="koToastSub" class="text-[11px] text-slate-300 font-semibold mt-0.5">다음 임원이 엘리베이터에서 내립니다...</div>
+  <!-- ==================== PWA INSTALL GUIDE MODAL ==================== -->
+  <div id="pwaModal" class="fixed inset-0 hidden items-center justify-center pointer-events-auto" style="background:rgba(4,7,15,0.72); backdrop-filter:blur(6px); padding:16px; z-index:55;">
+    <div class="glass" style="max-width:360px; width:100%; border-radius:24px; padding:20px;">
+      <div class="flex items-center justify-between" style="margin-bottom:12px;">
+        <div class="flex items-center" style="gap:10px;">
+          <img src="./icons/icon-192.png" alt="칼퇴전쟁 3D" style="width:46px; height:46px; border-radius:12px; border:1px solid rgba(255,255,255,0.25); object-fit:cover;" onerror="this.style.display='none'" />
+          <div>
+            <div style="font-size:15px; font-weight:900;">칼퇴전쟁 3D 앱 설치</div>
+            <div style="font-size:11px; color:#6ee7b7; font-weight:700;">전체화면 · 60FPS · 멀티플레이</div>
+          </div>
+        </div>
+        <button id="btnClosePwa" style="width:30px; height:30px; border-radius:99px; background:rgba(255,255,255,0.1); font-weight:800;">✕</button>
+      </div>
+
+      <div style="font-size:12px; line-height:1.6; background:rgba(255,255,255,0.06); border-radius:14px; padding:12px; border:1px solid rgba(255,255,255,0.1);">
+        <div>📱 <b style="color:#fcd34d;">아이폰 / 아이패드 (Safari)</b><br/>하단 <b>공유 버튼 [↑]</b> → <b style="color:#6ee7b7;">'홈 화면에 추가'</b> 선택</div>
+        <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1);">🤖 <b style="color:#67e8f9;">안드로이드 / PC (Chrome·Edge)</b><br/>우측 상단 메뉴(<b>⋮</b>) → <b style="color:#6ee7b7;">'앱 설치 / 홈 화면에 추가'</b> 선택</div>
+      </div>
+
+      <div class="flex" style="margin-top:14px; gap:8px;">
+        <button id="btnFullscreen" class="pill-btn cta-emerald" style="flex:1; height:38px; border-radius:12px; justify-content:center;">⛶ 지금 전체화면 전환</button>
+        <button id="btnDismissPwa" class="glass pill-btn" style="height:38px; border-radius:12px; padding:0 14px;">닫기</button>
+      </div>
     </div>
   </div>
 
-  <!-- Subtle Desktop Keycap Bar -->
-  <div class="hidden lg:flex fixed bottom-3 left-1/2 -translate-x-1/2 glass-panel rounded-full px-4 py-1.5 text-[11px] text-slate-300 font-medium gap-3.5 pointer-events-none z-30">
-    <span><b class="text-white">WASD</b> 이동</span>
-    <span><b class="text-rose-400">J / Space / 클릭</b> 공격·무기스윙</span>
-    <span><b class="text-cyan-300">L / 우클릭</b> 무기 집기·투척</span>
-    <span><b class="text-amber-300">K</b> 어퍼컷</span>
-    <span><b class="text-sky-300">Shift</b> 대시 태클</span>
-    <span><b class="text-emerald-300">E</b> 사표 폭격</span>
+  <!-- Desktop Key Guide -->
+  <div class="hide-mobile fixed glass pointer-events-none" style="bottom:10px; left:50%; transform:translateX(-50%); border-radius:999px; padding:5px 15px; font-size:11px; color:#cbd5e1; display:flex; gap:12px; z-index:30;">
+    <span><b style="color:#fff;">WASD</b> 이동</span>
+    <span><b style="color:#fb7185;">J/Space</b> 죽방·스윙</span>
+    <span><b style="color:#67e8f9;">L/우클릭</b> 무기집기·투척</span>
+    <span><b style="color:#fcd34d;">F</b> 바퀴의자 폭주탑승</span>
+    <span><b style="color:#fbbf24;">K</b> 어퍼컷</span>
+    <span><b style="color:#34d399;">E</b> 사표폭격</span>
   </div>
 
-  <!-- SLEEK MODERN MOBILE CONTROL DECK -->
-  <div class="fixed inset-x-0 bottom-0 p-4 pb-5 flex items-end justify-between pointer-events-none z-30">
-    <!-- Left: Precision Floating Glass Thumbstick -->
-    <div id="joyTouchArea" class="relative w-36 h-36 pointer-events-auto flex items-center justify-center">
-      <!-- Outer Frosted Ring with Directional Glow SVG -->
-      <div id="joyBase" class="relative w-28 h-28 rounded-full bg-slate-950/35 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center transition-transform duration-100">
-        <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-45" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4 6" />
-          <path d="M50 8 L53 13 L47 13 Z M50 92 L53 87 L47 87 Z M8 50 L13 47 L13 53 Z M92 50 L87 47 L87 53 Z" fill="rgba(255,255,255,0.35)" />
+  <!-- ==================== SLEEK MOBILE CONTROL DECK ==================== -->
+  <div class="fixed bottom-0 inset-x-0 flex items-end justify-between pointer-events-none" style="padding: 12px 16px max(16px, env(safe-area-inset-bottom)); z-index:30;">
+    <!-- Left Floating Glass Thumbstick -->
+    <div id="joyArea" class="relative pointer-events-auto flex items-center justify-center" style="width:142px; height:142px;">
+      <div id="joyBase" class="relative flex items-center justify-center" style="width:112px; height:112px; border-radius:999px; background:rgba(8,12,24,0.42); backdrop-filter:blur(10px); border:1.5px solid rgba(255,255,255,0.20); box-shadow:0 10px 28px rgba(0,0,0,0.45); transition:transform 0.1s;">
+        <svg style="position:absolute; inset:0; width:100%; height:100%; opacity:0.4; pointer-events:none;" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1" stroke-dasharray="4 6" />
         </svg>
-        <!-- Satin Thumb Puck -->
-        <div id="joyPuck" class="w-12 h-12 rounded-full bg-gradient-to-b from-white/95 to-slate-300/90 shadow-[0_4px_16px_rgba(0,0,0,0.5)] border border-white flex items-center justify-center">
-          <div class="w-3.5 h-3.5 rounded-full bg-slate-900/25"></div>
+        <div id="joyPuck" class="flex items-center justify-center" style="width:48px; height:48px; border-radius:999px; background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(203,213,225,0.88)); border:1px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,0.5);">
+          <div style="width:13px; height:13px; border-radius:99px; background:rgba(15,23,42,0.28);"></div>
         </div>
       </div>
     </div>
 
-    <!-- Right: Ergonomic Radial Arc Action Cluster -->
-    <div class="relative w-48 h-48 pointer-events-auto">
-      <!-- Ultimate Orb (Top-Right above main cluster, fills 0..100%) -->
-      <button id="btnUlt" class="ctrl-sat" style="right: 8px; bottom: 116px; width: 54px; height: 54px;">
-        <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 60 60">
+    <!-- Right Ergonomic 5-Action Radial Arc Cluster -->
+    <div class="relative pointer-events-auto" style="width:196px; height:196px;">
+      <!-- Ultimate Fever Orb -->
+      <button id="btnUlt" class="ctrl-sat" style="right:6px; bottom:114px; width:54px; height:54px;">
+        <svg style="position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none;" viewBox="0 0 60 60">
           <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3.5" />
           <circle id="ultArc" cx="30" cy="30" r="26" fill="none" stroke="#10b981" stroke-width="3.5" stroke-dasharray="163.36" stroke-dashoffset="163.36" stroke-linecap="round" />
         </svg>
-        <span class="text-base leading-none">📄</span>
-        <span id="ultPctText" class="text-[9px] font-extrabold text-emerald-300 mt-0.5">0%</span>
+        <span style="font-size:16px; line-height:1;">📄</span>
+        <span id="ultPct" style="font-size:9px; font-weight:900; color:#6ee7b7; margin-top:2px;">0%</span>
       </button>
 
-      <!-- Satellite 1 (Top-Left of Arc): Contextual Grab / Throw Weapon -->
-      <button id="btnGrab" class="ctrl-sat" style="right: 74px; bottom: 96px;">
-        <span id="grabIcon" class="text-lg leading-none">🖐️</span>
-        <span id="grabText" class="text-[9.5px] font-bold text-cyan-200 mt-0.5 tracking-tight">집기</span>
+      <!-- Ride Swivel Chair / Rocket Drift Button (NEW FUN GIMMICK!) -->
+      <button id="btnRide" class="ctrl-sat" style="right:68px; bottom:126px; width:50px; height:50px;">
+        <span style="font-size:15px; line-height:1;">🪑</span>
+        <span id="rideText" style="font-size:8.5px; font-weight:800; color:#fde68a; margin-top:2px;">의자탑승</span>
       </button>
 
-      <!-- Satellite 2 (Mid-Left of Arc): Uppercut Launcher -->
-      <button id="btnUpper" class="ctrl-sat" style="right: 108px; bottom: 50px;">
-        <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 60 60">
+      <!-- Grab / Throw Weapon -->
+      <button id="btnGrab" class="ctrl-sat" style="right:82px; bottom:74px;">
+        <span id="grabIcon" style="font-size:17px; line-height:1;">🖐️</span>
+        <span id="grabText" style="font-size:9.5px; font-weight:800; color:#a5f3fc; margin-top:2px;">집기</span>
+      </button>
+
+      <!-- Uppercut -->
+      <button id="btnUpper" class="ctrl-sat" style="right:114px; bottom:24px;">
+        <svg style="position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none;" viewBox="0 0 60 60">
           <circle id="upperArc" cx="30" cy="30" r="27" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="169.6" stroke-dashoffset="0" stroke-linecap="round" />
         </svg>
-        <span class="text-base leading-none">💥</span>
-        <span class="text-[9.5px] font-bold text-amber-200 mt-0.5">어퍼컷</span>
+        <span style="font-size:15px; line-height:1;">💥</span>
+        <span style="font-size:9px; font-weight:800; color:#fde68a; margin-top:2px;">어퍼컷</span>
       </button>
 
-      <!-- Satellite 3 (Bottom-Left of Arc): Dash / Shoulder Tackle -->
-      <button id="btnDash" class="ctrl-sat" style="right: 112px; bottom: -2px; width: 52px; height: 52px;">
-        <span class="text-sm leading-none">⚡</span>
-        <span class="text-[9px] font-bold text-sky-200 mt-0.5">대시</span>
+      <!-- Dash / Tackle -->
+      <button id="btnDash" class="ctrl-sat" style="right:156px; bottom:-2px; width:46px; height:46px;">
+        <span style="font-size:13px; line-height:1;">⚡</span>
+        <span style="font-size:8.5px; font-weight:800; color:#bae6fd; margin-top:1px;">대시</span>
       </button>
 
-      <!-- Primary Main Attack Hub (Bottom-Right Anchor) -->
+      <!-- Primary Attack Hub -->
       <button id="btnAttack" class="ctrl-main">
-        <!-- 3-Combo Pips Ring -->
-        <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
-          <circle id="pip1" cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="0" stroke-linecap="round" opacity="0.25" />
-          <circle id="pip2" cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-96" stroke-linecap="round" opacity="0.25" />
-          <circle id="pip3" cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-192" stroke-linecap="round" opacity="0.25" />
+        <svg style="position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none;" viewBox="0 0 100 100">
+          <circle id="pip1" cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="0" stroke-linecap="round" opacity="0.25" />
+          <circle id="pip2" cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-96" stroke-linecap="round" opacity="0.25" />
+          <circle id="pip3" cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-192" stroke-linecap="round" opacity="0.25" />
         </svg>
-        <span id="mainAtkIcon" class="text-2xl leading-none drop-shadow">🥊</span>
-        <span id="mainAtkText" class="text-[11px] font-black tracking-tight mt-1">죽방</span>
+        <span id="atkIcon" style="font-size:25px; line-height:1;">🥊</span>
+        <span id="atkText" style="font-size:11px; font-weight:900; margin-top:3px;">죽방</span>
       </button>
     </div>
   </div>
@@ -394,87 +477,56 @@
     "use strict";
 
     // =========================================================================
-    // 1. PROCEDURAL SOUND & MOBILE HAPTICS
+    // 1. AUDIO SYNTHESIZER & HAPTICS
     // =========================================================================
-    let audioCtx = null;
-    let soundOn = true;
-
-    function haptic(ms = 18) {
-      if (navigator.vibrate) {
-        try { navigator.vibrate(ms); } catch (_) {}
-      }
-    }
-
+    let audioCtx = null, soundOn = true;
+    function haptic(ms = 16) { if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (_) {} } }
     function ensureAudio() {
       if (!soundOn) return null;
-      if (!audioCtx) {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) audioCtx = new AC();
-      }
+      if (!audioCtx) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) audioCtx = new AC(); }
       if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
       return audioCtx;
     }
-
     function playSfx(kind) {
       const ctx = ensureAudio();
       if (!ctx) return;
       const t = ctx.currentTime;
-
       if (kind === "swing" || kind === "dash") {
         const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = "triangle";
-        o.frequency.setValueAtTime(kind === "dash" ? 380 : 280, t);
+        o.type = "triangle"; o.frequency.setValueAtTime(kind === "dash" ? 410 : 280, t);
         o.frequency.exponentialRampToValueAtTime(90, t + 0.10);
-        g.gain.setValueAtTime(0.14, t);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 0.10);
-        o.connect(g).connect(ctx.destination);
-        o.start(t); o.stop(t + 0.11);
-      } else if (kind === "hit" || kind === "heavy") {
-        const hv = kind === "heavy";
+        g.gain.setValueAtTime(0.13, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.10);
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.11);
+      } else if (kind === "hit" || kind === "heavy" || kind === "shock") {
+        const hv = kind !== "hit";
         const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = "sine";
-        o.frequency.setValueAtTime(hv ? 175 : 230, t);
-        o.frequency.exponentialRampToValueAtTime(hv ? 34 : 48, t + (hv ? 0.22 : 0.13));
-        g.gain.setValueAtTime(hv ? 0.46 : 0.34, t);
-        g.gain.exponentialRampToValueAtTime(0.001, t + (hv ? 0.24 : 0.14));
-        o.connect(g).connect(ctx.destination);
-        o.start(t); o.stop(t + 0.25);
+        o.type = kind === "shock" ? "sawtooth" : "sine";
+        o.frequency.setValueAtTime(kind === "shock" ? 520 : (hv ? 180 : 235), t);
+        o.frequency.exponentialRampToValueAtTime(kind === "shock" ? 110 : 38, t + (hv ? 0.22 : 0.13));
+        g.gain.setValueAtTime(hv ? 0.42 : 0.30, t); g.gain.exponentialRampToValueAtTime(0.001, t + (hv ? 0.23 : 0.14));
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.24);
 
-        const len = Math.floor(ctx.sampleRate * (hv ? 0.13 : 0.08));
+        const len = Math.floor(ctx.sampleRate * 0.10);
         const buf = ctx.createBuffer(1, len, ctx.sampleRate);
-        const ch = buf.getChannelData(0);
-        for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.7);
-        const src = ctx.createBufferSource(); src.buffer = buf;
-        const flt = ctx.createBiquadFilter(); flt.type = "bandpass"; flt.frequency.value = hv ? 1300 : 1850;
-        const ng = ctx.createGain(); ng.gain.setValueAtTime(hv ? 0.42 : 0.28, t); ng.gain.exponentialRampToValueAtTime(0.005, t + 0.13);
-        src.connect(flt).connect(ng).connect(ctx.destination);
-        src.start(t);
-      } else if (kind === "crash") {
-        const len = Math.floor(ctx.sampleRate * 0.15);
-        const buf = ctx.createBuffer(1, len, ctx.sampleRate);
-        const ch = buf.getChannelData(0);
-        for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.0);
-        const src = ctx.createBufferSource(); src.buffer = buf;
-        const flt = ctx.createBiquadFilter(); flt.type = "lowpass"; flt.frequency.value = 1050;
-        const g = ctx.createGain(); g.gain.setValueAtTime(0.20, t); g.gain.exponentialRampToValueAtTime(0.005, t + 0.15);
-        src.connect(flt).connect(g).connect(ctx.destination);
-        src.start(t);
-      } else if (kind === "ko") {
-        [523.25, 659.25, 783.99, 1046.5].forEach((fq, i) => {
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+        const s = ctx.createBufferSource(); s.buffer = buf;
+        const ng = ctx.createGain(); ng.gain.setValueAtTime(hv ? 0.35 : 0.22, t); ng.gain.exponentialRampToValueAtTime(0.005, t + 0.10);
+        s.connect(ng).connect(ctx.destination); s.start(t);
+      } else if (kind === "coin" || kind === "ko") {
+        const notes = kind === "ko" ? [523, 659, 784, 1046] : [784, 1174];
+        notes.forEach((fq, i) => {
           const o = ctx.createOscillator(), g = ctx.createGain();
-          o.type = "triangle";
-          const st = t + i * 0.065;
+          o.type = "triangle"; const st = t + i * 0.06;
           o.frequency.setValueAtTime(fq, st);
-          g.gain.setValueAtTime(0.20, st);
-          g.gain.exponentialRampToValueAtTime(0.001, st + 0.34);
-          o.connect(g).connect(ctx.destination);
-          o.start(st); o.stop(st + 0.35);
+          g.gain.setValueAtTime(0.18, st); g.gain.exponentialRampToValueAtTime(0.001, st + 0.25);
+          o.connect(g).connect(ctx.destination); o.start(st); o.stop(st + 0.26);
         });
       }
     }
 
     // =========================================================================
-    // 2. 4x4 MATRIX & PROJECTION MATH
+    // 2. MATRIX & 3D PROJECTION UTILITIES
     // =========================================================================
     const mId = () => { const m = new Float32Array(16); m[0]=m[5]=m[10]=m[15]=1; return m; };
     function mMul(o, a, b) {
@@ -526,335 +578,215 @@
     }
 
     // =========================================================================
-    // 3. WEBGL CONTEXT & 8-TILE WEBTOON EXPRESSION TEXTURE ATLAS (1024x512)
+    // 3. WEBGL & 8-EXPRESSION WEBTOON FACE ATLAS
     // =========================================================================
     const canvas = document.getElementById("gameCanvas");
     const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
 
-    // 8 Webtoon Face Tiles in a single 1024x512 Atlas (4 cols x 2 rows, 256x256 each):
-    // 0: Player Cool | 1: Player Fierce | 2: Boss Smug | 3: Boss Hurt (> <)
-    // 4: Boss KO (@ @) | 5: Coworker Tired | 6: Coworker Cheer (^o^) | 7: Guard Shades
-    const atlasCanvas = document.createElement("canvas");
-    atlasCanvas.width = 1024;
-    atlasCanvas.height = 512;
-    const actx = atlasCanvas.getContext("2d");
+    // 8 Distinct Webtoon Faces (1024x512, 4x2 tiles):
+    // 0: Player Normal | 1: Player Battle | 2: 김부장(뿔테안경) | 3: Slapped Hurt (> <)
+    // 4: Dizzy/Shocked (@ @) | 5: 박상무(핑크선글라스) | 6: 최본부장(험악 흉터·금테) | 7: 왕대표(백발 카이저수염·근엄)
+    const atlasCvs = document.createElement("canvas");
+    atlasCvs.width = 1024; atlasCvs.height = 512;
+    const actx = atlasCvs.getContext("2d");
 
-    function buildWebtoonFaceAtlas() {
-      for (let tile = 0; tile < 8; tile++) {
-        const ox = (tile % 4) * 256;
-        const oy = Math.floor(tile / 4) * 256;
-        actx.save();
-        actx.translate(ox, oy);
-
-        // Skin tone base
-        actx.fillStyle = tile === 5 ? "#f3c6a8" : "#fdba8c";
+    (function paintAtlas() {
+      for (let t = 0; t < 8; t++) {
+        const ox = (t % 4) * 256, oy = Math.floor(t / 4) * 256;
+        actx.save(); actx.translate(ox, oy);
+        actx.fillStyle = t === 6 ? "#eab392" : "#fdba8c";
         actx.fillRect(0, 0, 256, 256);
+        actx.lineCap = "round"; actx.lineJoin = "round";
 
-        // Cheek blush
-        actx.fillStyle = "rgba(244, 63, 94, 0.20)";
-        actx.beginPath();
-        actx.ellipse(66, 152, 22, 12, 0, 0, Math.PI * 2);
-        actx.ellipse(190, 152, 22, 12, 0, 0, Math.PI * 2);
-        actx.fill();
-
-        actx.lineCap = "round";
-        actx.lineJoin = "round";
-
-        if (tile === 0 || tile === 1) {
-          // PLAYER: Cool Determined Webtoon Hero (0) / Fierce Battle Shout (1)
-          actx.strokeStyle = "#0f172a";
-          actx.lineWidth = 8;
+        if (t === 0 || t === 1) {
+          // Player Cool / Fierce
+          actx.strokeStyle = "#0f172a"; actx.lineWidth = 8;
           actx.beginPath();
-          actx.moveTo(54, tile === 1 ? 86 : 94); actx.lineTo(104, 105);
-          actx.moveTo(202, tile === 1 ? 86 : 94); actx.lineTo(152, 105);
+          actx.moveTo(54, t ? 84 : 94); actx.lineTo(104, 105);
+          actx.moveTo(202, t ? 84 : 94); actx.lineTo(152, 105);
           actx.stroke();
-
-          // Anime eyes
           [80, 176].forEach((ex) => {
-            actx.fillStyle = "#ffffff";
-            actx.strokeStyle = "#0f172a";
-            actx.lineWidth = 5;
+            actx.fillStyle = "#fff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
             actx.beginPath(); actx.ellipse(ex, 125, 21, 17, 0, 0, Math.PI * 2); actx.fill(); actx.stroke();
-            actx.fillStyle = "#1d4ed8";
-            actx.beginPath(); actx.arc(ex, 126, 11, 0, Math.PI * 2); actx.fill();
-            actx.fillStyle = "#0f172a";
-            actx.beginPath(); actx.arc(ex, 126, 6, 0, Math.PI * 2); actx.fill();
-            actx.fillStyle = "#ffffff";
-            actx.beginPath(); actx.arc(ex + 5, 120, 4, 0, Math.PI * 2); actx.fill();
+            actx.fillStyle = "#2563eb"; actx.beginPath(); actx.arc(ex, 126, 10, 0, Math.PI * 2); actx.fill();
+            actx.fillStyle = "#0f172a"; actx.beginPath(); actx.arc(ex, 126, 5.5, 0, Math.PI * 2); actx.fill();
+            actx.fillStyle = "#fff"; actx.beginPath(); actx.arc(ex + 4, 120, 3.5, 0, Math.PI * 2); actx.fill();
           });
-
-          if (tile === 0) {
+          if (t === 0) {
             actx.strokeStyle = "#7c2d12"; actx.lineWidth = 5;
             actx.beginPath(); actx.arc(128, 166, 18, 0.15 * Math.PI, 0.82 * Math.PI); actx.stroke();
           } else {
             actx.fillStyle = "#991b1b"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
             actx.beginPath(); actx.roundRect(98, 164, 60, 34, 12); actx.fill(); actx.stroke();
-            actx.fillStyle = "#ffffff"; actx.fillRect(106, 166, 44, 9);
           }
-        } else if (tile === 2) {
-          // BOSS SMUG: Annoying glasses + raised brow + mustache + cocky smirk!
-          actx.strokeStyle = "#18181b"; actx.lineWidth = 9;
-          actx.beginPath();
-          actx.moveTo(50, 84); actx.lineTo(104, 100);
-          actx.moveTo(206, 92); actx.lineTo(152, 98);
-          actx.stroke();
-
+        } else if (t === 2) {
+          // 김부장: Black Square Glasses + Thin Mustache + Nagging Smirk
+          actx.strokeStyle = "#18181b"; actx.lineWidth = 8;
+          actx.beginPath(); actx.moveTo(52, 86); actx.lineTo(104, 100); actx.moveTo(204, 88); actx.lineTo(152, 100); actx.stroke();
           [80, 176].forEach((ex) => {
-            actx.fillStyle = "#ffffff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
-            actx.beginPath(); actx.ellipse(ex, 122, 22, 16, 0, 0, Math.PI * 2); actx.fill(); actx.stroke();
-            actx.fillStyle = "#0f172a";
-            actx.beginPath(); actx.arc(ex + 2, 123, 8.5, 0, Math.PI * 2); actx.fill();
-            actx.fillStyle = "#ffffff";
-            actx.beginPath(); actx.arc(ex + 5, 118, 3.5, 0, Math.PI * 2); actx.fill();
+            actx.fillStyle = "#fff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 4.5;
+            actx.beginPath(); actx.ellipse(ex, 122, 20, 15, 0, 0, Math.PI * 2); actx.fill(); actx.stroke();
+            actx.fillStyle = "#0f172a"; actx.beginPath(); actx.arc(ex + 2, 123, 8, 0, Math.PI * 2); actx.fill();
           });
-
-          // Glasses with shiny diagonal glare
           actx.strokeStyle = "#111827"; actx.lineWidth = 6;
-          actx.strokeRect(48, 100, 62, 42);
-          actx.strokeRect(146, 100, 62, 42);
+          actx.strokeRect(48, 100, 62, 42); actx.strokeRect(146, 100, 62, 42);
           actx.beginPath(); actx.moveTo(110, 120); actx.lineTo(146, 120); actx.stroke();
-
-          actx.fillStyle = "#27272a";
-          actx.beginPath(); actx.roundRect(96, 156, 64, 13, 6); actx.fill();
+          actx.fillStyle = "#27272a"; actx.beginPath(); actx.roundRect(98, 156, 60, 12, 5); actx.fill();
           actx.strokeStyle = "#7c2d12"; actx.lineWidth = 5;
-          actx.beginPath(); actx.arc(132, 172, 22, 0.1 * Math.PI, 0.78 * Math.PI); actx.stroke();
-        } else if (tile === 3) {
-          // BOSS HURT: > < Comic Eyes + Red Slap Bruise + Screaming Missing Tooth!
-          actx.fillStyle = "rgba(225, 29, 72, 0.68)";
-          actx.beginPath(); actx.ellipse(186, 152, 35, 24, -0.25, 0, Math.PI * 2); actx.fill();
-
+          actx.beginPath(); actx.arc(130, 172, 20, 0.1 * Math.PI, 0.8 * Math.PI); actx.stroke();
+        } else if (t === 3) {
+          // HURT (> <) + Slap Mark + Missing Tooth!
+          actx.fillStyle = "rgba(225,29,72,0.7)";
+          actx.beginPath(); actx.ellipse(186, 152, 36, 24, -0.25, 0, Math.PI * 2); actx.fill();
           actx.strokeStyle = "#0f172a"; actx.lineWidth = 9;
           actx.beginPath();
           actx.moveTo(54, 102); actx.lineTo(98, 122); actx.lineTo(54, 142);
           actx.moveTo(202, 102); actx.lineTo(158, 122); actx.lineTo(202, 142);
           actx.stroke();
-
           actx.fillStyle = "#7f1d1d"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
           actx.beginPath(); actx.roundRect(90, 162, 76, 48, 16); actx.fill(); actx.stroke();
-          actx.fillStyle = "#ffffff";
-          actx.fillRect(100, 164, 22, 12);
-          actx.fillRect(136, 164, 22, 12);
-          actx.fillStyle = "#fb7185";
-          actx.beginPath(); actx.ellipse(128, 198, 22, 10, 0, 0, Math.PI * 2); actx.fill();
-        } else if (tile === 4) {
-          // BOSS KO / DIZZY: Swirl @ @ Eyes + Swollen Cheek + Tongue Out!
-          actx.fillStyle = "rgba(147, 51, 234, 0.40)";
-          actx.beginPath(); actx.ellipse(72, 148, 28, 20, 0, 0, Math.PI * 2); actx.fill();
-
+          actx.fillStyle = "#fff"; actx.fillRect(100, 164, 22, 12); actx.fillRect(136, 164, 22, 12);
+        } else if (t === 4) {
+          // KO / ELECTROCUTED (@ @ Swirl Eyes!)
           actx.strokeStyle = "#0f172a"; actx.lineWidth = 5.5;
           [80, 176].forEach((ex) => {
-            actx.fillStyle = "#ffffff";
-            actx.beginPath(); actx.arc(ex, 120, 22, 0, Math.PI * 2); actx.fill(); actx.stroke();
+            actx.fillStyle = "#fff"; actx.beginPath(); actx.arc(ex, 120, 22, 0, Math.PI * 2); actx.fill(); actx.stroke();
             actx.beginPath();
-            for (let a = 0; a < Math.PI * 3.8; a += 0.3) {
-              const r = a * 1.5;
-              const px = ex + Math.cos(a) * r, py = 120 + Math.sin(a) * r;
+            for (let a = 0; a < 11.5; a += 0.35) {
+              const px = ex + Math.cos(a) * a * 1.5, py = 120 + Math.sin(a) * a * 1.5;
               if (a === 0) actx.moveTo(px, py); else actx.lineTo(px, py);
             }
             actx.stroke();
           });
-
-          actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
-          actx.beginPath(); actx.moveTo(96, 176); actx.quadraticCurveTo(128, 164, 160, 176); actx.stroke();
-          actx.fillStyle = "#fb7185";
-          actx.beginPath(); actx.roundRect(130, 173, 22, 28, 10); actx.fill(); actx.stroke();
-        } else if (tile === 5) {
-          // COWORKER TIRED: Half-lidded eyes + heavy dark circles + sweat drop
-          [80, 176].forEach((ex) => {
-            actx.fillStyle = "rgba(71, 85, 105, 0.45)";
-            actx.beginPath(); actx.arc(ex, 132, 18, 0, Math.PI); actx.fill();
-            actx.fillStyle = "#ffffff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 4.5;
-            actx.beginPath(); actx.arc(ex, 124, 16, 0, Math.PI); actx.closePath(); actx.fill(); actx.stroke();
-            actx.fillStyle = "#0f172a";
-            actx.beginPath(); actx.arc(ex, 129, 6, 0, Math.PI * 2); actx.fill();
-          });
-          actx.strokeStyle = "#475569"; actx.lineWidth = 4.5;
-          actx.beginPath(); actx.moveTo(108, 176); actx.lineTo(148, 172); actx.stroke();
-          // Blue anime sweat drop
-          actx.fillStyle = "#38bdf8";
-          actx.beginPath(); actx.ellipse(212, 96, 8, 14, 0, 0, Math.PI * 2); actx.fill();
-        } else if (tile === 6) {
-          // COWORKER CHEERING: Happy ^ ^ arches + big open smile!
-          actx.strokeStyle = "#0f172a"; actx.lineWidth = 8;
+          actx.fillStyle = "#fb7185"; actx.beginPath(); actx.roundRect(126, 172, 24, 30, 10); actx.fill(); actx.stroke();
+        } else if (t === 5) {
+          // 박상무: Flashy Pink/Gold Resort Golf Sunglasses + Cocky Grin!
+          actx.fillStyle = "#ec4899"; actx.strokeStyle = "#fde047"; actx.lineWidth = 5;
           actx.beginPath();
-          actx.arc(80, 128, 18, Math.PI * 1.1, Math.PI * 1.9);
-          actx.stroke();
-          actx.beginPath();
-          actx.arc(176, 128, 18, Math.PI * 1.1, Math.PI * 1.9);
-          actx.stroke();
-
-          actx.fillStyle = "#ef4444"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
-          actx.beginPath(); actx.arc(128, 164, 24, 0, Math.PI); actx.closePath(); actx.fill(); actx.stroke();
-        } else if (tile === 7) {
-          // SECURITY / SUB-MANAGER: Dark Aviator Shades + Stern Frown!
-          actx.fillStyle = "#090d16"; actx.strokeStyle = "#38bdf8"; actx.lineWidth = 4;
-          actx.beginPath();
-          actx.roundRect(44, 102, 74, 36, 10);
-          actx.roundRect(138, 102, 74, 36, 10);
+          actx.roundRect(42, 98, 76, 42, 14);
+          actx.roundRect(138, 98, 76, 42, 14);
           actx.fill(); actx.stroke();
-          actx.strokeStyle = "#090d16"; actx.lineWidth = 7;
-          actx.beginPath(); actx.moveTo(118, 114); actx.lineTo(138, 114); actx.stroke();
-          actx.beginPath(); actx.moveTo(104, 176); actx.quadraticCurveTo(128, 164, 152, 176); actx.stroke();
+          actx.strokeStyle = "#ffffff"; actx.lineWidth = 4;
+          actx.beginPath(); actx.moveTo(56, 108); actx.lineTo(76, 130); actx.moveTo(152, 108); actx.lineTo(172, 130); actx.stroke();
+          actx.fillStyle = "#fff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 4.5;
+          actx.beginPath(); actx.arc(128, 166, 26, 0, Math.PI); actx.closePath(); actx.fill(); actx.stroke();
+        } else if (t === 6) {
+          // 최본부장: Tough Scar on Cheek + Dark Boss Shades + Goatee!
+          actx.strokeStyle = "#991b1b"; actx.lineWidth = 5;
+          actx.beginPath(); actx.moveTo(182, 142); actx.lineTo(206, 178); actx.moveTo(186, 158); actx.lineTo(204, 152); actx.stroke();
+          actx.fillStyle = "#090d16"; actx.strokeStyle = "#f59e0b"; actx.lineWidth = 4.5;
+          actx.beginPath(); actx.roundRect(42, 100, 76, 36, 6); actx.roundRect(138, 100, 76, 36, 6); actx.fill(); actx.stroke();
+          actx.fillStyle = "#18181b";
+          actx.beginPath(); actx.roundRect(96, 166, 64, 34, 10); actx.fill();
+          actx.strokeStyle = "#fca5a5"; actx.lineWidth = 4;
+          actx.beginPath(); actx.moveTo(108, 178); actx.lineTo(148, 178); actx.stroke();
+        } else if (t === 7) {
+          // 👑 왕대표 (CEO): Gold Monocle + Thick White Kaiser Mustache & Royal Smirk!
+          actx.strokeStyle = "#f8fafc"; actx.lineWidth = 10;
+          actx.beginPath(); actx.moveTo(48, 86); actx.lineTo(104, 98); actx.moveTo(208, 86); actx.lineTo(152, 98); actx.stroke();
+          [80, 176].forEach((ex) => {
+            actx.fillStyle = "#fff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 4.5;
+            actx.beginPath(); actx.ellipse(ex, 122, 20, 14, 0, 0, Math.PI * 2); actx.fill(); actx.stroke();
+            actx.fillStyle = "#b45309"; actx.beginPath(); actx.arc(ex, 122, 7.5, 0, Math.PI * 2); actx.fill();
+          });
+          // Golden Monocle on right eye!
+          actx.strokeStyle = "#facc15"; actx.lineWidth = 6;
+          actx.beginPath(); actx.arc(176, 122, 27, 0, Math.PI * 2); actx.stroke();
+          // Grand white Kaiser mustache!
+          actx.fillStyle = "#f8fafc"; actx.strokeStyle = "#475569"; actx.lineWidth = 3.5;
+          actx.beginPath();
+          actx.moveTo(128, 156);
+          actx.quadraticCurveTo(90, 148, 62, 168);
+          actx.quadraticCurveTo(96, 182, 128, 168);
+          actx.quadraticCurveTo(160, 182, 194, 168);
+          actx.quadraticCurveTo(166, 148, 128, 156);
+          actx.fill(); actx.stroke();
         }
-
         actx.restore();
       }
-    }
-    buildWebtoonFaceAtlas();
+    })();
 
     const atlasTex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, atlasTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlasCanvas);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlasCvs);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    // =========================================================================
-    // 4. WEBGL CEL-SHADING + TOON OUTLINE + FACE ATLAS SHADER
-    // =========================================================================
     const VS = `
-      attribute vec3 aPos;
-      attribute vec3 aNormal;
-      attribute vec3 aSmooth;
-      attribute vec2 aUV;
-      attribute vec3 aColor;
-
-      uniform mat4 uModel;
-      uniform mat4 uVP;
-      uniform mat3 uNormalMat;
-      uniform float uOutline;
-
-      varying vec3 vNormal;
-      varying vec3 vWorldPos;
-      varying vec2 vUV;
-      varying vec3 vColor;
-
+      attribute vec3 aPos; attribute vec3 aNormal; attribute vec3 aSmooth; attribute vec2 aUV; attribute vec3 aColor;
+      uniform mat4 uModel; uniform mat4 uVP; uniform mat3 uNormalMat; uniform float uOutline;
+      varying vec3 vNormal; varying vec3 vWorldPos; varying vec2 vUV; varying vec3 vColor;
       void main() {
         vec3 p = aPos + aSmooth * uOutline;
         vec4 wp = uModel * vec4(p, 1.0);
-        vWorldPos = wp.xyz;
-        vNormal = normalize(uNormalMat * aNormal);
-        vUV = aUV;
-        vColor = aColor;
+        vWorldPos = wp.xyz; vNormal = normalize(uNormalMat * aNormal); vUV = aUV; vColor = aColor;
         gl_Position = uVP * wp;
       }
     `;
-
     const FS = `
       precision mediump float;
-      varying vec3 vNormal;
-      varying vec3 vWorldPos;
-      varying vec2 vUV;
-      varying vec3 vColor;
-
-      uniform sampler2D uTex;
-      uniform vec2 uFaceOffset;
-      uniform float uUseTex;
-      uniform vec3 uTint;
-      uniform float uUnlit;
-      uniform float uAlpha;
-      uniform vec3 uCamPos;
-      uniform float uFlash;
-
+      varying vec3 vNormal; varying vec3 vWorldPos; varying vec2 vUV; varying vec3 vColor;
+      uniform sampler2D uTex; uniform vec2 uFaceOffset; uniform float uUseTex;
+      uniform vec3 uTint; uniform float uUnlit; uniform float uAlpha; uniform vec3 uCamPos; uniform float uFlash;
       void main() {
-        if (uUnlit > 0.5) {
-          gl_FragColor = vec4(uTint, uAlpha);
-          return;
-        }
+        if (uUnlit > 0.5) { gl_FragColor = vec4(uTint, uAlpha); return; }
         vec3 N = normalize(vNormal);
-        vec3 L = normalize(vec3(0.48, 0.86, 0.45));
+        vec3 L = normalize(vec3(0.46, 0.87, 0.44));
         float ndl = dot(N, L);
         float band = ndl > 0.45 ? 1.05 : (ndl > -0.02 ? 0.86 : 0.62);
-
         vec3 base = vColor * uTint;
         if (uUseTex > 0.5 && vUV.x >= 0.0) {
-          vec2 uv = uFaceOffset + vec2(vUV.x * 0.25, vUV.y * 0.5);
-          base = texture2D(uTex, uv).rgb;
+          base = texture2D(uTex, uFaceOffset + vec2(vUV.x * 0.25, vUV.y * 0.5)).rgb;
         }
-
         vec3 V = normalize(uCamPos - vWorldPos);
         float rim = pow(1.0 - max(dot(N, V), 0.0), 3.2) * 0.12;
-        vec3 col = base * band + vec3(rim);
-        col = mix(col, vec3(1.0, 0.96, 0.88), uFlash);
+        vec3 col = mix(base * band + vec3(rim), vec3(0.75, 0.95, 1.0), uFlash);
         gl_FragColor = vec4(col, uAlpha);
       }
     `;
-
-    function mkSh(t, s) { const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); return sh; }
+    function mkS(t, s) { const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); return sh; }
     const prog = gl.createProgram();
-    gl.attachShader(prog, mkSh(gl.VERTEX_SHADER, VS));
-    gl.attachShader(prog, mkSh(gl.FRAGMENT_SHADER, FS));
-    gl.linkProgram(prog);
-    gl.useProgram(prog);
+    gl.attachShader(prog, mkS(gl.VERTEX_SHADER, VS));
+    gl.attachShader(prog, mkS(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog); gl.useProgram(prog);
 
-    const loc = {
-      aPos: gl.getAttribLocation(prog, "aPos"),
-      aNormal: gl.getAttribLocation(prog, "aNormal"),
-      aSmooth: gl.getAttribLocation(prog, "aSmooth"),
-      aUV: gl.getAttribLocation(prog, "aUV"),
-      aColor: gl.getAttribLocation(prog, "aColor"),
-      uModel: gl.getUniformLocation(prog, "uModel"),
-      uVP: gl.getUniformLocation(prog, "uVP"),
-      uNormalMat: gl.getUniformLocation(prog, "uNormalMat"),
-      uOutline: gl.getUniformLocation(prog, "uOutline"),
-      uTex: gl.getUniformLocation(prog, "uTex"),
-      uFaceOffset: gl.getUniformLocation(prog, "uFaceOffset"),
-      uUseTex: gl.getUniformLocation(prog, "uUseTex"),
-      uTint: gl.getUniformLocation(prog, "uTint"),
-      uUnlit: gl.getUniformLocation(prog, "uUnlit"),
-      uAlpha: gl.getUniformLocation(prog, "uAlpha"),
-      uCamPos: gl.getUniformLocation(prog, "uCamPos"),
-      uFlash: gl.getUniformLocation(prog, "uFlash"),
-    };
-    gl.enableVertexAttribArray(loc.aPos);
-    gl.enableVertexAttribArray(loc.aNormal);
-    gl.enableVertexAttribArray(loc.aSmooth);
-    gl.enableVertexAttribArray(loc.aUV);
-    gl.enableVertexAttribArray(loc.aColor);
+    const loc = {};
+    ["aPos","aNormal","aSmooth","aUV","aColor"].forEach((k) => { loc[k] = gl.getAttribLocation(prog, k); gl.enableVertexAttribArray(loc[k]); });
+    ["uModel","uVP","uNormalMat","uOutline","uTex","uFaceOffset","uUseTex","uTint","uUnlit","uAlpha","uCamPos","uFlash"].forEach((k) => { loc[k] = gl.getUniformLocation(prog, k); });
 
     // =========================================================================
-    // 5. HYBRID MESH BUILDER (Smooth Organic SD Characters + Crisp Office Props)
+    // 4. GEOMETRY BUILDER & DISTINCT EXECUTIVE SILHOUETTES + 7-ZONE MEGA HQ
     // =========================================================================
     const rgb = (h) => [((h >> 16) & 255) / 255, ((h >> 8) & 255) / 255, (h & 255) / 255];
 
-    class GeoBuilder {
-      constructor() { this.v = []; } // 14 floats: pos(3), norm(3), smooth(3), uv(2), col(3)
-
-      tri(p1, p2, p3, n1, n2, n3, s1, s2, s3, u1, u2, u3, col) {
-        const pv = (p, n, s, u) => {
-          this.v.push(p[0],p[1],p[2], n[0],n[1],n[2], s[0],s[1],s[2], u[0],u[1], col[0],col[1],col[2]);
-        };
+    class Geo {
+      constructor() { this.v = []; }
+      tri(p1,p2,p3, n1,n2,n3, s1,s2,s3, u1,u2,u3, c) {
+        const pv = (p,n,s,u) => this.v.push(p[0],p[1],p[2], n[0],n[1],n[2], s[0],s[1],s[2], u[0],u[1], c[0],c[1],c[2]);
         pv(p1,n1,s1,u1); pv(p2,n2,s2,u2); pv(p3,n3,s3,u3);
       }
-
       addEllipsoid(rx, ry, rz, latS, lonS, col, ox=0, oy=0, oz=0, faceUV=false) {
         const mk = (i, j) => {
           const th = (i / latS) * Math.PI, ph = (j / lonS) * Math.PI * 2;
           const st = Math.sin(th), ct = Math.cos(th), sp = Math.sin(ph), cp = Math.cos(ph);
           const nx = st * sp, ny = ct, nz = st * cp;
-          const p = [nx * rx + ox, ny * ry + oy, nz * rz + oz];
           const nl = Math.hypot(nx / rx, ny / ry, nz / rz) || 1;
           const n = [(nx / rx) / nl, (ny / ry) / nl, (nz / rz) / nl];
           let uv = [-1, -1];
           if (faceUV && nz > 0.18) {
-            uv = [
-              Math.max(0.04, Math.min(0.96, nx * 0.65 + 0.5)),
-              Math.max(0.04, Math.min(0.96, 0.5 - ny * 0.65))
-            ];
+            uv = [Math.max(0.04, Math.min(0.96, nx * 0.65 + 0.5)), Math.max(0.04, Math.min(0.96, 0.5 - ny * 0.65))];
           }
-          return { p, n, uv };
+          return { p: [nx * rx + ox, ny * ry + oy, nz * rz + oz], n, uv };
         };
-        for (let i = 0; i < latS; i++) {
-          for (let j = 0; j < lonS; j++) {
-            const a=mk(i,j), b=mk(i+1,j), c=mk(i+1,j+1), d=mk(i,j+1);
-            this.tri(a.p,b.p,c.p, a.n,b.n,c.n, a.n,b.n,c.n, a.uv,b.uv,c.uv, col);
-            this.tri(a.p,c.p,d.p, a.n,c.n,d.n, a.n,c.n,d.n, a.uv,c.uv,d.uv, col);
-          }
+        for (let i = 0; i < latS; i++) for (let j = 0; j < lonS; j++) {
+          const a=mk(i,j), b=mk(i+1,j), c=mk(i+1,j+1), d=mk(i,j+1);
+          this.tri(a.p,b.p,c.p, a.n,b.n,c.n, a.n,b.n,c.n, a.uv,b.uv,c.uv, col);
+          this.tri(a.p,c.p,d.p, a.n,c.n,d.n, a.n,c.n,d.n, a.uv,c.uv,d.uv, col);
         }
         return this;
       }
-
       addLathe(prof, segs, col, ox=0, oy=0, oz=0, sx=1, sz=1) {
         for (let p = 0; p < prof.length - 1; p++) {
           const [r0, y0] = prof[p], [r1, y1] = prof[p + 1];
@@ -862,11 +794,8 @@
           for (let s = 0; s < segs; s++) {
             const a0 = (s / segs) * Math.PI * 2, a1 = ((s + 1) / segs) * Math.PI * 2;
             const mk = (r, y, a) => {
-              const ca = Math.cos(a), sa = Math.sin(a);
-              const pos = [ca * r * sx + ox, y + oy, sa * r * sz + oz];
-              const nl = Math.hypot(ca * dy, dr, sa * dy) || 1;
-              const n = [(ca * dy) / nl, dr / nl, (sa * dy) / nl];
-              return { p: pos, n, uv: [-1, -1] };
+              const ca = Math.cos(a), sa = Math.sin(a), nl = Math.hypot(ca * dy, dr, sa * dy) || 1;
+              return { p: [ca * r * sx + ox, y + oy, sa * r * sz + oz], n: [(ca * dy) / nl, dr / nl, (sa * dy) / nl], uv: [-1, -1] };
             };
             const v00=mk(r0,y0,a0), v01=mk(r0,y0,a1), v10=mk(r1,y1,a0), v11=mk(r1,y1,a1);
             this.tri(v00.p,v11.p,v01.p, v00.n,v11.n,v01.n, v00.n,v11.n,v01.n, v00.uv,v11.uv,v01.uv, col);
@@ -875,29 +804,20 @@
         }
         return this;
       }
-
       addBox(w, h, d, col, ox=0, oy=0, oz=0) {
         const hx=w*0.5, hy=h*0.5, hz=d*0.5;
-        const raw = [
-          [-hx,-hy,-hz],[hx,-hy,-hz],[hx,hy,-hz],[-hx,hy,-hz],
-          [-hx,-hy,hz],[hx,-hy,hz],[hx,hy,hz],[-hx,hy,hz]
-        ];
+        const raw = [[-hx,-hy,-hz],[hx,-hy,-hz],[hx,hy,-hz],[-hx,hy,-hz],[-hx,-hy,hz],[hx,-hy,hz],[hx,hy,hz],[-hx,hy,hz]];
         const sm = raw.map(([x,y,z]) => { const l=Math.hypot(x,y,z)||1; return [x/l,y/l,z/l]; });
         const wc = raw.map(([x,y,z]) => [x+ox,y+oy,z+oz]);
-        const faces = [
-          { idx:[4,5,6,7], n:[0,0,1] }, { idx:[1,0,3,2], n:[0,0,-1] },
-          { idx:[3,7,6,2], n:[0,1,0] }, { idx:[0,1,5,4], n:[0,-1,0] },
-          { idx:[5,1,2,6], n:[1,0,0] }, { idx:[0,4,7,3], n:[-1,0,0] }
-        ];
+        const faces = [{i:[4,5,6,7],n:[0,0,1]},{i:[1,0,3,2],n:[0,0,-1]},{i:[3,7,6,2],n:[0,1,0]},{i:[0,1,5,4],n:[0,-1,0]},{i:[5,1,2,6],n:[1,0,0]},{i:[0,4,7,3],n:[-1,0,0]}];
         const u = [-1,-1];
         for (const f of faces) {
-          const [a,b,c,di] = f.idx;
+          const [a,b,c,di] = f.i;
           this.tri(wc[a],wc[b],wc[c], f.n,f.n,f.n, sm[a],sm[b],sm[c], u,u,u, col);
           this.tri(wc[a],wc[c],wc[di], f.n,f.n,f.n, sm[a],sm[c],sm[di], u,u,u, col);
         }
         return this;
       }
-
       build() {
         const vbo = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
@@ -906,1076 +826,1204 @@
       }
     }
 
-    // =========================================================================
-    // 6. CREATE EXPANDED 4-ZONE OFFICE & WEBTOON SD CHARACTER MESHES
-    // =========================================================================
     const M = {};
-    const MAP_X = 21.5, MAP_Z = 16.5;
+    const MAP_X = 36.5, MAP_Z = 28.5; // Massive 74m x 58m 7-Zone Corporate HQ!
 
-    // Expanded 4-Zone HQ Static Floor & Partitions (44m x 34m!)
+    // Build 7-Zone Mega HQ Static Geometry
     {
-      const g = new GeoBuilder();
-      // Base tiled carpet across entire 44x34 floor
-      for (let gx = -11; gx < 11; gx++) {
-        for (let gz = -8; gz < 8; gz++) {
-          const x = (gx + 0.5) * 2.0, z = (gz + 0.5) * 2.06;
-          let c = (gx + gz) % 2 === 0 ? rgb(0x273043) : rgb(0x222a3b);
-          // Zone 2: NW Breakroom Cafe checkered warm tile
-          if (x < -3.8 && z < -2.0) {
-            c = (gx + gz) % 2 === 0 ? rgb(0x3a4252) : rgb(0x2e3543);
-          }
-          // Zone 3: NE VIP CEO Suite plush burgundy carpet!
-          else if (x > 4.2 && z < -2.0) {
-            c = (gx + gz) % 2 === 0 ? rgb(0x4c1d2e) : rgb(0x3f1625);
-          }
-          // Zone 4: SE Executive Boardroom deep royal navy carpet!
-          else if (x > 6.2 && z > -1.0) {
-            c = (gx + gz) % 2 === 0 ? rgb(0x1d2d4e) : rgb(0x182542);
-          }
-          g.addBox(2.0, 0.12, 2.06, c, x, -0.06, z);
+      const g = new Geo();
+      for (let gx = -15; gx < 15; gx++) {
+        for (let gz = -12; gz < 12; gz++) {
+          const x = (gx + 0.5) * 2.5, z = (gz + 0.5) * 2.45;
+          let c = (gx + gz) % 2 === 0 ? rgb(0x252e42) : rgb(0x20283a);
+          // 1. NW Cafeteria & Snack Lounge
+          if (x < -10 && z < -4) c = (gx + gz) % 2 === 0 ? rgb(0x3b4354) : rgb(0x2f3646);
+          // 2. North-Center High-Voltage Server Room (Cyan/Dark Tech Grid!)
+          else if (x >= -10 && x <= 10 && z < -10) c = (gx + gz) % 2 === 0 ? rgb(0x112438) : rgb(0x0d1b2a);
+          // 3. NE Royal CEO Penthouse (Burgundy & Gold!)
+          else if (x > 10 && z < -4) c = (gx + gz) % 2 === 0 ? rgb(0x52182b) : rgb(0x421222);
+          // 4. SE Grand Boardroom (Deep Navy!)
+          else if (x > 10 && z > 4) c = (gx + gz) % 2 === 0 ? rgb(0x1b2b52) : rgb(0x152242);
+          // 5. South-Center Gym & Putting Green (Turf Green!)
+          else if (x >= -8 && x <= 10 && z > 12) c = (gx + gz) % 2 === 0 ? rgb(0x154734) : rgb(0x113b2b);
+          // 6. Central Marble Lobby
+          else if (Math.abs(x) <= 9 && Math.abs(z) <= 8) c = (gx + gz) % 2 === 0 ? rgb(0x333d52) : rgb(0x2c3548);
+          g.addBox(2.5, 0.12, 2.45, c, x, -0.06, z);
         }
       }
-      // VIP Gold Carpet Trim
-      g.addBox(16.6, 0.02, 0.18, rgb(0xf59e0b), 12.8, 0.01, -2.2);
-      g.addBox(0.18, 0.02, 14.0, rgb(0xf59e0b), 4.5, 0.01, -9.2);
+      // Gold VIP Border & Turf Putting Hole Strip
+      g.addBox(26.0, 0.03, 0.24, rgb(0xfacc15), 24.0, 0.015, -4.2);
+      g.addBox(0.24, 0.03, 25.0, rgb(0xfacc15), 10.5, 0.015, -16.8);
 
-      // Perimeter Back Wall + Large Panoramic Windows
-      g.addBox(44.4, 3.4, 0.45, rgb(0xdbe4f0), 0, 1.7, -16.7);
-      g.addBox(44.4, 0.5, 0.50, rgb(0x334155), 0, 0.25, -16.65);
-      for (let wx = -17; wx <= 17; wx += 6.8) {
-        g.addBox(4.6, 1.85, 0.48, rgb(0x7dd3fc), wx, 1.95, -16.68);
+      // Back Panoramic Wall + Windows
+      g.addBox(75.5, 3.8, 0.5, rgb(0xdbe4f0), 0, 1.9, -29.2);
+      for (let wx = -32; wx <= 32; wx += 8.0) {
+        g.addBox(5.6, 2.1, 0.54, rgb(0x7dd3fc), wx, 2.15, -29.18);
       }
-      // Side Perimeter Walls
-      g.addBox(0.45, 2.6, 33.6, rgb(0x475569), -22.0, 1.3, 0);
-      g.addBox(0.45, 2.6, 33.6, rgb(0x475569),  22.0, 1.3, 0);
+      // Side Outer Walls
+      g.addBox(0.5, 2.8, 58.5, rgb(0x475569), -37.5, 1.4, 0);
+      g.addBox(0.5, 2.8, 58.5, rgb(0x475569),  37.5, 1.4, 0);
 
-      // Sleek Waist-High Internal Zone Partitions (1.35m tall so 3D camera NEVER gets blocked!)
-      // Breakroom divider
-      g.addBox(11.0, 1.35, 0.28, rgb(0x64748b), -16.2, 0.68, -2.2);
-      g.addBox(0.28, 1.35, 9.5, rgb(0x64748b), -4.0, 0.68, -11.8);
-      // VIP CEO Room divider (wood & gold)
-      g.addBox(0.30, 1.45, 9.5, rgb(0x78350f), 4.5, 0.72, -11.8);
-      g.addBox(10.5, 1.45, 0.30, rgb(0x78350f), 16.5, 0.72, -2.2);
-      // Boardroom glass-frame divider
-      g.addBox(0.26, 1.30, 10.5, rgb(0x3b82f6), 6.4, 0.65, 10.8);
-      g.addBox(9.5, 1.30, 0.26, rgb(0x3b82f6), 17.0, 0.65, -0.8);
+      // Waist-High Sleek Zone Partitions (with generous open archways!)
+      g.addBox(18.0, 1.35, 0.30, rgb(0x64748b), -27.5, 0.68, -4.2); // Cafe wall
+      g.addBox(0.30, 1.35, 14.0, rgb(0x0ea5e9), -10.2, 0.68, -21.5); // Server room L
+      g.addBox(0.30, 1.35, 14.0, rgb(0x0ea5e9),  10.2, 0.68, -21.5); // Server room R
+      g.addBox(17.5, 1.45, 0.32, rgb(0x78350f),  27.8, 0.72, -4.2); // CEO suite wall
+      g.addBox(17.5, 1.30, 0.30, rgb(0x3b82f6),  27.8, 0.65,  4.5); // Boardroom wall
 
-      M.officeHQ = g.build();
+      M.megaHQ = g.build();
     }
 
-    // --- WEBTOON SD CHARACTER PARTS (Smooth Organic Curved Meshes!) ---
-    // Shared UV-Mapped Webtoon Head
-    M.sdHead = new GeoBuilder()
-      .addEllipsoid(0.44, 0.41, 0.40, 18, 22, rgb(0xfdba8c), 0, 0.38, 0, true)
+    // --- SHARED HEAD & LIMBS ---
+    M.sdHead = new Geo()
+      .addEllipsoid(0.44, 0.41, 0.40, 16, 20, rgb(0xfdba8c), 0, 0.38, 0, true)
       .addEllipsoid(0.08, 0.10, 0.06, 6, 8, rgb(0xfdba8c), -0.43, 0.36, 0)
       .addEllipsoid(0.08, 0.10, 0.06, 6, 8, rgb(0xfdba8c),  0.43, 0.36, 0)
       .build();
 
-    // Hair variants!
-    M.hairHero = new GeoBuilder()
-      .addEllipsoid(0.47, 0.24, 0.44, 12, 16, rgb(0x0f172a), 0, 0.59, -0.04)
-      .addEllipsoid(0.32, 0.12, 0.24, 8, 10, rgb(0x0f172a), 0.12, 0.72, 0.18)
+    M.limbArm = new Geo()
+      .addLathe([[0.085,-0.36],[0.105,0],[0,0.03]], 10, rgb(0xffffff))
+      .addEllipsoid(0.125, 0.125, 0.125, 8, 10, rgb(0xfdba8c), 0, -0.39, 0.02)
+      .build();
+    M.limbLeg = new Geo()
+      .addLathe([[0.09,-0.40],[0.12,0],[0,0.02]], 10, rgb(0x1e293b))
+      .addEllipsoid(0.11, 0.075, 0.17, 8, 10, rgb(0x090d16), 0, -0.41, 0.05)
       .build();
 
-    M.hairBossBald = new GeoBuilder()
-      // Horseshoe side hair + shiny bald crown!
-      .addEllipsoid(0.48, 0.18, 0.44, 12, 16, rgb(0x27272a), 0, 0.48, -0.08)
-      .addEllipsoid(0.36, 0.14, 0.34, 10, 14, rgb(0xfdba8c), 0, 0.66, 0.04)
+    // --- PLAYER / PEER / COWORKER COSTUME ---
+    M.torsoWorker = new Geo()
+      .addLathe([[0,0],[0.30,0.03],[0.34,0.36],[0.27,0.66],[0,0.70]], 16, rgb(0xffffff), 0, 0, 0, 1.05, 0.78)
+      .addLathe([[0.02,0],[0.07,0.08],[0.04,0.34],[0,0.36]], 8, rgb(0x2563eb), 0, 0.24, 0.24, 1, 0.4)
+      .build();
+    M.hairHero = new Geo()
+      .addEllipsoid(0.47, 0.24, 0.44, 12, 16, rgb(0x1e293b), 0, 0.59, -0.04)
+      .addEllipsoid(0.32, 0.12, 0.24, 8, 10, rgb(0x1e293b), 0.12, 0.72, 0.18)
       .build();
 
-    M.hairCoworker = new GeoBuilder()
-      .addEllipsoid(0.46, 0.25, 0.44, 12, 16, rgb(0x3f2718), 0, 0.58, -0.03)
+    // --- 4 VISUALLY UNMISTAKABLE EXECUTIVE COSTUMES & HEADGEAR! ---
+    // 1) 👔 김부장: Pot-belly Grey Suit + Red Tie + Shiny Bald Crown!
+    M.torsoBujang = new Geo()
+      .addLathe([[0,0],[0.38,0.04],[0.47,0.32],[0.35,0.68],[0,0.72]], 16, rgb(0x475569), 0, 0, 0, 1.06, 0.96)
+      .addEllipsoid(0.26, 0.26, 0.13, 10, 12, rgb(0xf8fafc), 0, 0.38, 0.36)
+      .addLathe([[0.02,0],[0.08,0.09],[0.05,0.38],[0,0.40]], 8, rgb(0xef4444), 0, 0.24, 0.43, 1, 0.4)
+      .build();
+    M.hatBujangBald = new Geo()
+      .addEllipsoid(0.48, 0.18, 0.44, 10, 14, rgb(0x27272a), 0, 0.46, -0.08)
+      .addEllipsoid(0.35, 0.14, 0.33, 10, 14, rgb(0xfdba8c), 0, 0.65, 0.04)
       .build();
 
-    M.hairCapGuard = new GeoBuilder()
-      .addEllipsoid(0.47, 0.22, 0.45, 12, 16, rgb(0x1e3a8a), 0, 0.60, 0)
-      .addEllipsoid(0.36, 0.05, 0.26, 8, 12, rgb(0x0f172a), 0, 0.52, 0.32) // Cap visor
+    // 2) ⛳ 박상무 (Golf Mania Executive): Bright Neon Lime V-Neck Vest + White Sun-Visor Cap + Pink Scarf!
+    M.torsoSangmu = new Geo()
+      .addLathe([[0,0],[0.33,0.04],[0.38,0.42],[0.32,0.70],[0,0.74]], 16, rgb(0x84cc16), 0, 0, 0, 1.08, 0.84)
+      // Preppy pink shoulder sweater/scarf!
+      .addEllipsoid(0.36, 0.11, 0.28, 10, 12, rgb(0xec4899), 0, 0.68, -0.02)
+      .addBox(0.12, 0.28, 0.08, rgb(0xec4899), -0.14, 0.55, 0.26)
+      .addBox(0.12, 0.28, 0.08, rgb(0xec4899),  0.14, 0.55, 0.26)
+      .build();
+    M.hatSangmuVisor = new Geo()
+      .addEllipsoid(0.46, 0.20, 0.44, 10, 14, rgb(0x78350f), 0, 0.58, -0.04) // Styled brown hair
+      .addLathe([[0.46, 0.46], [0.46, 0.58]], 16, rgb(0xffffff)) // White golf visor band!
+      .addEllipsoid(0.38, 0.04, 0.28, 8, 12, rgb(0xffffff), 0, 0.48, 0.36) // Visor brim!
       .build();
 
-    // Torso meshes (Smooth tapered blazer/shirt!)
-    M.torsoShirt = new GeoBuilder()
-      .addLathe([[0.0, 0.0], [0.30, 0.03], [0.34, 0.36], [0.27, 0.66], [0.0, 0.70]], 16, rgb(0xf8fafc), 0, 0.0, 0, 1.05, 0.78)
-      .addLathe([[0.02, 0.0], [0.07, 0.08], [0.04, 0.34], [0.0, 0.36]], 8, rgb(0x2563eb), 0, 0.24, 0.24, 1.0, 0.4)
+    // 3) 🐗 최본부장 (Hulk Muscle Tank Division Head): Huge 1.48x Broad Purple Suit + Gold Chain + Silver Pompadour!
+    M.torsoBonbujang = new Geo()
+      .addLathe([[0,0],[0.30,0.04],[0.42,0.40],[0.54,0.68],[0,0.76]], 18, rgb(0x581c87), 0, 0, 0, 1.38, 0.92)
+      // Heavy Gold Chain Necklace!
+      .addEllipsoid(0.28, 0.16, 0.12, 10, 12, rgb(0xfacc15), 0, 0.58, 0.34)
+      .addBox(0.14, 0.14, 0.08, rgb(0xfde047), 0, 0.40, 0.40) // Gold medallion!
+      .build();
+    M.hatBonbujangPompadour = new Geo()
+      .addEllipsoid(0.48, 0.26, 0.46, 12, 16, rgb(0xe2e8f0), 0, 0.62, -0.04)
+      .addEllipsoid(0.30, 0.22, 0.34, 10, 14, rgb(0xf8fafc), 0, 0.78, 0.22) // Giant silver pompadour!
       .build();
 
-    M.torsoBoss = new GeoBuilder()
-      // Plump rounded executive belly suit!
-      .addLathe([[0.0, 0.0], [0.38, 0.04], [0.46, 0.34], [0.36, 0.68], [0.0, 0.72]], 18, rgb(0xffffff), 0, 0.0, 0, 1.08, 0.92)
-      .addEllipsoid(0.24, 0.26, 0.12, 10, 12, rgb(0xf8fafc), 0, 0.42, 0.34)
-      .addLathe([[0.02, 0.0], [0.08, 0.09], [0.05, 0.38], [0.0, 0.40]], 8, rgb(0xef4444), 0, 0.24, 0.41, 1.0, 0.4)
+    // 4) 👑 왕대표 (CEO Final Boss): Pure White & Gold Emperor Suit + Crimson Royal Cape + 3D Golden Crown!
+    M.torsoCEO = new Geo()
+      .addLathe([[0,0],[0.38,0.04],[0.44,0.40],[0.40,0.72],[0,0.78]], 18, rgb(0xf8fafc), 0, 0, 0, 1.16, 0.90)
+      // Gold Epaulettes on shoulders!
+      .addBox(0.24, 0.10, 0.24, rgb(0xfacc15), -0.42, 0.70, 0)
+      .addBox(0.24, 0.10, 0.24, rgb(0xfacc15),  0.42, 0.70, 0)
+      // Royal Red Velvet Cape flowing down back!
+      .addBox(0.92, 0.88, 0.10, rgb(0xb91c1c), 0, 0.30, -0.36)
+      .addBox(0.96, 0.12, 0.14, rgb(0xfef08a), 0, 0.70, -0.35) // Fur collar trim!
+      .addLathe([[0.02,0],[0.09,0.10],[0.06,0.42],[0,0.44]], 8, rgb(0xfacc15), 0, 0.24, 0.36, 1, 0.4)
+      .build();
+    M.hatCEOCrown = new Geo()
+      .addEllipsoid(0.47, 0.22, 0.45, 12, 16, rgb(0xf1f5f9), 0, 0.56, -0.04) // White hair
+      // Shiny 3D Golden Crown + Ruby Gems!
+      .addLathe([[0.28, 0.70], [0.33, 0.94], [0.24, 0.94], [0.0, 0.78]], 8, rgb(0xfacc15))
+      .addEllipsoid(0.07, 0.07, 0.07, 6, 8, rgb(0xef4444), 0, 0.82, 0.31)
       .build();
 
-    M.limbArm = new GeoBuilder()
-      .addLathe([[0.08, -0.36], [0.10, 0.0], [0.0, 0.03]], 10, rgb(0xffffff))
-      .addEllipsoid(0.12, 0.12, 0.12, 8, 10, rgb(0xfdba8c), 0, -0.39, 0.02)
+    // --- ENVIRONMENTAL GIMMICKS & WEAPONS MESHES ---
+    M.desk = new Geo().addBox(2.1,0.11,1.02,rgb(0xd4955e),0,0.75,0).addBox(0.10,0.74,0.94,rgb(0x475569),-0.95,0.37,0).addBox(0.10,0.74,0.94,rgb(0x475569),0.95,0.37,0).build();
+    M.serverRack = new Geo()
+      .addBox(1.15, 2.25, 0.95, rgb(0x0f172a), 0, 1.12, 0)
+      .addBox(0.95, 0.14, 0.98, rgb(0x06b6d4), 0, 1.85, 0) // Glowing high-voltage neon strips!
+      .addBox(0.95, 0.14, 0.98, rgb(0x38bdf8), 0, 1.35, 0)
+      .addBox(0.95, 0.14, 0.98, rgb(0x22d3ee), 0, 0.85, 0)
       .build();
-
-    M.limbLeg = new GeoBuilder()
-      .addLathe([[0.085, -0.40], [0.115, 0.0], [0.0, 0.02]], 10, rgb(0x1e293b))
-      .addEllipsoid(0.105, 0.075, 0.17, 8, 10, rgb(0x090d16), 0, -0.41, 0.05)
+    M.copier = new Geo()
+      .addBox(1.25, 1.05, 0.95, rgb(0xe2e8f0), 0, 0.52, 0)
+      .addBox(1.05, 0.08, 0.75, rgb(0x4ade80), 0, 1.06, 0) // Green scanner glass!
       .build();
-
-    // --- 10 THROWABLE / SWINGABLE OFFICE WEAPONS & FURNITURE MESHES! ---
-    M.desk = new GeoBuilder()
-      .addBox(2.1, 0.11, 1.02, rgb(0xd4955e), 0, 0.75, 0)
-      .addBox(0.10, 0.74, 0.94, rgb(0x475569), -0.95, 0.37, 0)
-      .addBox(0.10, 0.74, 0.94, rgb(0x475569),  0.95, 0.37, 0)
+    M.goldenSafe = new Geo()
+      .addBox(1.55, 1.65, 1.25, rgb(0xf59e0b), 0, 0.82, 0)
+      .addBox(1.25, 1.35, 0.12, rgb(0xfde047), 0, 0.82, 0.62)
+      .addEllipsoid(0.24, 0.24, 0.08, 8, 12, rgb(0x1e293b), 0, 0.82, 0.70) // Vault wheel!
       .build();
+    M.vending = new Geo().addBox(1.3, 2.1, 0.9, rgb(0xdc2626), 0, 1.05, 0).addBox(1.0, 1.1, 0.93, rgb(0xfef08a), 0, 1.3, 0.02).build();
 
-    M.vipDesk = new GeoBuilder()
-      .addBox(2.9, 0.14, 1.25, rgb(0x7c2d12), 0, 0.78, 0)
-      .addBox(2.7, 0.72, 1.05, rgb(0x451a03), 0, 0.38, 0)
-      .addBox(2.74, 0.08, 1.09, rgb(0xfbbf24), 0, 0.68, 0)
-      .build();
+    // Weapons & Rideable Chairs!
+    M.chair = new Geo()
+      .addBox(0.64,0.10,0.64,rgb(0x2563eb),0,0.45,0).addBox(0.60,0.56,0.10,rgb(0x1d4ed8),0,0.76,-0.26)
+      .addLathe([[0.04,0.06],[0.04,0.44]],6,rgb(0x334155))
+      .addBox(0.64,0.05,0.10,rgb(0x1e293b),0,0.05,0).addBox(0.10,0.05,0.64,rgb(0x1e293b),0,0.05,0).build();
+    M.monitor = new Geo().addBox(0.76,0.48,0.08,rgb(0x1e293b),0,0.35,0).addBox(0.68,0.40,0.09,rgb(0x38bdf8),0,0.35,0.01).addBox(0.32,0.05,0.22,rgb(0x334155),0,0.025,0).build();
+    M.keyboard = new Geo().addBox(0.56,0.05,0.23,rgb(0xf1f5f9),0,0.025,0).addBox(0.50,0.06,0.17,rgb(0x38bdf8),0,0.035,0).build();
+    M.extinguisher = new Geo().addLathe([[0,0],[0.15,0.02],[0.15,0.54],[0.06,0.64],[0,0.66]],12,rgb(0xdc2626)).addBox(0.16,0.07,0.06,rgb(0x111827),0.03,0.68,0).build();
+    M.golfClub = new Geo().addLathe([[0.024,0],[0.028,1.18]],8,rgb(0xfacc15)).addBox(0.24,0.11,0.09,rgb(0xfde047),0.10,0.05,0).build();
+    M.dumbbell = new Geo()
+      .addBox(0.64,0.07,0.07,rgb(0x94a3b8),0,0.20,0)
+      .addBox(0.14,0.36,0.36,rgb(0x1e293b),-0.26,0.20,0)
+      .addBox(0.14,0.36,0.36,rgb(0x1e293b), 0.26,0.20,0).build();
+    M.waterJug = new Geo().addLathe([[0,0],[0.24,0.03],[0.25,0.52],[0.09,0.64],[0.09,0.74],[0,0.74]],12,rgb(0x60a5fa)).build();
+    M.trophy = new Geo().addBox(0.28,0.12,0.28,rgb(0x451a03),0,0.06,0).addLathe([[0.05,0.12],[0.04,0.32],[0.22,0.58],[0.24,0.74],[0,0.74]],12,rgb(0xfacc15)).build();
 
-    M.boardTable = new GeoBuilder()
-      .addBox(2.4, 0.12, 5.2, rgb(0x9a6b4c), 0, 0.76, 0)
-      .addBox(0.25, 0.74, 0.25, rgb(0x334155), 0, 0.37, -1.8)
-      .addBox(0.25, 0.74, 0.25, rgb(0x334155), 0, 0.37,  1.8)
-      .build();
-
-    M.vending = new GeoBuilder()
-      .addBox(1.25, 2.05, 0.85, rgb(0xdc2626), 0, 1.02, 0)
-      .addBox(0.95, 1.15, 0.88, rgb(0xfef08a), -0.05, 1.25, 0.02)
-      .build();
-
-    // Weapons!
-    M.chair = new GeoBuilder()
-      .addBox(0.60, 0.10, 0.60, rgb(0x2563eb), 0, 0.45, 0)
-      .addBox(0.56, 0.54, 0.10, rgb(0x1d4ed8), 0, 0.76, -0.25)
-      .addLathe([[0.04, 0.06], [0.04, 0.44]], 6, rgb(0x334155))
-      .addBox(0.60, 0.05, 0.09, rgb(0x1e293b), 0, 0.05, 0)
-      .addBox(0.09, 0.05, 0.60, rgb(0x1e293b), 0, 0.05, 0)
-      .build();
-
-    M.monitor = new GeoBuilder()
-      .addBox(0.76, 0.48, 0.07, rgb(0x1e293b), 0, 0.35, 0)
-      .addBox(0.68, 0.40, 0.08, rgb(0x38bdf8), 0, 0.35, 0.01)
-      .addBox(0.10, 0.18, 0.07, rgb(0x334155), 0, 0.10, 0)
-      .addBox(0.32, 0.04, 0.22, rgb(0x334155), 0, 0.02, 0)
-      .build();
-
-    M.keyboard = new GeoBuilder()
-      .addBox(0.56, 0.05, 0.23, rgb(0xf1f5f9), 0, 0.025, 0)
-      .addBox(0.50, 0.06, 0.17, rgb(0x38bdf8), 0, 0.035, 0)
-      .build();
-
-    M.coffeePot = new GeoBuilder()
-      .addLathe([[0.0,0],[0.16,0.02],[0.18,0.18],[0.13,0.34],[0.15,0.38],[0.0,0.38]], 12, rgb(0x451a03))
-      .addBox(0.06, 0.22, 0.10, rgb(0x111827), 0.18, 0.20, 0)
-      .build();
-
-    M.extinguisher = new GeoBuilder()
-      .addLathe([[0.0,0],[0.14,0.02],[0.14,0.52],[0.06,0.62],[0.0,0.64]], 12, rgb(0xdc2626))
-      .addBox(0.16, 0.07, 0.06, rgb(0x111827), 0.03, 0.66, 0)
-      .build();
-
-    M.golfClub = new GeoBuilder()
-      .addLathe([[0.022, 0], [0.026, 1.15]], 8, rgb(0xfacc15))
-      .addBox(0.22, 0.10, 0.08, rgb(0xfde047), 0.09, 0.05, 0)
-      .addLathe([[0.034, 0.85], [0.034, 1.16]], 8, rgb(0x111827))
-      .build();
-
-    M.printer = new GeoBuilder()
-      .addBox(0.82, 0.56, 0.72, rgb(0xe2e8f0), 0, 0.28, 0)
-      .addBox(0.66, 0.08, 0.52, rgb(0x334155), 0, 0.57, 0)
-      .addBox(0.42, 0.04, 0.30, rgb(0xffffff), 0, 0.61, 0.12)
-      .build();
-
-    M.waterJug = new GeoBuilder()
-      .addLathe([[0.0,0],[0.23,0.03],[0.24,0.50],[0.09,0.62],[0.09,0.72],[0.0,0.72]], 14, rgb(0x60a5fa))
-      .build();
-
-    M.plant = new GeoBuilder()
-      .addLathe([[0.0,0],[0.19,0.02],[0.25,0.42],[0.0,0.43]], 10, rgb(0xd97706))
-      .addEllipsoid(0.38, 0.26, 0.38, 8, 10, rgb(0x22c55e), 0, 0.68, 0)
-      .build();
-
-    M.trophy = new GeoBuilder()
-      .addBox(0.26, 0.12, 0.26, rgb(0x451a03), 0, 0.06, 0)
-      .addLathe([[0.05,0.12],[0.04,0.30],[0.20,0.56],[0.22,0.72],[0.0,0.72]], 12, rgb(0xfacc15))
-      .build();
-
-    M.paper = new GeoBuilder().addBox(0.26, 0.015, 0.36, rgb(0xffffff)).build();
-    M.spark = new GeoBuilder().addEllipsoid(0.10, 0.10, 0.10, 6, 8, rgb(0xfde047)).build();
-    M.shadow = new GeoBuilder().addLathe([[0.5, 0], [0.0, 0.005]], 14, rgb(0x060911)).build();
-    M.ring = new GeoBuilder().addLathe([[0.58, 0], [0.68, 0.01], [0.58, 0.02]], 18, rgb(0x38bdf8)).build();
+    M.paper = new Geo().addBox(0.28, 0.018, 0.38, rgb(0xffffff)).build();
+    M.cashBill = new Geo().addBox(0.32, 0.02, 0.16, rgb(0x4ade80)).build();
+    M.spark = new Geo().addEllipsoid(0.12, 0.12, 0.12, 6, 8, rgb(0xfde047)).build();
+    M.shadow = new Geo().addLathe([[0.5,0],[0,0.005]], 12, rgb(0x050811)).build();
+    M.ring = new Geo().addLathe([[0.62,0],[0.74,0.01],[0.62,0.02]], 18, rgb(0x38bdf8)).build();
 
     // =========================================================================
-    // 7. POPULATE WORLD: MAIN BOSS, SUB-MANAGERS, 9 COWORKERS, GUARDS, 30+ PROPS
+    // 5. REAL ZERO-SETUP MULTIPLAYER ENGINE (Pure MQTT-over-WSS + BroadcastChannel!)
     // =========================================================================
-    const BOSS_ROSTER = [
+    const urlParams = new URLSearchParams(location.search);
+    let roomCode = (urlParams.get("room") || "OPEN").toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 12) || "OPEN";
+    const myId = "p_" + Math.random().toString(36).slice(2, 9);
+    const defaultNames = ["열혈사원", "분노대리", "칼퇴주임", "사표장전", "막내인턴", "노조에이스"];
+    let myNick = localStorage.getItem("ob3d_nick") || (defaultNames[(Math.random() * defaultNames.length) | 0] + ((Math.random() * 90 + 10) | 0));
+    const peerPalette = [[0.22,0.65,0.98], [0.20,0.85,0.55], [0.98,0.55,0.22], [0.85,0.40,0.98], [0.98,0.82,0.22]];
+    const mySuitTint = peerPalette[(Math.random() * peerPalette.length) | 0];
+
+    document.getElementById("inputNick").value = myNick;
+    document.getElementById("inputRoom").value = roomCode;
+
+    const remotePlayers = new Map(); // id -> { name, suit, x, y, z, tx, tz, yaw, atkTimer, riding, pwr, emote, emoteT, lastSeen }
+    let bcChannel = null;
+    try {
+      bcChannel = new BroadcastChannel("ob3d_room_" + roomCode);
+      bcChannel.onmessage = (ev) => onNetPacket(ev.data);
+    } catch (_) {}
+
+    // Lightweight Binary MQTT v3.1.1 over WSS Client (Connects globally with 0 external libs!)
+    const BROKERS = ["wss://broker.emqx.io:8084/mqtt", "wss://broker.hivemq.com:8884/mqtt"];
+    let brokerIdx = 0, mqttWs = null, mqttConnected = false, pingInterval = null;
+
+    function mqttVarLen(n) {
+      const out = [];
+      do { let b = n % 128; n = Math.floor(n / 128); if (n > 0) b |= 128; out.push(b); } while (n > 0);
+      return out;
+    }
+    function mqttUtf8(str) {
+      const b = new TextEncoder().encode(str);
+      return [(b.length >> 8) & 255, b.length & 255, ...b];
+    }
+    function getTopic() { return `kairen/ob3d_v3/${roomCode}`; }
+
+    function connectMqtt() {
+      if (mqttWs) { try { mqttWs.close(); } catch (_) {} }
+      clearInterval(pingInterval);
+      mqttConnected = false;
+      const url = BROKERS[brokerIdx % BROKERS.length];
+      try {
+        const ws = new WebSocket(url, "mqtt");
+        ws.binaryType = "arraybuffer";
+        mqttWs = ws;
+
+        ws.onopen = () => {
+          const vh = [...mqttUtf8("MQTT"), 4, 2, 0, 30];
+          const pl = mqttUtf8(myId + "_" + ((Math.random() * 999) | 0));
+          ws.send(new Uint8Array([0x10, ...mqttVarLen(vh.length + pl.length), ...vh, ...pl]));
+        };
+
+        ws.onmessage = (ev) => {
+          const u8 = new Uint8Array(ev.data);
+          const type = u8[0] & 0xF0;
+          if (type === 0x20) {
+            // CONNACK -> Subscribe to room topic!
+            mqttConnected = true;
+            document.getElementById("netStatusSub").textContent = `● 실시간 서버 연결됨 (방: ${roomCode})`;
+            document.getElementById("multiDot").style.background = "#4ade80";
+            const subBody = [0, 1, ...mqttUtf8(getTopic()), 0];
+            ws.send(new Uint8Array([0x82, ...mqttVarLen(subBody.length), ...subBody]));
+            pingInterval = setInterval(() => {
+              if (ws.readyState === 1) ws.send(new Uint8Array([0xC0, 0x00]));
+            }, 18000);
+          } else if (type === 0x30) {
+            // PUBLISH received!
+            let mult = 1, rem = 0, idx = 1, b;
+            do { b = u8[idx++]; rem += (b & 127) * mult; mult *= 128; } while (b & 128);
+            const tLen = (u8[idx] << 8) | u8[idx + 1];
+            idx += 2 + tLen;
+            if (((u8[0] >> 1) & 3) > 0) idx += 2;
+            const jsonStr = new TextDecoder().decode(u8.subarray(idx));
+            try { onNetPacket(JSON.parse(jsonStr)); } catch (_) {}
+          }
+        };
+
+        ws.onclose = () => {
+          mqttConnected = false;
+          document.getElementById("multiDot").style.background = "#fbbf24";
+          brokerIdx++;
+          setTimeout(connectMqtt, 3000);
+        };
+        ws.onerror = () => { try { ws.close(); } catch (_) {} };
+      } catch (_) {}
+    }
+
+    function sendNetPacket(obj) {
+      obj.sid = myId;
+      if (bcChannel) { try { bcChannel.postMessage(obj); } catch (_) {} }
+      if (mqttWs && mqttConnected && mqttWs.readyState === 1) {
+        const tBytes = mqttUtf8(getTopic());
+        const pBytes = new TextEncoder().encode(JSON.stringify(obj));
+        mqttWs.send(new Uint8Array([0x30, ...mqttVarLen(tBytes.length + pBytes.length), ...tBytes, ...pBytes]));
+      }
+    }
+
+    function onNetPacket(msg) {
+      if (!msg || msg.sid === myId) return;
+      if (msg.t === "state") {
+        let rp = remotePlayers.get(msg.sid);
+        if (!rp) {
+          rp = {
+            id: msg.sid, name: msg.n || "동료", suit: msg.c || [0.3, 0.7, 1.0],
+            x: msg.x, y: msg.y || 0, z: msg.z, tx: msg.x, tz: msg.z,
+            yaw: msg.yw || 0, walk: 0, atkTimer: 0, riding: false, pwr: 1, emote: "", emoteT: 0, lastSeen: performance.now()
+          };
+          remotePlayers.set(msg.sid, rp);
+          popText(msg.x, 2.3, msg.z, `👥 [${rp.name}] 합류!`, "#a5f3fc", 20);
+        }
+        rp.name = msg.n || rp.name;
+        rp.tx = msg.x; rp.y = msg.y || 0; rp.tz = msg.z;
+        rp.yaw = msg.yw; rp.riding = !!msg.rd; rp.pwr = msg.pw || 1;
+        if (msg.atk) rp.atkTimer = 0.24;
+        rp.lastSeen = performance.now();
+      } else if (msg.t === "hit" && bosses[msg.bi]) {
+        const b = bosses[msg.bi];
+        b.hp = Math.max(0, b.hp - msg.dmg);
+        b.vx = msg.vx; b.vy = msg.vy; b.vz = msg.vz;
+        b.ragdoll = Math.max(b.ragdoll, 0.9);
+        b.flash = 0.14;
+        if (b.hp <= 0 && !b.ko) triggerBossKO(b, msg.bi, false);
+      } else if (msg.t === "emote") {
+        const rp = remotePlayers.get(msg.sid);
+        if (rp) { rp.emote = msg.txt; rp.emoteT = 3.0; }
+      }
+    }
+
+    connectMqtt();
+
+    // =========================================================================
+    // 6. WORLD STATE: ALL 4 DISTINCT EXECUTIVES + HAZARDS + AI PARTY + SAFE!
+    // =========================================================================
+    const EXEC_DEFS = [
       {
-        lv: "LV.1", name: "꼰대 김부장", suit: [0.30, 0.36, 0.46], scale: 1.06, hp: 130,
-        taunts: ["금요일 5시50분 회의 시작하자!", "라떼는 주말도 반납했어~", "보고서 줄간격 다시 맞춰와!", "오늘 회식 불참은 없겠지?"]
+        idx: 0, rank: "부장", badgeBg: "#475569", name: "꼰대 김부장",
+        scale: 1.02, torso: "torsoBujang", hat: "hatBujangBald", face: 2,
+        hp: 150, bounty: 80000, homeX: -14, homeZ: 6, speed: 2.5,
+        taunts: ["금요일 5시50분 회의 시작하자!", "라떼는 주말도 반납했어!", "보고서 폰트 다시 맞춰와!"]
       },
       {
-        lv: "LV.2", name: "열정페이 박상무", suit: [0.16, 0.28, 0.55], scale: 1.14, hp: 175,
-        taunts: ["야근수당 대신 열정을 배워라!", "단톡방 답장이 2분이나 늦었네?", "휴가 가서도 노트북 켜놔~"]
+        idx: 1, rank: "상무", badgeBg: "#65a30d", name: "골프광 박상무",
+        scale: 1.18, torso: "torsoSangmu", hat: "hatSangmuVisor", face: 5,
+        hp: 210, bounty: 150000, homeX: 2.0, homeZ: 17.5, speed: 3.1, clubInHand: true,
+        taunts: ["평일 낮엔 법인카드 골프지~!", "내 캐디백 트렁크에 실었나?", "어이 김사원, 커피 좀 타와!"]
       },
       {
-        lv: "LV.3", name: "법인카드 최전무", suit: [0.42, 0.15, 0.48], scale: 1.20, hp: 220,
-        taunts: ["내일 새벽 등산 워크샵 필수다!", "내 황금 골프채 닦아놨나?", "요즘 젊은이들은 근성이 없어!"]
+        idx: 2, rank: "본부장", badgeBg: "#7e22ce", name: "어깨깡패 최본부장",
+        scale: 1.36, torso: "torsoBonbujang", hat: "hatBonbujangPompadour", face: 6,
+        hp: 290, bounty: 250000, homeX: 19.5, homeZ: 12.0, speed: 2.8,
+        taunts: ["실적 미달이면 전원 철야다!!", "내가 왕년에 맨손으로 책상 깼어!", "어디서 눈을 똑바로 뜨나?!"]
       },
       {
-        lv: "CEO", name: "블랙기업 왕회장", suit: [0.52, 0.22, 0.10], scale: 1.30, hp: 290,
-        taunts: ["보너스는 구내식당 식권 1장이다!", "주 100시간 일해야 성공한다!", "누가 감히 정시 퇴근을 꿈꾸나?!"]
+        idx: 3, rank: "👑대표", badgeBg: "#d97706", name: "블랙기업 왕대표",
+        scale: 1.54, torso: "torsoCEO", hat: "hatCEOCrown", face: 7,
+        hp: 420, bounty: 500000, homeX: 22.5, homeZ: -15.5, speed: 2.3, dropsCashOnHit: true,
+        taunts: ["올해 성과급은 구내식당 식권이다!", "내 황금 금고엔 손대지 마라!", "주 100시간 근무가 애사심이다!"]
       }
     ];
 
-    const HURT_LINES = ["억!! 결재 해줄게!!", "살려줘!! 칼퇴 승인!!", "아악 연봉 올려줄게!!", "재택근무 허가한다악!!", "꾸웨에엑!!"];
-    const CHEER_LINES = ["나이스 죽방!!", "사이다!!", "내 속이 뻥 뚫리네!", "칼퇴 가즈아!!", "영웅이다!!"];
-
     const player = {
-      x: -5.0, y: 0, z: 7.5,
-      vx: 0, vz: 0, yaw: Math.PI,
-      walk: 0,
-      atkTimer: 0, atkDur: 0.22, atkType: "jab",
-      comboStep: 0, comboReset: 0,
+      x: 0, y: 0, z: 4.5, vx: 0, vz: 0, yaw: Math.PI, walk: 0,
+      atkTimer: 0, atkDur: 0.22, atkType: "jab", comboStep: 0, comboReset: 0,
       upperCd: 0, dashCd: 0, dashTimer: 0,
-      heldProp: null,
-      weaponUses: 0,
-      fever: 0
+      heldProp: null, weaponUses: 0,
+      ridingChair: null,
+      powerLv: 1, fever: 0,
+      myEmote: "", myEmoteT: 0, netJustAttacked: false
     };
 
-    const mainBoss = {
-      isMain: true,
-      rosterIdx: 0,
-      x: 11.5, y: 0, z: -8.5,
-      vx: 0, vy: 0, vz: 0,
-      rx: 0, rz: 0, vrx: 0, vrz: 0,
-      yaw: 0, walk: 0,
-      hp: 130, maxHp: 130,
-      ragdoll: 0, stun: 0, flash: 0,
-      koState: false, respawn: 0,
-      speechTimer: 2.0, speech: "금요일 5시50분 회의 시작하자!", hurtSpeech: false
-    };
-
-    let npcs = []; // Coworkers, Sub-Managers, HR Security Guards!
+    let bosses = [];
+    let aiAllies = []; // Co-op AI teammates when toggle is ON!
+    let aiPartyEnabled = true;
     let props = [];
+    let hazards = []; // Electric Server Racks, Photocopiers, Breakable Golden Safe!
     let particles = [];
-    let koTotal = 0;
-    let comboCount = 0, comboTimer = 0;
-    let wanted = 1, guardTimer = 5.0;
-    let hpTrailPct = 100;
 
+    let cash = 0, koTotal = 0, comboCount = 0, comboTimer = 0;
+    let focusBossIdx = 0;
     let hitStop = 0, slowMo = 0, shakeT = 0, shakeMag = 0;
-    let nearestProp = null;
+    let nearestProp = null, nearestChair = null;
 
-    function addWeaponProp(cfg) {
+    // Random Sudden Corporate Event State!
+    let eventTimer = 14.0, activeEvent = null, eventRemain = 0;
+
+    function spawnAllBosses() {
+      bosses = EXEC_DEFS.map((d) => ({
+        def: d,
+        x: d.homeX, y: 2.5, z: d.homeZ,
+        vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
+        yaw: 0, walk: 0,
+        hp: d.hp, maxHp: d.hp,
+        ragdoll: 0, stun: 0, shockT: 0, flash: 0,
+        ko: false, respawn: 0,
+        speechT: 1.5 + d.idx * 1.1, speech: d.taunts[0], hurtSpeech: false
+      }));
+    }
+
+    function addProp(cfg) {
       props.push({
-        vx: 0, vy: 0, vz: 0, rx: 0, ry: cfg.ry || 0, rz: 0, vrx: 0, vrz: 0,
-        resting: !!cfg.resting,
-        grabbable: cfg.grabbable !== false,
-        uses: cfg.uses || 3,
-        aoe: cfg.aoe || 1.8,
-        dmg: cfg.dmg || 32,
-        mass: cfg.mass || 1.0,
-        radius: cfg.radius || 0.48,
-        shadowR: cfg.shadowR || 0.48,
+        vx:0, vy:0, vz:0, rx:0, ry:cfg.ry||0, rz:0, vrx:0, vrz:0,
+        resting: !!cfg.resting, grabbable: cfg.grabbable !== false,
+        rideable: !!cfg.rideable, uses: cfg.uses || 3, aoe: cfg.aoe || 2.0,
+        dmg: cfg.dmg || 34, mass: cfg.mass || 1.0, radius: cfg.radius || 0.5,
         ...cfg
       });
     }
 
-    function populateOffice() {
+    function buildMegaWorld() {
       props = [];
-      npcs = [];
+      hazards = [];
       particles = [];
 
-      // 1. Zone 1: Main Open Office (8 Workstations + Printers + Coworkers + Sub-Manager)
+      // 1. SW Sales Cubicles (Desks, Rideable Chairs, Monitors, Keyboards)
       const desks = [
-        [-16.0, 2.5], [-10.0, 2.5], [-4.0, 2.5], [1.5, 2.5],
-        [-16.0, 9.5], [-10.0, 9.5], [-4.0, 9.5], [1.5, 9.5]
+        [-28, 6], [-21, 6], [-14, 6],
+        [-28, 14], [-21, 14], [-14, 14],
+        [-28, 22], [-21, 22], [-14, 22]
       ];
-      desks.forEach(([dx, dz], idx) => {
-        addWeaponProp({ type: "desk", mesh: M.desk, x: dx, y: 0, z: dz, grabbable: false, mass: 3.8, radius: 1.05, shadowR: 1.1 });
-        addWeaponProp({ type: "chair", label: "회전의자", icon: "🪑", mesh: M.chair, x: dx, y: 0, z: dz + 0.95, ry: Math.PI, dmg: 30, uses: 3, mass: 1.1 });
-        addWeaponProp({ type: "monitor", label: "모니터", icon: "🖥️", mesh: M.monitor, x: dx - 0.28, y: 0.80, z: dz - 0.1, resting: true, dmg: 34, uses: 2, mass: 0.85, fx: "spark" });
-        addWeaponProp({ type: "keyboard", label: "청축 키보드", icon: "⌨️", mesh: M.keyboard, x: dx - 0.25, y: 0.80, z: dz + 0.25, resting: true, dmg: 26, uses: 4, mass: 0.45, fx: "paper" });
-        if (idx % 2 === 0) {
-          npcs.push({
-            role: "coworker", name: "동료 사원",
-            x: dx + (idx % 4 === 0 ? -1.35 : 1.35), y: 0, z: dz + 0.5,
-            vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, yaw: 0, walk: Math.random() * 6,
-            suit: [0.88, 0.92, 0.98], cheer: 0, ragdoll: 0, msg: ""
-          });
-        }
-      });
-
-      // Office Laser Printers & Fire Extinguishers
-      addWeaponProp({ type: "printer", label: "레이저 복합기", icon: "🖨️", mesh: M.printer, x: -7.0, y: 0, z: 6.0, dmg: 48, uses: 2, aoe: 2.8, mass: 1.8, fx: "paper" });
-      addWeaponProp({ type: "extinguisher", label: "분말 소화기", icon: "🧯", mesh: M.extinguisher, x: 3.5, y: 0, z: -1.2, dmg: 40, uses: 3, aoe: 3.4, mass: 1.0, fx: "smoke" });
-
-      // 2. Zone 2: NW Breakroom & Cafe (-21..-4, -16..-3)
-      addWeaponProp({ type: "vending", mesh: M.vending, x: -18.5, y: 0, z: -14.8, grabbable: false, mass: 5.0, radius: 0.9, shadowR: 0.95 });
-      addWeaponProp({ type: "coffeePot", label: "열탕 커피포트", icon: "☕", mesh: M.coffeePot, x: -14.5, y: 0, z: -12.5, dmg: 32, uses: 2, aoe: 2.4, mass: 0.5, radius: 0.35 });
-      addWeaponProp({ type: "coffeePot", label: "열탕 커피포트", icon: "☕", mesh: M.coffeePot, x: -11.5, y: 0, z: -9.0, dmg: 32, uses: 2, aoe: 2.4, mass: 0.5, radius: 0.35 });
-      addWeaponProp({ type: "waterJug", label: "20L 생수통", icon: "💧", mesh: M.waterJug, x: -8.5, y: 0, z: -14.2, dmg: 38, uses: 3, mass: 1.3 });
-      addWeaponProp({ type: "waterJug", label: "20L 생수통", icon: "💧", mesh: M.waterJug, x: -7.2, y: 0, z: -14.2, dmg: 38, uses: 3, mass: 1.3 });
-      addWeaponProp({ type: "extinguisher", label: "분말 소화기", icon: "🧯", mesh: M.extinguisher, x: -5.2, y: 0, z: -5.5, dmg: 40, uses: 3, aoe: 3.4, mass: 1.0, fx: "smoke" });
-
-      // Breakroom chatting coworkers
-      npcs.push(
-        { role: "coworker", name: "김대리", x: -13.2, y: 0, z: -8.5, vx:0,vy:0,vz:0,rx:0,rz:0, yaw: 1.2, walk:0, suit:[0.82,0.95,0.90], cheer:0, ragdoll:0, msg:"" },
-        { role: "coworker", name: "박사원", x: -11.4, y: 0, z: -7.8, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:-1.8, walk:0, suit:[0.95,0.88,0.92], cheer:0, ragdoll:0, msg:"" }
-      );
-
-      // 3. Zone 3: NE VIP CEO Suite (5..21, -16..-3)
-      addWeaponProp({ type: "vipDesk", mesh: M.vipDesk, x: 13.5, y: 0, z: -12.2, grabbable: false, mass: 6.0, radius: 1.4, shadowR: 1.5 });
-      addWeaponProp({ type: "golfClub", label: "황금 골프채", icon: "⛳", mesh: M.golfClub, x: 17.8, y: 0, z: -13.2, dmg: 52, uses: 5, aoe: 2.4, mass: 0.7 });
-      addWeaponProp({ type: "golfClub", label: "황금 골프채", icon: "⛳", mesh: M.golfClub, x: 8.2, y: 0, z: -6.5, dmg: 52, uses: 5, aoe: 2.4, mass: 0.7 });
-      addWeaponProp({ type: "trophy", label: "황금 트로피", icon: "🏆", mesh: M.trophy, x: 13.5, y: 0.92, z: -12.0, resting: true, dmg: 58, uses: 3, mass: 0.9 });
-      addWeaponProp({ type: "plant", label: "대형 화분", icon: "🪴", mesh: M.plant, x: 6.5, y: 0, z: -14.2, dmg: 35, uses: 2, mass: 1.2 });
-      addWeaponProp({ type: "plant", label: "대형 화분", icon: "🪴", mesh: M.plant, x: 19.5, y: 0, z: -5.2, dmg: 35, uses: 2, mass: 1.2 });
-
-      // 4. Zone 4: SE Executive Boardroom (7..21, -1..16)
-      addWeaponProp({ type: "boardTable", mesh: M.boardTable, x: 14.2, y: 0, z: 7.5, grabbable: false, mass: 7.0, radius: 1.6, shadowR: 1.9 });
-      for (let cz = 5.5; cz <= 9.5; cz += 2.0) {
-        addWeaponProp({ type: "chair", label: "회의실 의자", icon: "🪑", mesh: M.chair, x: 12.2, y: 0, z: cz, ry: Math.PI * 0.5, dmg: 30, uses: 3, mass: 1.1 });
-        addWeaponProp({ type: "chair", label: "회의실 의자", icon: "🪑", mesh: M.chair, x: 16.2, y: 0, z: cz, ry: -Math.PI * 0.5, dmg: 30, uses: 3, mass: 1.1 });
+      for (const [dx, dz] of desks) {
+        addProp({ type:"desk", mesh:M.desk, x:dx, y:0, z:dz, grabbable:false, mass:4.0, radius:1.05 });
+        addProp({ type:"chair", label:"회전의자", icon:"🪑", mesh:M.chair, x:dx, y:0, z:dz+1.05, ry:Math.PI, dmg:34, uses:3, rideable:true });
+        addProp({ type:"monitor", label:"모니터", icon:"🖥️", mesh:M.monitor, x:dx-0.25, y:0.80, z:dz-0.1, resting:true, dmg:38, uses:2 });
+        addProp({ type:"keyboard", label:"청축 키보드", icon:"⌨️", mesh:M.keyboard, x:dx-0.25, y:0.80, z:dz+0.28, resting:true, dmg:28, uses:4 });
       }
-      addWeaponProp({ type: "printer", label: "회의실 복합기", icon: "🖨️", mesh: M.printer, x: 19.2, y: 0, z: 1.8, dmg: 48, uses: 2, aoe: 2.8, mass: 1.8, fx: "paper" });
-      addWeaponProp({ type: "extinguisher", label: "분말 소화기", icon: "🧯", mesh: M.extinguisher, x: 8.2, y: 0, z: 1.8, dmg: 40, uses: 3, aoe: 3.4, mass: 1.0, fx: "smoke" });
 
-      npcs.push(
-        { role: "coworker", name: "정주임", x: 12.0, y: 0, z: 11.8, vx:0,vy:0,vz:0,rx:0,rz:0, yaw: 0.3, walk:0, suit:[0.85,0.90,0.98], cheer:0, ragdoll:0, msg:"" },
-        { role: "coworker", name: "최사원", x: 16.0, y: 0, z: 11.8, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:-0.3, walk:0, suit:[0.92,0.92,0.86], cheer:0, ragdoll:0, msg:"" }
+      // 2. Central Lobby Photocopiers (Face-Scan Humiliation Hazard!) & Rideable Chairs
+      hazards.push(
+        { kind:"copier", label:"얼굴스캔 복합기", mesh:M.copier, x:-7.5, y:0, z:-1.5, radius:1.15, cd:0 },
+        { kind:"copier", label:"얼굴스캔 복합기", mesh:M.copier, x: 7.5, y:0, z:-1.5, radius:1.15, cd:0 }
       );
+      addProp({ type:"chair", label:"로비 레이싱의자", icon:"🪑", mesh:M.chair, x:-2.5, y:0, z:3.5, dmg:34, uses:3, rideable:true });
+      addProp({ type:"chair", label:"로비 레이싱의자", icon:"🪑", mesh:M.chair, x: 2.5, y:0, z:3.5, dmg:34, uses:3, rideable:true });
+      addProp({ type:"extinguisher", label:"분말 소화기", icon:"🧯", mesh:M.extinguisher, x:-5.0, y:0, z:2.0, dmg:44, aoe:3.6 });
+      addProp({ type:"extinguisher", label:"분말 소화기", icon:"🧯", mesh:M.extinguisher, x: 5.0, y:0, z:2.0, dmg:44, aoe:3.6 });
 
-      // 2 Roaming Nagging Sub-Managers ("강팀장", "이차장") so there's ALWAYS someone to smack in every zone!
-      npcs.push(
-        { role: "subboss", name: "잔소리 강팀장", x: -6.5, y: 0, z: 4.5, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:0, walk:0, hp:70, maxHp:70, suit:[0.25,0.38,0.35], cheer:0, ragdoll:0, flash:0 },
-        { role: "subboss", name: "보고서 이차장", x: 14.0, y: 0, z: 3.2, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:0, walk:0, hp:70, maxHp:70, suit:[0.38,0.28,0.25], cheer:0, ragdoll:0, flash:0 }
-      );
-    }
+      // 3. North-Center Server Room: HIGH-VOLTAGE ELECTRIC SERVER RACKS!
+      for (const sx of [-6.5, -2.2, 2.2, 6.5]) {
+        hazards.push({ kind:"server", label:"고전압 서버랙", mesh:M.serverRack, x:sx, y:0, z:-21.0, radius:1.25, cd:0 });
+      }
+      addProp({ type:"extinguisher", label:"서버실 소화기", icon:"🧯", mesh:M.extinguisher, x:0, y:0, z:-14.5, dmg:44, aoe:3.6 });
 
-    function spawnMainBoss(idx) {
-      const cfg = BOSS_ROSTER[idx % BOSS_ROSTER.length];
-      mainBoss.rosterIdx = idx % BOSS_ROSTER.length;
-      const spawns = [[-2.0, 2.5], [12.5, -8.5], [13.5, 4.5], [-11.5, -8.5]];
-      const sp = spawns[idx % spawns.length];
-      mainBoss.x = sp[0]; mainBoss.y = 2.6; mainBoss.z = sp[1];
-      mainBoss.vx = mainBoss.vy = mainBoss.vz = 0;
-      mainBoss.rx = mainBoss.rz = mainBoss.vrx = mainBoss.vrz = 0;
-      mainBoss.maxHp = cfg.hp; mainBoss.hp = cfg.hp;
-      hpTrailPct = 100;
-      mainBoss.ragdoll = 0; mainBoss.stun = 0; mainBoss.flash = 0;
-      mainBoss.koState = false;
-      mainBoss.speech = cfg.taunts[0];
-      mainBoss.hurtSpeech = false;
-      mainBoss.speechTimer = 3.2;
+      // 4. NW Cafeteria: Vending Machines & Giant Water Jugs
+      hazards.push({ kind:"vending", label:"음료 자판기", mesh:M.vending, x:-31.0, y:0, z:-24.0, radius:1.2, cd:0 });
+      for (const wx of [-24, -20, -16]) {
+        addProp({ type:"waterJug", label:"20L 생수통", icon:"💧", mesh:M.waterJug, x:wx, y:0, z:-18.0, dmg:42, uses:3 });
+      }
 
-      document.getElementById("bossLvPill").textContent = cfg.lv;
-      document.getElementById("bossNameHud").textContent = cfg.name;
-      syncHud();
+      // 5. South-Center Gym & Putting Green: Heavy Dumbbells & Golf Drivers!
+      for (const gx of [-5, -1, 3, 7]) {
+        addProp({ type:"dumbbell", label:"20kg 아령", icon:"🏋️", mesh:M.dumbbell, x:gx, y:0, z:19.5, dmg:54, uses:4, mass:1.6 });
+        addProp({ type:"golfClub", label:"드라이버 골프채", icon:"⛳", mesh:M.golfClub, x:gx+1.5, y:0, z:23.5, dmg:50, uses:5 });
+      }
+
+      // 6. SE Grand Boardroom: Chairs & Extinguishers
+      for (let bz = 9; bz <= 19; bz += 3.2) {
+        addProp({ type:"chair", label:"임원 회전의자", icon:"🪑", mesh:M.chair, x:17.5, y:0, z:bz, rideable:true, dmg:34 });
+        addProp({ type:"chair", label:"임원 회전의자", icon:"🪑", mesh:M.chair, x:23.5, y:0, z:bz, rideable:true, dmg:34 });
+      }
+
+      // 7. NE Royal CEO Penthouse: BREAKABLE SECRET GOLDEN SAFE + Trophies + Golf Clubs!
+      hazards.push({ kind:"safe", label:"왕대표 비자금 금고", mesh:M.goldenSafe, x:28.5, y:0, z:-23.5, radius:1.45, hp:180, maxHp:180, cd:0 });
+      addProp({ type:"trophy", label:"순금 트로피", icon:"🏆", mesh:M.trophy, x:20.0, y:0, z:-19.5, dmg:64, uses:4 });
+      addProp({ type:"trophy", label:"순금 트로피", icon:"🏆", mesh:M.trophy, x:25.5, y:0, z:-13.5, dmg:64, uses:4 });
+      addProp({ type:"golfClub", label:"황금 골프채", icon:"⛳", mesh:M.golfClub, x:15.5, y:0, z:-16.5, dmg:56, uses:5 });
+
+      // Spawn 2 Helpful AI Co-op Raid Teammates ("동기 박대리", "막내 이인턴")
+      aiAllies = [
+        { name:"🤖 박대리(우군)", suit:[0.20,0.82,0.65], x:-3.5, y:0, z:6.0, yaw:0, walk:0, atkT:0, cd:0.8 },
+        { name:"🤖 이인턴(우군)", suit:[0.38,0.68,0.98], x: 3.5, y:0, z:6.0, yaw:0, walk:0, atkT:0, cd:1.1 }
+      ];
     }
 
     // =========================================================================
-    // 8. EFFECTS, POPUPS, RADAR MINIMAP & HUD SYNC
+    // 7. COMBAT, ENVIRONMENTAL HAZARDS, CHAIR DRIFTING & PROGRESSION
     // =========================================================================
     const overlayLayer = document.getElementById("overlayLayer");
     let lastVP = mId();
 
-    function popText(wx, wy, wz, text, color = "#fde047", px = 24) {
+    function popText(wx, wy, wz, txt, col = "#fde047", sz = 23) {
       const sc = project2D(wx, wy, wz, lastVP, window.innerWidth, window.innerHeight);
       if (!sc) return;
       const el = document.createElement("div");
       el.className = "comic-pop";
-      el.textContent = text;
-      el.style.left = `${sc.x}px`;
-      el.style.top = `${sc.y}px`;
-      el.style.color = color;
-      el.style.fontSize = `${px}px`;
-      el.style.setProperty("--r", `${(Math.random() * 18 - 9).toFixed(1)}deg`);
+      el.textContent = txt;
+      el.style.left = `${sc.x}px`; el.style.top = `${sc.y}px`;
+      el.style.color = col; el.style.fontSize = `${sz}px`;
+      el.style.setProperty("--r", `${(Math.random() * 16 - 8).toFixed(1)}deg`);
       overlayLayer.appendChild(el);
-      setTimeout(() => el.remove(), 740);
+      setTimeout(() => el.remove(), 730);
     }
 
-    function burstParticles(x, y, z, count, kind = "paper") {
-      for (let i = 0; i < count; i++) {
-        const a = Math.random() * Math.PI * 2;
-        const spd = 2.5 + Math.random() * 6.5;
+    function spawnParticles(x, y, z, cnt, kind = "paper") {
+      const mesh = kind === "cash" ? M.cashBill : (kind === "paper" ? M.paper : M.spark);
+      const tint = kind === "shock" ? [0.25, 0.90, 1.0] : (kind === "spark" ? [1.0, 0.85, 0.2] : [1, 1, 1]);
+      for (let i = 0; i < cnt; i++) {
+        const a = Math.random() * Math.PI * 2, spd = 2.5 + Math.random() * 7.5;
         particles.push({
-          mesh: kind === "paper" ? M.paper : M.spark,
-          x, y: y + 0.35, z,
-          vx: Math.cos(a) * spd,
-          vy: 2.8 + Math.random() * 5.2,
-          vz: Math.sin(a) * spd,
-          rx: Math.random() * 3, ry: Math.random() * 3, rz: 0,
-          vrx: (Math.random() - 0.5) * 14, vry: (Math.random() - 0.5) * 14,
-          scale: kind === "smoke" ? 2.4 + Math.random() * 1.5 : (kind === "paper" ? 0.95 : 0.8),
-          life: kind === "smoke" ? 0.55 : 2.2,
-          flutter: kind === "paper",
-          tint: kind === "smoke" ? [0.95, 0.97, 1.0] : (kind === "spark" ? [1.0, 0.82, 0.2] : [1, 1, 1])
+          mesh, tint, x, y: y + 0.4, z,
+          vx: Math.cos(a) * spd, vy: 3.2 + Math.random() * 6.0, vz: Math.sin(a) * spd,
+          rx: Math.random() * 3, ry: Math.random() * 3, vrx: 11, vry: 13,
+          scale: kind === "cash" ? 1.25 : 0.95, life: kind === "paper" || kind === "cash" ? 2.4 : 0.55,
+          flutter: kind === "paper" || kind === "cash"
         });
       }
     }
 
-    function syncHud() {
-      const pct = Math.max(0, Math.min(100, (mainBoss.hp / mainBoss.maxHp) * 100));
-      document.getElementById("bossHpFill").style.width = `${pct}%`;
-      setTimeout(() => {
-        hpTrailPct = pct;
-        document.getElementById("bossHpTrail").style.width = `${hpTrailPct}%`;
-      }, 180);
-
-      document.getElementById("koBadgeHud").textContent = `참교육 ${koTotal}`;
-      wanted = Math.min(5, 1 + Math.floor((koTotal * 1.5 + comboCount * 0.2) / 2));
-      document.getElementById("wantedHud").textContent = "★".repeat(wanted) + "☆".repeat(5 - wanted);
-
-      const comboEl = document.getElementById("comboHud");
-      if (comboCount >= 2 && comboTimer > 0) {
-        comboEl.textContent = `${comboCount} COMBO!`;
-        comboEl.style.opacity = "1";
-      } else {
-        comboEl.style.opacity = "0";
-      }
-
-      // Combo pips around Primary Attack Button
-      for (let i = 1; i <= 3; i++) {
-        document.getElementById(`pip${i}`).style.opacity = i <= player.comboStep ? "0.95" : "0.22";
-      }
-
-      // Primary Attack vs Weapon Swing icon
-      if (player.heldProp) {
-        document.getElementById("mainAtkIcon").textContent = player.heldProp.icon;
-        document.getElementById("mainAtkText").textContent = `휘두르기(${player.weaponUses})`;
-      } else {
-        document.getElementById("mainAtkIcon").textContent = "🥊";
-        document.getElementById("mainAtkText").textContent = "죽방";
-      }
-
-      // Ultimate radial progress
-      const f = Math.round(player.fever);
-      const offset = 163.36 * (1 - f / 100);
-      document.getElementById("ultArc").style.strokeDashoffset = `${offset.toFixed(1)}`;
-      document.getElementById("ultPctText").textContent = f >= 100 ? "MAX!" : `${f}%`;
-      const btnUlt = document.getElementById("btnUlt");
-      if (f >= 100) btnUlt.classList.add("ult-ready");
-      else btnUlt.classList.remove("ult-ready");
-
-      // Zone name
-      let zLabel = "제3영업본부";
-      if (player.x < -3.8 && player.z < -2.0) zLabel = "☕ 탕비실";
-      else if (player.x > 4.2 && player.z < -2.0) zLabel = "👑 VIP 사장실";
-      else if (player.x > 6.2 && player.z > -1.0) zLabel = "📊 대회의실";
-      document.getElementById("zoneBadge").textContent = zLabel;
+    function addCash(amount) {
+      const mult = activeEvent === "payday" ? 2.5 : 1.0;
+      cash += Math.round(amount * mult);
+      updateHud();
     }
 
-    // Sleek Radar Minimap Renderer
-    const radarCvs = document.getElementById("radarCanvas");
-    const rctx = radarCvs.getContext("2d");
-
-    function renderRadar() {
-      const rw = radarCvs.width, rh = radarCvs.height;
-      rctx.clearRect(0, 0, rw, rh);
-      rctx.fillStyle = "rgba(8, 12, 22, 0.75)";
-      rctx.fillRect(0, 0, rw, rh);
-
-      const mx = (wx) => ((wx + MAP_X) / (MAP_X * 2)) * rw;
-      const mz = (wz) => ((wz + MAP_Z) / (MAP_Z * 2)) * rh;
-
-      // Zone tints on radar
-      rctx.fillStyle = "rgba(251, 191, 36, 0.14)"; // VIP
-      rctx.fillRect(mx(4.5), 0, rw - mx(4.5), mz(-2.2));
-      rctx.fillStyle = "rgba(56, 189, 248, 0.12)"; // Breakroom
-      rctx.fillRect(0, 0, mx(-4.0), mz(-2.2));
-      rctx.fillStyle = "rgba(99, 102, 241, 0.12)"; // Boardroom
-      rctx.fillRect(mx(6.4), mz(-0.8), rw - mx(6.4), rh - mz(-0.8));
-
-      // Weapons (small cyan dots)
-      rctx.fillStyle = "rgba(103, 232, 249, 0.65)";
-      for (const p of props) {
-        if (!p.grabbable || p === player.heldProp) continue;
-        rctx.fillRect(mx(p.x) - 1, mz(p.z) - 1, 2, 2);
-      }
-
-      // Coworkers & Sub-bosses
-      for (const n of npcs) {
-        rctx.fillStyle = n.role === "coworker" ? "rgba(148,163,184,0.75)" : "#fb923c";
-        rctx.beginPath();
-        rctx.arc(mx(n.x), mz(n.z), n.role === "coworker" ? 1.8 : 2.8, 0, Math.PI * 2);
-        rctx.fill();
-      }
-
-      // Main Boss pulsing target beacon!
-      rctx.fillStyle = "#f43f5e";
-      rctx.beginPath();
-      rctx.arc(mx(mainBoss.x), mz(mainBoss.z), 4.0, 0, Math.PI * 2);
-      rctx.fill();
-
-      // Player directional arrow
-      const px = mx(player.x), pz = mz(player.z);
-      rctx.save();
-      rctx.translate(px, pz);
-      rctx.rotate(Math.atan2(Math.sin(player.yaw), Math.cos(player.yaw)));
-      rctx.fillStyle = "#ffffff";
-      rctx.beginPath();
-      rctx.arc(0, 0, 3.2, 0, Math.PI * 2);
-      rctx.fill();
-      rctx.restore();
+    function triggerBossKO(b, idx, broadcast = true) {
+      b.ko = true;
+      b.respawn = 4.5;
+      b.vy = 11.0;
+      slowMo = 0.65;
+      koTotal++;
+      addCash(b.def.bounty);
+      playSfx("ko");
+      haptic(65);
+      spawnParticles(b.x, b.y + 1.0, b.z, 22, idx === 3 ? "cash" : "paper");
+      popText(b.x, b.y + 2.6, b.z, `🎉 ${b.def.name} 참교육!! +₩${b.def.bounty.toLocaleString()}`, "#4ade80", 30);
     }
 
-    // =========================================================================
-    // 9. COMBAT MECHANICS (Punch Combo, Weapon Swing, Throw, Uppercut, Dash, Ult)
-    // =========================================================================
-    function applyHitToBossOrNpc(target, dmg, dirX, dirZ, force, liftY, word, heavy) {
-      target.vx = dirX * force;
-      target.vz = dirZ * force;
-      target.vy = Math.max(target.vy || 0, liftY);
-      target.ragdoll = Math.max(target.ragdoll || 0, heavy ? 1.5 : 0.85);
-      target.flash = 0.14;
-      target.vrx = (Math.random() - 0.5) * 15;
-      target.vrz = (Math.random() - 0.5) * 15;
+    function hitBoss(b, idx, baseDmg, dx, dz, force, liftY, label, heavy, fromLocal = true) {
+      if (b.ko) return;
+      focusBossIdx = idx;
+      const pwrMult = 1 + (player.powerLv - 1) * 0.28 + (activeEvent === "caffeine" ? 0.4 : 0);
+      const dmg = Math.round(baseDmg * pwrMult);
+      const f = force * (1 + (player.powerLv - 1) * 0.14);
 
-      comboCount++;
-      comboTimer = 2.8;
-      player.fever = Math.min(100, player.fever + (heavy ? 16 : 9));
+      b.hp = Math.max(0, b.hp - dmg);
+      b.vx = dx * f; b.vz = dz * f; b.vy = Math.max(b.vy, liftY);
+      b.ragdoll = Math.max(b.ragdoll, heavy ? 1.45 : 0.80);
+      b.stun = 1.2; b.flash = 0.14;
+      b.vrx = (Math.random() - 0.5) * 15; b.vrz = (Math.random() - 0.5) * 15;
 
-      // Nearby coworkers cheer wildly!
-      for (const n of npcs) {
-        if (n.role === "coworker" && Math.hypot(n.x - target.x, n.z - target.z) < 9.5) {
-          n.cheer = 2.4;
-          n.msg = CHEER_LINES[(Math.random() * CHEER_LINES.length) | 0];
+      const hurts = ["억!! 결재 승인!!", "살려줘!! 칼퇴해!!", "아악 내 법인카드!!", "비자금 줄게 살려줘!!", "꾸웨에엑!!"];
+      b.speech = hurts[(Math.random() * hurts.length) | 0];
+      b.hurtSpeech = true; b.speechT = 2.0;
+
+      if (fromLocal) {
+        comboCount++; comboTimer = 3.0;
+        player.fever = Math.min(100, player.fever + (heavy ? 15 : 8));
+        addCash(dmg * 650);
+        if (b.def.dropsCashOnHit || activeEvent === "payday") {
+          spawnParticles(b.x, b.y + 1.2, b.z, 6, "cash");
         }
+        sendNetPacket({ t: "hit", bi: idx, dmg, vx: b.vx, vy: b.vy, vz: b.vz });
       }
 
-      if (target.isMain) {
-        target.hp = Math.max(0, target.hp - dmg);
-        target.stun = Math.max(target.stun, 1.3);
-        target.speech = HURT_LINES[(Math.random() * HURT_LINES.length) | 0];
-        target.hurtSpeech = true;
-        target.speechTimer = 2.0;
-
-        if (target.hp <= 0 && !target.koState) {
-          target.koState = true;
-          target.respawn = 2.7;
-          target.vy = 9.5;
-          target.vx = dirX * 14.5;
-          target.vz = dirZ * 14.5;
-          slowMo = 0.85;
-          koTotal++;
-          playSfx("ko");
-          haptic(60);
-          burstParticles(target.x, target.y + 1.0, target.z, 20, "paper");
-
-          const toast = document.getElementById("koToast");
-          const next = BOSS_ROSTER[(target.rosterIdx + 1) % BOSS_ROSTER.length];
-          document.getElementById("koToastTitle").textContent = `${BOSS_ROSTER[target.rosterIdx].name} 참교육 완료!!`;
-          document.getElementById("koToastSub").textContent = `다음 타겟 [${next.name}] 출현!`;
-          toast.style.opacity = "1";
-          setTimeout(() => { toast.style.opacity = "0"; }, 2300);
-        }
-      } else {
-        // Sub-manager or Security Guard
-        target.hp = (target.hp || 60) - dmg;
-        if (target.hp <= 0) {
-          koTotal++;
-          burstParticles(target.x, 0.8, target.z, 8, "paper");
-          popText(target.x, 2.0, target.z, `${target.name} 퇴장!!`, "#38bdf8", 22);
-          // Respawn subboss elsewhere or remove guard
-          if (target.role === "guard") {
-            const idx = npcs.indexOf(target);
-            if (idx >= 0) npcs.splice(idx, 1);
-          } else {
-            target.hp = target.maxHp;
-            target.x = (Math.random() - 0.5) * 26;
-            target.z = (Math.random() - 0.5) * 20;
-            target.y = 3.5;
-          }
-        }
-      }
-
-      hitStop = heavy ? 0.065 : 0.038;
+      hitStop = heavy ? 0.055 : 0.03;
       shakeMag = Math.max(shakeMag, heavy ? 0.42 : 0.18);
-      shakeT = Math.max(shakeT, heavy ? 0.25 : 0.14);
-      haptic(heavy ? 32 : 14);
-      burstParticles(target.x, target.y + 1.1, target.z, heavy ? 9 : 5, "spark");
-      popText(target.x, target.y + 1.95, target.z, word, heavy ? "#fb7185" : "#fde047", heavy ? 30 : 23);
+      shakeT = Math.max(shakeT, heavy ? 0.24 : 0.12);
+      haptic(heavy ? 30 : 14);
+      spawnParticles(b.x, b.y + 1.1, b.z, heavy ? 8 : 4, "spark");
+      popText(b.x, b.y + 2.2, b.z, label, heavy ? "#fb7185" : "#fde047", heavy ? 28 : 22);
       playSfx(heavy ? "heavy" : "hit");
-      syncHud();
+
+      if (b.hp <= 0) triggerBossKO(b, idx, true);
+      updateHud();
     }
 
-    function findBestCombatTarget(maxRange) {
-      let best = null, bestD = maxRange;
-      const dMain = Math.hypot(mainBoss.x - player.x, mainBoss.z - player.z);
-      if (!mainBoss.koState && dMain < bestD) { best = mainBoss; bestD = dMain; }
-      for (const n of npcs) {
-        if (n.role === "coworker") continue;
-        const d = Math.hypot(n.x - player.x, n.z - player.z);
-        if (d < bestD) { best = n; bestD = d; }
-      }
-      return best;
+    function nearestBoss(range) {
+      let best = null, bi = -1, bd = range;
+      bosses.forEach((b, i) => {
+        if (b.ko) return;
+        const d = Math.hypot(b.x - player.x, b.z - player.z);
+        if (d < bd) { bd = d; best = b; bi = i; }
+      });
+      return { b: best, i: bi, d: bd };
     }
 
     function doAttack() {
-      if (player.atkTimer > 0.05) return;
+      // If riding swivel chair -> Rocket Extinguisher Drift Boost!!
+      if (player.ridingChair) {
+        if (player.atkTimer > 0) return;
+        player.atkTimer = 0.35; player.atkDur = 0.35;
+        player.ridingChair.vx += Math.sin(player.yaw) * 19.5;
+        player.ridingChair.vz += Math.cos(player.yaw) * 19.5;
+        playSfx("dash");
+        spawnParticles(player.x, 0.4, player.z, 8, "paper");
+        popText(player.x, 2.0, player.z, "🪑💨 의자 로켓 부스터!!", "#38bdf8", 21);
+        return;
+      }
 
-      const tgt = findBestCombatTarget(3.9);
-      if (tgt) {
-        const dx = tgt.x - player.x, dz = tgt.z - player.z;
-        const d = Math.hypot(dx, dz) || 1;
+      if (player.atkTimer > 0.05) return;
+      const nb = nearestBoss(4.2);
+      if (nb.b) {
+        const dx = nb.b.x - player.x, dz = nb.b.z - player.z, d = nb.d || 1;
         player.yaw = Math.atan2(dx, dz);
-        if (d > 1.2) {
-          player.x += (dx / d) * Math.min(0.65, d - 1.1);
-          player.z += (dz / d) * Math.min(0.65, d - 1.1);
-        }
+        if (d > 1.25) { player.x += (dx / d) * Math.min(0.75, d - 1.15); player.z += (dz / d) * Math.min(0.75, d - 1.15); }
       }
 
       const wielding = !!player.heldProp;
       const seq = ["jab", "cross", "spin"];
-      const stepType = wielding ? "weaponSwing" : seq[player.comboStep];
+      player.atkType = wielding ? "weaponSwing" : seq[player.comboStep];
       player.comboStep = (player.comboStep + 1) % 3;
       player.comboReset = 1.2;
-      player.atkType = stepType;
-      player.atkDur = stepType === "spin" || wielding ? 0.28 : 0.19;
+      player.atkDur = (activeEvent === "caffeine" ? 0.16 : 0.23);
       player.atkTimer = player.atkDur;
+      player.netJustAttacked = true;
 
       const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
-      const reach = wielding ? 2.75 : 2.30;
+      const reach = (wielding ? 3.0 : 2.45) + (player.powerLv - 1) * 0.18;
       let hitAny = false;
 
-      const checkTarget = (ent) => {
-        if (Math.hypot(ent.x - player.x, ent.z - player.z) < reach) {
+      bosses.forEach((b, idx) => {
+        if (!b.ko && Math.hypot(b.x - player.x, b.z - player.z) < reach + b.def.scale * 0.35) {
           hitAny = true;
           if (wielding) {
-            const wp = player.heldProp;
-            applyHitToBossOrNpc(ent, wp.dmg * 0.85, dirX, dirZ, 11.5, 5.2, `${wp.icon} 풀스윙!!`, true);
-            if (wp.fx) burstParticles(ent.x, 1.0, ent.z, 10, wp.fx);
+            hitBoss(b, idx, player.heldProp.dmg, dirX, dirZ, 12.5, 5.8, `${player.heldProp.icon} 풀스윙!!`, true);
           } else {
-            const fin = stepType === "spin";
-            applyHitToBossOrNpc(ent, fin ? 24 : 13, dirX, dirZ, fin ? 11.2 : 5.2, fin ? 5.5 : 2.0, fin ? "풀스윙 죽방!!" : "죽방!", fin);
+            const fin = player.atkType === "spin";
+            hitBoss(b, idx, fin ? 26 : 15, dirX, dirZ, fin ? 12.0 : 5.8, fin ? 5.8 : 2.2, fin ? "풀스윙 죽방!!" : "죽방!", fin);
           }
         }
-      };
+      });
 
-      if (!mainBoss.koState) checkTarget(mainBoss);
-      for (const n of npcs.slice()) {
-        if (n.role !== "coworker") checkTarget(n);
+      // Hit Golden Safe or Vending Machine!
+      for (const hz of hazards) {
+        if (Math.hypot(hz.x - player.x, hz.z - player.z) < reach + hz.radius) {
+          hitAny = true;
+          if (hz.kind === "safe") {
+            hz.hp -= wielding ? 45 : 25;
+            playSfx("coin");
+            spawnParticles(hz.x, 1.2, hz.z, 10, "cash");
+            addCash(45000);
+            popText(hz.x, 2.3, hz.z, hz.hp <= 0 ? "💰 비자금 금고 대폭발!!" : "💵 비자금 털기! +₩45,000", "#4ade80", 24);
+            if (hz.hp <= 0) {
+              hz.hp = hz.maxHp;
+              addCash(350000);
+              spawnParticles(hz.x, 1.4, hz.z, 32, "cash");
+              playSfx("ko");
+            }
+          } else if (hz.kind === "vending" && hz.cd <= 0) {
+            hz.cd = 4.0;
+            player.fever = Math.min(100, player.fever + 35);
+            playSfx("coin");
+            popText(hz.x, 2.3, hz.z, "🥤 고카페인 획득! 필살기 +35%", "#38bdf8", 21);
+          }
+        }
       }
 
       if (wielding && hitAny) {
         player.weaponUses--;
         if (player.weaponUses <= 0) {
-          popText(player.x, 2.2, player.z, `${player.heldProp.label} 박살!`, "#67e8f9", 20);
-          const idx = props.indexOf(player.heldProp);
-          if (idx >= 0) props.splice(idx, 1);
+          const i = props.indexOf(player.heldProp);
+          if (i >= 0) props.splice(i, 1);
           player.heldProp = null;
         }
       }
-
       if (!hitAny) playSfx("swing");
-      syncHud();
+      updateHud();
     }
 
     function doUppercut() {
-      if (player.upperCd > 0 || player.atkTimer > 0.05) return;
-      player.upperCd = 1.8;
-      const tgt = findBestCombatTarget(4.0);
-      if (tgt) {
-        const dx = tgt.x - player.x, dz = tgt.z - player.z, d = Math.hypot(dx, dz) || 1;
+      if (player.upperCd > 0) return;
+      player.upperCd = 1.6;
+      if (player.ridingChair) player.ridingChair = null;
+      const nb = nearestBoss(4.3);
+      if (nb.b) {
+        const dx = nb.b.x - player.x, dz = nb.b.z - player.z, d = nb.d || 1;
         player.yaw = Math.atan2(dx, dz);
-        if (d > 1.1) { player.x += (dx / d) * Math.min(0.8, d - 1.0); player.z += (dz / d) * Math.min(0.8, d - 1.0); }
+        if (d > 1.2) { player.x += (dx / d) * 0.8; player.z += (dz / d) * 0.8; }
       }
-      player.atkType = "upper";
-      player.atkDur = 0.34;
-      player.atkTimer = 0.34;
-
+      player.atkType = "upper"; player.atkDur = 0.32; player.atkTimer = 0.32;
       const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
-      let landed = false;
-      const hitTgt = findBestCombatTarget(2.6);
-      if (hitTgt) {
-        landed = true;
-        slowMo = 0.26;
-        applyHitToBossOrNpc(hitTgt, 32, dirX, dirZ, 9.5, 9.6, "💥 승룡 어퍼컷!!", true);
-      }
-      if (!landed) playSfx("swing");
+      let hit = false;
+      bosses.forEach((b, idx) => {
+        if (!b.ko && Math.hypot(b.x - player.x, b.z - player.z) < 2.9) {
+          hit = true; slowMo = 0.25;
+          hitBoss(b, idx, 36, dirX, dirZ, 10.5, 10.2, "💥 승룡 어퍼컷!!", true);
+        }
+      });
+      if (!hit) playSfx("swing");
     }
 
     function doDash() {
       if (player.dashCd > 0) return;
-      player.dashCd = 1.1;
-      player.dashTimer = 0.20;
+      player.dashCd = 1.0; player.dashTimer = 0.22;
       playSfx("dash");
-      burstParticles(player.x, 0.2, player.z, 4, "smoke");
     }
 
     function doGrabOrThrow() {
+      if (player.ridingChair) player.ridingChair = null;
       if (player.heldProp) {
         const p = player.heldProp;
         player.heldProp = null;
-        const tgt = findBestCombatTarget(14.0) || mainBoss;
-        const dx = tgt.x - player.x, dz = tgt.z - player.z, d = Math.hypot(dx, dz) || 1;
-        player.yaw = Math.atan2(dx, dz);
-        const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
-
-        p.x = player.x + dirX * 0.85;
-        p.y = 1.45;
-        p.z = player.z + dirZ * 0.85;
-        p.vx = dirX * 18.5;
-        p.vy = 3.0;
-        p.vz = dirZ * 18.5;
-        p.vrx = 13; p.vrz = 10;
-        p.hot = 1.1;
-        player.atkType = "throw"; player.atkDur = 0.22; player.atkTimer = 0.22;
+        const nb = nearestBoss(16.0);
+        if (nb.b) player.yaw = Math.atan2(nb.b.x - player.x, nb.b.z - player.z);
+        const dx = Math.sin(player.yaw), dz = Math.cos(player.yaw);
+        p.x = player.x + dx * 0.9; p.y = 1.5; p.z = player.z + dz * 0.9;
+        p.vx = dx * 20.0; p.vy = 3.2; p.vz = dz * 20.0;
+        p.vrx = 13; p.vrz = 10; p.hot = 1.2;
         playSfx("swing");
-        syncHud();
+        updateHud();
         return;
       }
-
       if (nearestProp) {
         nearestProp.resting = false;
-        nearestProp.vx = nearestProp.vy = nearestProp.vz = 0;
-        nearestProp.rx = nearestProp.rz = 0;
         player.heldProp = nearestProp;
         player.weaponUses = nearestProp.uses || 3;
-        popText(player.x, 2.1, player.z, `${nearestProp.icon} ${nearestProp.label}!`, "#67e8f9", 21);
+        popText(player.x, 2.2, player.z, `${nearestProp.icon} ${nearestProp.label} 장착!`, "#67e8f9", 20);
         playSfx("swing");
-        haptic(12);
-        syncHud();
+        updateHud();
       } else {
-        popText(player.x, 1.9, player.z, "주변 의자·무기 가까이!", "#cbd5e1", 17);
+        popText(player.x, 2.0, player.z, "주변 무기·집기 가까이!", "#cbd5e1", 17);
+      }
+    }
+
+    function toggleRideChair() {
+      if (player.ridingChair) {
+        player.ridingChair = null;
+        popText(player.x, 2.0, player.z, "의자 하차!", "#e2e8f0", 17);
+        updateHud();
+        return;
+      }
+      if (nearestChair) {
+        player.heldProp = null;
+        player.ridingChair = nearestChair;
+        playSfx("dash");
+        popText(player.x, 2.3, player.z, "🪑 회전의자 폭주 탑승!! (공격키=부스터)", "#fde047", 21);
+        updateHud();
+      } else {
+        popText(player.x, 2.0, player.z, "주변 파란 회전의자 가까이 가세요!", "#fde68a", 17);
       }
     }
 
     function doUltimate() {
       if (player.fever < 100) return;
-      player.fever = 0;
-      slowMo = 0.55;
-      shakeMag = 0.65; shakeT = 0.45;
-      haptic(75);
-      playSfx("ko");
-      burstParticles(player.x, 1.2, player.z, 34, "paper");
-      burstParticles(player.x, 1.0, player.z, 16, "spark");
-      popText(player.x, 2.6, player.z, "📄 사표 폭격!! 전원 칼퇴!!", "#34d399", 34);
+      player.fever = 0; slowMo = 0.6; shakeMag = 0.65; shakeT = 0.45;
+      playSfx("ko"); haptic(80);
+      spawnParticles(player.x, 1.3, player.z, 36, "paper");
+      popText(player.x, 2.8, player.z, "📄 전사원 사표 폭격!!", "#34d399", 34);
+      bosses.forEach((b, idx) => {
+        const dx = b.x - player.x, dz = b.z - player.z, d = Math.hypot(dx, dz) || 1;
+        if (!b.ko && d < 14.5) hitBoss(b, idx, 95, dx / d, dz / d, 17.5, 11.0, "📄 사표 직격!!", true);
+      });
+      updateHud();
+    }
 
-      const blast = (ent) => {
-        const dx = ent.x - player.x, dz = ent.z - player.z, d = Math.hypot(dx, dz) || 1;
-        if (d < 11.5) applyHitToBossOrNpc(ent, 75, dx / d, dz / d, 16.5, 10.5, "사표 직격!!", true);
-      };
-      if (!mainBoss.koState) blast(mainBoss);
-      for (const n of npcs.slice()) {
-        if (n.role !== "coworker") blast(n);
+    function upgradePower() {
+      const cost = player.powerLv * 120000;
+      if (cash < cost) {
+        popText(player.x, 2.2, player.z, `₩${cost.toLocaleString()} 필요! (임원·금고 타격)`, "#fca5a5", 18);
+        return;
       }
-      syncHud();
+      cash -= cost;
+      player.powerLv++;
+      playSfx("ko"); haptic(40);
+      spawnParticles(player.x, 1.2, player.z, 16, "spark");
+      popText(player.x, 2.5, player.z, `💪 주먹 강화 LV.${player.powerLv}! 파워·크기 UP!`, "#fde047", 25);
+      updateHud();
     }
 
     // =========================================================================
-    // 10. SLEEK INPUT CONTROLLERS (Floating Thumbstick + Radial Arc + PC)
+    // 8. HUD, MINIMAP RADAR & INPUT WIRING
     // =========================================================================
+    function updateHud() {
+      const fb = bosses[focusBossIdx] || bosses[0];
+      if (fb) {
+        const badge = document.getElementById("focusRankBadge");
+        badge.textContent = fb.def.rank;
+        badge.style.background = fb.def.badgeBg;
+        document.getElementById("focusBossName").textContent = fb.def.name;
+        const pct = Math.max(0, (fb.hp / fb.maxHp) * 100);
+        document.getElementById("hpFill").style.width = `${pct}%`;
+        setTimeout(() => { document.getElementById("hpTrail").style.width = `${pct}%`; }, 180);
+      }
+
+      document.getElementById("koHud").textContent = `참교육 ${koTotal}`;
+      document.getElementById("cashHud").textContent = `₩${cash.toLocaleString()}`;
+      const nextCost = (player.powerLv * 12);
+      document.getElementById("upgradeLabel").textContent = `강화 LV.${player.powerLv} (${nextCost}만)`;
+
+      const onlineTotal = 1 + remotePlayers.size + (aiPartyEnabled ? aiAllies.length : 0);
+      document.getElementById("multiCountText").textContent = `참교육단 ${onlineTotal}명`;
+
+      for (let i = 1; i <= 3; i++) document.getElementById(`pip${i}`).style.opacity = i <= player.comboStep ? "0.95" : "0.22";
+
+      if (player.ridingChair) {
+        document.getElementById("atkIcon").textContent = "💨";
+        document.getElementById("atkText").textContent = "부스터!";
+      } else if (player.heldProp) {
+        document.getElementById("atkIcon").textContent = player.heldProp.icon;
+        document.getElementById("atkText").textContent = `스윙(${player.weaponUses})`;
+      } else {
+        document.getElementById("atkIcon").textContent = "🥊";
+        document.getElementById("atkText").textContent = "죽방";
+      }
+
+      const f = Math.round(player.fever);
+      document.getElementById("ultArc").style.strokeDashoffset = `${(163.36 * (1 - f / 100)).toFixed(1)}`;
+      document.getElementById("ultPct").textContent = f >= 100 ? "MAX!" : `${f}%`;
+      document.getElementById("btnUlt").classList.toggle("ult-ready", f >= 100);
+
+      // Zone Indicator
+      let zn = "🏛️ 중앙 로비";
+      if (player.x < -10 && player.z < -4) zn = "☕ 카페테리아";
+      else if (Math.abs(player.x) <= 10 && player.z < -10) zn = "⚡ 고전압 서버실";
+      else if (player.x > 10 && player.z < -4) zn = "👑 왕대표 펜트하우스";
+      else if (player.x > 10 && player.z > 4) zn = "📊 대회의실";
+      else if (player.x < -10 && player.z > 2) zn = "💼 제3영업부";
+      else if (player.z > 12) zn = "⛳ 사내 헬스·퍼팅존";
+      document.getElementById("zoneLabel").textContent = zn;
+    }
+
+    const rCvs = document.getElementById("radarCanvas");
+    const rctx = rCvs.getContext("2d");
+    function drawRadar() {
+      const w = rCvs.width, h = rCvs.height;
+      rctx.clearRect(0, 0, w, h);
+      rctx.fillStyle = "rgba(7, 11, 20, 0.85)";
+      rctx.fillRect(0, 0, w, h);
+      const mx = (x) => ((x + MAP_X) / (MAP_X * 2)) * w;
+      const mz = (z) => ((z + MAP_Z) / (MAP_Z * 2)) * h;
+
+      // Zone color blocks
+      rctx.fillStyle = "rgba(14, 165, 233, 0.18)"; rctx.fillRect(mx(-10), 0, mx(10)-mx(-10), mz(-10)); // Server
+      rctx.fillStyle = "rgba(245, 158, 11, 0.22)"; rctx.fillRect(mx(10.5), 0, w-mx(10.5), mz(-4.2)); // CEO
+      rctx.fillStyle = "rgba(34, 197, 94, 0.16)"; rctx.fillRect(mx(-8), mz(12), mx(10)-mx(-8), h-mz(12)); // Gym
+
+      // Golden Safe dot
+      rctx.fillStyle = "#fde047"; rctx.fillRect(mx(28.5)-2, mz(-23.5)-2, 5, 5);
+
+      // Allies & Remote Players (Green/Cyan dots)
+      rctx.fillStyle = "#38bdf8";
+      remotePlayers.forEach((rp) => { rctx.beginPath(); rctx.arc(mx(rp.x), mz(rp.z), 2.8, 0, 6.28); rctx.fill(); });
+      if (aiPartyEnabled) {
+        rctx.fillStyle = "#34d399";
+        aiAllies.forEach((a) => { rctx.beginPath(); rctx.arc(mx(a.x), mz(a.z), 2.3, 0, 6.28); rctx.fill(); });
+      }
+
+      // All 4 Distinct Boss Dots!
+      const bCols = ["#94a3b8", "#84cc16", "#c084fc", "#facc15"];
+      bosses.forEach((b, i) => {
+        if (b.ko) return;
+        rctx.fillStyle = bCols[i];
+        rctx.beginPath(); rctx.arc(mx(b.x), mz(b.z), i === 3 ? 4.4 : 3.4, 0, 6.28); rctx.fill();
+      });
+
+      // Local Player (White dot)
+      rctx.fillStyle = "#ffffff";
+      rctx.beginPath(); rctx.arc(mx(player.x), mz(player.z), 3.4, 0, 6.28); rctx.fill();
+    }
+
+    // Keyboard & Touch Controls
     const keys = {};
     window.addEventListener("keydown", (e) => {
+      if (document.activeElement && document.activeElement.tagName === "INPUT") return;
       if (e.repeat) return;
       keys[e.code] = true;
       if (e.code === "Space" || e.code === "KeyJ") { e.preventDefault(); doAttack(); }
       if (e.code === "KeyK") { e.preventDefault(); doUppercut(); }
       if (e.code === "KeyL") { e.preventDefault(); doGrabOrThrow(); }
+      if (e.code === "KeyF") { e.preventDefault(); toggleRideChair(); }
       if (e.code === "ShiftLeft" || e.code === "ShiftRight") { e.preventDefault(); doDash(); }
       if (e.code === "KeyE") { e.preventDefault(); doUltimate(); }
     });
     window.addEventListener("keyup", (e) => { keys[e.code] = false; });
-
     canvas.addEventListener("pointerdown", (e) => {
       ensureAudio();
-      if (e.pointerType === "mouse") {
-        if (e.button === 0) doAttack();
-        if (e.button === 2) doGrabOrThrow();
-      }
+      if (e.pointerType === "mouse") { if (e.button === 0) doAttack(); if (e.button === 2) doGrabOrThrow(); }
     });
     window.addEventListener("contextmenu", (e) => e.preventDefault());
 
-    // Precision Floating Glass Thumbstick
-    const joyArea = document.getElementById("joyTouchArea");
-    const joyBase = document.getElementById("joyBase");
-    const joyPuck = document.getElementById("joyPuck");
-    let joyPtr = null, joyOrigin = { x: 0, y: 0 }, joyVec = { x: 0, y: 0 };
-
+    // Joystick
+    const joyArea = document.getElementById("joyArea"), joyBase = document.getElementById("joyBase"), joyPuck = document.getElementById("joyPuck");
+    let joyId = null, joyOrig = { x: 0, y: 0 }, joyVec = { x: 0, y: 0 };
     joyArea.addEventListener("pointerdown", (e) => {
-      ensureAudio(); e.stopPropagation();
-      joyPtr = e.pointerId;
-      joyArea.setPointerCapture(e.pointerId);
-      const r = joyBase.getBoundingClientRect();
-      joyOrigin = { x: r.left + r.width * 0.5, y: r.top + r.height * 0.5 };
-      joyBase.style.transform = "scale(1.05)";
-      moveStick(e.clientX, e.clientY);
+      ensureAudio(); e.stopPropagation(); joyId = e.pointerId; joyArea.setPointerCapture(e.pointerId);
+      const r = joyBase.getBoundingClientRect(); joyOrig = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      moveJoy(e.clientX, e.clientY);
     });
-    joyArea.addEventListener("pointermove", (e) => {
-      if (e.pointerId === joyPtr) moveStick(e.clientX, e.clientY);
-    });
-    const releaseStick = (e) => {
-      if (e.pointerId !== joyPtr) return;
-      joyPtr = null; joyVec.x = 0; joyVec.y = 0;
-      joyBase.style.transform = "scale(1)";
-      joyPuck.style.transform = "translate(0px, 0px)";
-    };
-    joyArea.addEventListener("pointerup", releaseStick);
-    joyArea.addEventListener("pointercancel", releaseStick);
-
-    function moveStick(cx, cy) {
-      let dx = cx - joyOrigin.x, dy = cy - joyOrigin.y;
-      const maxR = 40, d = Math.hypot(dx, dy);
+    joyArea.addEventListener("pointermove", (e) => { if (e.pointerId === joyId) moveJoy(e.clientX, e.clientY); });
+    const endJoy = (e) => { if (e.pointerId === joyId) { joyId = null; joyVec.x = 0; joyVec.y = 0; joyPuck.style.transform = "translate(0px,0px)"; } };
+    joyArea.addEventListener("pointerup", endJoy); joyArea.addEventListener("pointercancel", endJoy);
+    function moveJoy(cx, cy) {
+      let dx = cx - joyOrig.x, dy = cy - joyOrig.y, maxR = 40, d = Math.hypot(dx, dy);
       if (d > maxR) { dx = (dx / d) * maxR; dy = (dy / d) * maxR; }
       joyVec.x = dx / maxR; joyVec.y = dy / maxR;
-      joyPuck.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+      joyPuck.style.transform = `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;
     }
 
-    function wireBtn(id, fn) {
+    function bindBtn(id, fn) {
       const b = document.getElementById(id);
-      b.addEventListener("pointerdown", (e) => {
-        ensureAudio(); e.preventDefault(); e.stopPropagation();
-        b.classList.add("pressed");
-        fn();
-      });
-      const up = () => b.classList.remove("pressed");
-      b.addEventListener("pointerup", up);
-      b.addEventListener("pointercancel", up);
-      b.addEventListener("pointerleave", up);
+      b.addEventListener("pointerdown", (e) => { ensureAudio(); e.preventDefault(); e.stopPropagation(); b.classList.add("pressed"); fn(); });
+      const u = () => b.classList.remove("pressed");
+      b.addEventListener("pointerup", u); b.addEventListener("pointercancel", u); b.addEventListener("pointerleave", u);
     }
+    bindBtn("btnAttack", doAttack);
+    bindBtn("btnGrab", doGrabOrThrow);
+    bindBtn("btnRide", toggleRideChair);
+    bindBtn("btnUpper", doUppercut);
+    bindBtn("btnDash", doDash);
+    bindBtn("btnUlt", doUltimate);
+    document.getElementById("btnUpgrade").addEventListener("click", upgradePower);
 
-    wireBtn("btnAttack", doAttack);
-    wireBtn("btnGrab", doGrabOrThrow);
-    wireBtn("btnUpper", doUppercut);
-    wireBtn("btnDash", doDash);
-    wireBtn("btnUlt", doUltimate);
-
+    document.getElementById("btnAiParty").addEventListener("click", (e) => {
+      aiPartyEnabled = !aiPartyEnabled;
+      e.currentTarget.textContent = aiPartyEnabled ? "🤖 동료지원 ON" : "🤖 동료지원 OFF";
+      updateHud();
+    });
     document.getElementById("btnSound").addEventListener("click", (e) => {
-      soundOn = !soundOn;
-      e.currentTarget.textContent = soundOn ? "🔊" : "🔇";
+      soundOn = !soundOn; e.currentTarget.textContent = soundOn ? "🔊" : "🔇";
     });
     document.getElementById("btnReset").addEventListener("click", () => {
-      player.heldProp = null;
-      populateOffice();
-      spawnMainBoss(mainBoss.rosterIdx);
-      popText(player.x, 2.2, player.z, "사무실 복구 완료!", "#93c5fd", 22);
+      player.heldProp = null; player.ridingChair = null;
+      buildMegaWorld(); spawnAllBosses();
+      popText(player.x, 2.2, player.z, "7구역 사옥 복구 완료!", "#93c5fd", 22);
+    });
+
+    // Quick Emotes (Local + Multiplayer Broadcast!)
+    document.querySelectorAll(".emote-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const txt = btn.getAttribute("data-emote");
+        player.myEmote = txt; player.myEmoteT = 2.8;
+        sendNetPacket({ t: "emote", txt });
+        popText(player.x, 2.5, player.z, txt, "#a5f3fc", 22);
+      });
+    });
+
+    // Multiplayer Modal Controls
+    const multiModal = document.getElementById("multiModal");
+    document.getElementById("btnMulti").addEventListener("click", () => {
+      const lines = [`🟢 ${myNick} (나)`];
+      remotePlayers.forEach((rp) => lines.push(`🟢 ${rp.name} (실시간 접속중)`));
+      if (aiPartyEnabled) aiAllies.forEach((a) => lines.push(`🤖 ${a.name}`));
+      document.getElementById("peerListBox").innerHTML = lines.join("<br/>");
+      multiModal.classList.remove("hidden");
+    });
+    document.getElementById("btnCloseMulti").addEventListener("click", () => multiModal.classList.add("hidden"));
+    document.getElementById("btnJoinRoom").addEventListener("click", () => {
+      const nk = document.getElementById("inputNick").value.trim();
+      const rm = document.getElementById("inputRoom").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "") || "OPEN";
+      if (nk) { myNick = nk; localStorage.setItem("ob3d_nick", myNick); }
+      if (rm !== roomCode) {
+        roomCode = rm;
+        remotePlayers.clear();
+        const u = new URL(location.href); u.searchParams.set("room", roomCode); history.replaceState(null, "", u);
+        connectMqtt();
+      }
+      multiModal.classList.add("hidden");
+      popText(player.x, 2.3, player.z, `👥 [${roomCode}] 방 입장!`, "#c084fc", 21);
+    });
+    document.getElementById("btnCopyInvite").addEventListener("click", async () => {
+      const nk = document.getElementById("inputNick").value.trim();
+      if (nk) { myNick = nk; localStorage.setItem("ob3d_nick", myNick); }
+      const u = new URL(location.href); u.searchParams.set("room", roomCode);
+      try { await navigator.clipboard.writeText(u.toString()); } catch (_) {}
+      document.getElementById("btnCopyInvite").textContent = "✅ 초대 링크 복사 완료! 카톡에 붙여넣으세요";
+      setTimeout(() => { document.getElementById("btnCopyInvite").textContent = "🔗 카톡·친구 초대 링크 복사하기"; }, 2500);
     });
 
     // =========================================================================
-    // 11. SIMULATION STEP (Physics, Ragdoll Bowling, Nearest Weapon Highlight)
+    // 9. SIMULATION STEP (4 Bosses, Hazard Combos, Sudden Events, Net Sync!)
     // =========================================================================
-    function stepWorld(rawDt) {
+    let netSyncAcc = 0;
+
+    function stepSimulation(rawDt) {
       if (hitStop > 0) { hitStop -= rawDt; return; }
       const dt = slowMo > 0 ? rawDt * 0.30 : rawDt;
       if (slowMo > 0) slowMo -= rawDt;
 
       if (player.atkTimer > 0) player.atkTimer = Math.max(0, player.atkTimer - rawDt);
-      if (player.comboReset > 0) {
-        player.comboReset -= rawDt;
-        if (player.comboReset <= 0) { player.comboStep = 0; syncHud(); }
-      }
+      if (player.comboReset > 0 && (player.comboReset -= rawDt) <= 0) { player.comboStep = 0; updateHud(); }
       if (player.upperCd > 0) player.upperCd = Math.max(0, player.upperCd - rawDt);
       if (player.dashCd > 0) player.dashCd = Math.max(0, player.dashCd - rawDt);
-      document.getElementById("upperArc").style.strokeDashoffset = `${(169.6 * (player.upperCd / 1.8)).toFixed(1)}`;
+      if (player.myEmoteT > 0) player.myEmoteT -= rawDt;
+      document.getElementById("upperArc").style.strokeDashoffset = `${(169.6 * (player.upperCd / 1.6)).toFixed(1)}`;
 
-      if (comboTimer > 0) {
-        comboTimer -= rawDt;
-        if (comboTimer <= 0) { comboCount = 0; syncHud(); }
+      if (comboTimer > 0 && (comboTimer -= rawDt) <= 0) { comboCount = 0; document.getElementById("comboBadge").style.opacity = "0"; }
+      else if (comboCount >= 2) {
+        const cb = document.getElementById("comboBadge");
+        cb.textContent = `${comboCount} COMBO!`; cb.style.opacity = "1";
       }
 
-      // Player movement + Dash Tackle
+      // Sudden Corporate Events every ~22s!
+      if (activeEvent) {
+        eventRemain -= rawDt;
+        if (eventRemain <= 0) {
+          activeEvent = null;
+          document.getElementById("eventTicker").classList.add("hidden");
+        }
+      } else {
+        eventTimer -= rawDt;
+        if (eventTimer <= 0) {
+          eventTimer = 22.0;
+          const evs = [
+            { id: "payday", dur: 12, txt: "📢 월급날 보너스 타임! 모든 임원 타격 시 비자금 2.5배 드랍!!" },
+            { id: "caffeine", dur: 11, txt: "📢 점심 아메리카노 폭주! 이동속도·공격속도·파워 대폭 상승!!" }
+          ];
+          const pick = evs[(Math.random() * evs.length) | 0];
+          activeEvent = pick.id; eventRemain = pick.dur;
+          const tk = document.getElementById("eventTicker");
+          tk.textContent = pick.txt; tk.classList.remove("hidden");
+          playSfx("coin");
+        }
+      }
+
+      // Movement Input
       let ix = joyVec.x, iz = joyVec.y;
       if (keys["KeyW"] || keys["ArrowUp"]) iz -= 1;
       if (keys["KeyS"] || keys["ArrowDown"]) iz += 1;
       if (keys["KeyA"] || keys["ArrowLeft"]) ix -= 1;
       if (keys["KeyD"] || keys["ArrowRight"]) ix += 1;
       const ilen = Math.hypot(ix, iz);
+      const spdBoost = activeEvent === "caffeine" ? 1.32 : 1.0;
 
-      if (player.dashTimer > 0) {
-        player.dashTimer -= rawDt;
-        player.vx = Math.sin(player.yaw) * 16.5;
-        player.vz = Math.cos(player.yaw) * 16.5;
-        // Shoulder tackle enemies in path!
-        const hitTgt = findBestCombatTarget(1.55);
-        if (hitTgt && (hitTgt.ragdoll || 0) <= 0.1) {
-          applyHitToBossOrNpc(hitTgt, 15, Math.sin(player.yaw), Math.cos(player.yaw), 10.5, 3.8, "⚡ 태클!!", false);
+      if (player.ridingChair) {
+        const ch = player.ridingChair;
+        if (ilen > 0.05) {
+          const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
+          ch.vx += nx * 24.0 * dt * spdBoost;
+          ch.vz += nz * 24.0 * dt * spdBoost;
+          player.yaw = Math.atan2(ch.vx, ch.vz);
         }
-      } else if (ilen > 0.05) {
-        const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
-        const spd = 7.4;
-        player.vx = nx * spd; player.vz = nz * spd;
-        if (player.atkTimer <= 0.04) player.yaw = Math.atan2(nx, nz);
-        player.walk += dt * 13.5;
+        ch.vx *= Math.pow(0.18, dt); ch.vz *= Math.pow(0.18, dt);
+        ch.x = Math.max(-MAP_X, Math.min(MAP_X, ch.x + ch.vx * dt));
+        ch.z = Math.max(-MAP_Z, Math.min(MAP_Z, ch.z + ch.vz * dt));
+        ch.ry = player.yaw;
+        player.x = ch.x; player.z = ch.z;
+
+        const cSpd = Math.hypot(ch.vx, ch.vz);
+        if (cSpd > 6.5) {
+          bosses.forEach((b, idx) => {
+            if (!b.ko && b.ragdoll <= 0.1 && Math.hypot(b.x - ch.x, b.z - ch.z) < 1.55) {
+              hitBoss(b, idx, 32, ch.vx / cSpd, ch.vz / cSpd, 14.5, 6.8, "🪑 바퀴의자 뺑소니!!", true);
+            }
+          });
+        }
+      } else if (player.dashTimer > 0) {
+        player.dashTimer -= rawDt;
+        player.vx = Math.sin(player.yaw) * 18.0; player.vz = Math.cos(player.yaw) * 18.0;
+        player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + player.vx * dt));
+        player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + player.vz * dt));
       } else {
-        player.vx *= 0.74; player.vz *= 0.74;
+        if (ilen > 0.05) {
+          const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
+          player.vx = nx * 8.2 * spdBoost; player.vz = nz * 8.2 * spdBoost;
+          if (player.atkTimer <= 0.04) player.yaw = Math.atan2(nx, nz);
+          player.walk += dt * 14.0 * spdBoost;
+        } else { player.vx *= 0.74; player.vz *= 0.74; }
+        player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + player.vx * dt));
+        player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + player.vz * dt));
       }
 
-      player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + player.vx * dt));
-      player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + player.vz * dt));
-
-      // Find nearest grabbable weapon for sleek contextual button!
-      nearestProp = null;
-      if (!player.heldProp) {
-        let bestD = 2.5;
-        for (const p of props) {
-          if (!p.grabbable) continue;
-          const d = Math.hypot(p.x - player.x, p.z - player.z);
-          if (d < bestD) { bestD = d; nearestProp = p; }
-        }
+      // Detect nearest grabbable weapon & nearest rideable swivel chair
+      nearestProp = null; nearestChair = null;
+      let bestPD = 2.6, bestCD = 2.6;
+      for (const p of props) {
+        if (p === player.heldProp || p === player.ridingChair) continue;
+        const d = Math.hypot(p.x - player.x, p.z - player.z);
+        if (p.grabbable && d < bestPD) { bestPD = d; nearestProp = p; }
+        if (p.rideable && d < bestCD) { bestCD = d; nearestChair = p; }
       }
       const btnGrab = document.getElementById("btnGrab");
       if (player.heldProp) {
-        btnGrab.classList.add("ready-highlight");
-        document.getElementById("grabIcon").textContent = "🎯";
-        document.getElementById("grabText").textContent = "던지기!";
+        btnGrab.classList.add("active-ring");
+        document.getElementById("grabIcon").textContent = "🎯"; document.getElementById("grabText").textContent = "던지기!";
       } else if (nearestProp) {
-        btnGrab.classList.add("ready-highlight");
-        document.getElementById("grabIcon").textContent = nearestProp.icon;
-        document.getElementById("grabText").textContent = "집기";
+        btnGrab.classList.add("active-ring");
+        document.getElementById("grabIcon").textContent = nearestProp.icon; document.getElementById("grabText").textContent = "집기";
       } else {
-        btnGrab.classList.remove("ready-highlight");
-        document.getElementById("grabIcon").textContent = "🖐️";
-        document.getElementById("grabText").textContent = "집기";
+        btnGrab.classList.remove("active-ring");
+        document.getElementById("grabIcon").textContent = "🖐️"; document.getElementById("grabText").textContent = "집기";
       }
 
-      // Main Boss update
-      if (mainBoss.flash > 0) mainBoss.flash -= rawDt;
-      if (mainBoss.koState) {
-        mainBoss.respawn -= rawDt;
-        if (mainBoss.respawn <= 0) spawnMainBoss(mainBoss.rosterIdx + 1);
-      }
-      stepRagdollOrAI(mainBoss, dt, 2.4);
+      const btnRide = document.getElementById("btnRide");
+      btnRide.classList.toggle("chair-ring", !!(player.ridingChair || nearestChair));
+      document.getElementById("rideText").textContent = player.ridingChair ? "하차" : "의자탑승";
 
-      mainBoss.speechTimer -= rawDt;
-      if (mainBoss.speechTimer <= 0 && !mainBoss.koState) {
-        const ts = BOSS_ROSTER[mainBoss.rosterIdx].taunts;
-        mainBoss.speech = ts[(Math.random() * ts.length) | 0];
-        mainBoss.hurtSpeech = false;
-        mainBoss.speechTimer = 3.6;
-      }
+      // Hazard cooldowns
+      for (const hz of hazards) if (hz.cd > 0) hz.cd -= dt;
 
-      // Spawn HR Security Guards when Wanted >= 2
-      const guardCount = npcs.filter((n) => n.role === "guard").length;
-      if (wanted >= 2 && guardCount < Math.min(4, wanted)) {
-        guardTimer -= dt;
-        if (guardTimer <= 0) {
-          guardTimer = 6.5;
-          npcs.push({
-            role: "guard", name: "보안요원",
-            x: 0, y: 2.0, z: 15.5, vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, yaw: Math.PI, walk: 0,
-            hp: 50, maxHp: 50, suit: [0.12, 0.22, 0.45], cheer: 0, ragdoll: 0, flash: 0
-          });
+      // Update All 4 Simultaneous Bosses + Environmental Hazard Combos!
+      bosses.forEach((b, idx) => {
+        if (b.flash > 0) b.flash -= rawDt;
+        if (b.shockT > 0) {
+          b.shockT -= dt;
+          if (Math.random() < 0.35) spawnParticles(b.x, b.y + 1.0, b.z, 1, "shock");
         }
-      }
-
-      // NPCs update
-      for (const n of npcs) {
-        if (n.flash > 0) n.flash -= rawDt;
-        if (n.cheer > 0) n.cheer -= rawDt;
-        if (n.role === "coworker") {
-          if (n.ragdoll > 0 || n.y > 0.01) {
-            stepRagdollOrAI(n, dt, 0);
-          } else {
-            n.rx *= 0.8; n.rz *= 0.8;
-            // Face toward nearby action!
-            n.yaw = Math.atan2(mainBoss.x - n.x, mainBoss.z - n.z);
-          }
-        } else {
-          stepRagdollOrAI(n, dt, n.role === "guard" ? 3.1 : 2.1);
-        }
-      }
-
-      // Props & Thrown Weapon Explosions!
-      for (const p of props) {
-        if (p === player.heldProp) continue;
-        if (!p.resting) {
-          p.vy -= 21.0 * dt;
-          p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
-          p.rx += p.vrx * dt; p.rz += p.vrz * dt;
-          if (Math.abs(p.x) > MAP_X) { p.x = Math.sign(p.x) * MAP_X; p.vx *= -0.55; }
-          if (Math.abs(p.z) > MAP_Z) { p.z = Math.sign(p.z) * MAP_Z; p.vz *= -0.55; }
-          if (p.y <= 0) {
-            p.y = 0;
-            if (Math.abs(p.vy) > 2.6) { p.vy = -p.vy * 0.35; playSfx("crash"); }
-            else p.vy = 0;
-            p.vx *= 0.82; p.vz *= 0.82; p.vrx *= 0.8; p.vrz *= 0.8; p.rx *= 0.88; p.rz *= 0.88;
+        if (b.ko) {
+          b.respawn -= rawDt;
+          if (b.respawn <= 0) {
+            b.ko = false; b.hp = b.maxHp;
+            b.x = b.def.homeX; b.y = 3.0; b.z = b.def.homeZ;
+            b.vx = b.vy = b.vz = 0;
           }
         }
 
-        // Thrown weapon missile AOE hit!
-        if (p.hot && p.hot > 0) {
-          p.hot -= dt;
-          const targets = [mainBoss, ...npcs.filter((n) => n.role !== "coworker")];
-          for (const t of targets) {
-            if (t.koState) continue;
-            if (Math.hypot(p.x - t.x, p.z - t.z) < p.radius + 0.95 && Math.abs(p.y - (t.y + 0.9)) < 1.5) {
-              p.hot = 0;
-              const sl = Math.hypot(p.vx, p.vz) || 1;
-              // AOE splash on all nearby enemies!
-              for (const sub of targets) {
-                if (!sub.koState && Math.hypot(p.x - sub.x, p.z - sub.z) <= p.aoe) {
-                  applyHitToBossOrNpc(sub, p.dmg, p.vx / sl, p.vz / sl, 13.5, 7.8, `${p.icon} ${p.label} 폭발!!`, true);
+        if (b.ragdoll > 0 || b.y > 0.01 || b.ko) {
+          b.ragdoll = Math.max(0, b.ragdoll - dt);
+          b.vy -= 22.0 * dt;
+          b.x += b.vx * dt; b.y += b.vy * dt; b.z += b.vz * dt;
+          b.rx += b.vrx * dt; b.rz += b.vrz * dt;
+          if (Math.abs(b.x) > MAP_X) { b.x = Math.sign(b.x) * MAP_X; b.vx *= -0.65; }
+          if (Math.abs(b.z) > MAP_Z) { b.z = Math.sign(b.z) * MAP_Z; b.vz *= -0.65; }
+          if (b.y <= 0) {
+            b.y = 0;
+            if (Math.abs(b.vy) > 2.8) b.vy = -b.vy * 0.4; else b.vy = 0;
+            b.vx *= 0.82; b.vz *= 0.82;
+          }
+
+          // Check Environmental Hazard Collisions while Boss is flying!!
+          if (!b.ko && Math.hypot(b.vx, b.vz) > 2.5) {
+            for (const hz of hazards) {
+              if (hz.cd <= 0 && Math.hypot(b.x - hz.x, b.z - hz.z) < hz.radius + 0.9) {
+                hz.cd = 1.6;
+                if (hz.kind === "server") {
+                  b.shockT = 2.6; b.hp = Math.max(1, b.hp - 45);
+                  playSfx("shock"); addCash(65000);
+                  spawnParticles(b.x, 1.2, b.z, 16, "shock");
+                  popText(b.x, 2.5, b.z, "⚡ 고전압 서버 감전!! +₩65,000", "#38bdf8", 27);
+                } else if (hz.kind === "copier") {
+                  b.hp = Math.max(1, b.hp - 38);
+                  playSfx("heavy"); addCash(50000);
+                  spawnParticles(hz.x, 1.3, hz.z, 24, "paper");
+                  popText(hz.x, 2.4, hz.z, "🖨️ 굴욕 얼굴스캔 20장 출력!!", "#4ade80", 25);
                 }
               }
-              if (p.fx) burstParticles(p.x, p.y + 0.4, p.z, 16, p.fx);
-              p.vx *= -0.35; p.vz *= -0.35; p.vy = 4.5;
-              break;
             }
           }
+        } else if (b.shockT <= 0) {
+          b.rx *= 0.8; b.rz *= 0.8;
+          if (b.stun > 0) b.stun -= dt;
+          else {
+            const dx = player.x - b.x, dz = player.z - b.z, d = Math.hypot(dx, dz) || 1;
+            if (d < 17.5) {
+              b.yaw = Math.atan2(dx, dz);
+              if (d > 1.9) { b.x += (dx / d) * b.def.speed * dt; b.z += (dz / d) * b.def.speed * dt; b.walk += dt * 8.0; }
+            }
+          }
+        }
+
+        b.speechT -= rawDt;
+        if (b.speechT <= 0 && !b.ko) {
+          b.speech = b.def.taunts[(Math.random() * b.def.taunts.length) | 0];
+          b.hurtSpeech = false; b.speechT = 4.0;
+        }
+      });
+
+      // Co-op AI Raid Teammates helping jump the nearest Boss!
+      if (aiPartyEnabled) {
+        const target = bosses[focusBossIdx] && !bosses[focusBossIdx].ko ? bosses[focusBossIdx] : bosses.find((x) => !x.ko);
+        for (const a of aiAllies) {
+          if (a.atkT > 0) a.atkT -= dt;
+          if (a.cd > 0) a.cd -= dt;
+          if (target) {
+            const dx = target.x - a.x, dz = target.z - a.z, d = Math.hypot(dx, dz) || 1;
+            a.yaw = Math.atan2(dx, dz);
+            if (d > 1.85) {
+              a.x += (dx / d) * 6.2 * dt; a.z += (dz / d) * 6.2 * dt; a.walk += dt * 12;
+            } else if (a.cd <= 0) {
+              a.cd = 1.35 + Math.random() * 0.6; a.atkT = 0.24;
+              hitBoss(target, target.def.idx, 9, dx / d, dz / d, 4.2, 1.8, "🤝 다굴!", false, false);
+            }
+          }
+        }
+      }
+
+      // Interpolate Real Online Players & prune disconnected peers
+      const nowMs = performance.now();
+      remotePlayers.forEach((rp, key) => {
+        if (nowMs - rp.lastSeen > 12000) { remotePlayers.delete(key); return; }
+        const dx = rp.tx - rp.x, dz = rp.tz - rp.z;
+        if (Math.hypot(dx, dz) > 0.03) rp.walk += dt * 13;
+        rp.x += dx * 0.25; rp.z += dz * 0.25;
+        if (rp.atkTimer > 0) rp.atkTimer -= rawDt;
+        if (rp.emoteT > 0) rp.emoteT -= rawDt;
+      });
+
+      // Props & Thrown Missile Hits
+      for (const p of props) {
+        if (p === player.heldProp || p === player.ridingChair) continue;
+        if (!p.resting) {
+          p.vy -= 21 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
+          p.rx += p.vrx * dt; p.rz += p.vrz * dt;
+          if (p.y <= 0) { p.y = 0; p.vy = Math.abs(p.vy) > 2.8 ? -p.vy * 0.35 : 0; p.vx *= 0.82; p.vz *= 0.82; p.rx *= 0.86; p.rz *= 0.86; }
+        }
+        if (p.hot && p.hot > 0) {
+          p.hot -= dt;
+          bosses.forEach((b, idx) => {
+            if (!b.ko && p.hot > 0 && Math.hypot(p.x - b.x, p.z - b.z) < p.radius + 1.1) {
+              p.hot = 0;
+              const sl = Math.hypot(p.vx, p.vz) || 1;
+              hitBoss(b, idx, p.dmg * 1.25, p.vx / sl, p.vz / sl, 14.5, 8.0, `${p.icon} ${p.label} 직격!!`, true);
+              p.vx *= -0.3; p.vz *= -0.3; p.vy = 4.5;
+            }
+          });
         }
       }
 
       // Particles
       for (let i = particles.length - 1; i >= 0; i--) {
-        const pt = particles[i];
-        pt.life -= dt;
+        const pt = particles[i]; pt.life -= dt;
         if (pt.life <= 0) { particles.splice(i, 1); continue; }
         pt.vy -= 10.5 * dt;
         if (pt.flutter && pt.vy < 0) { pt.vy *= 0.91; pt.vx += Math.sin(pt.life * 9 + i) * 3.5 * dt; }
         pt.x += pt.vx * dt; pt.y += pt.vy * dt; pt.z += pt.vz * dt;
         pt.rx += pt.vrx * dt; pt.ry += pt.vry * dt;
-        if (pt.y < 0.02) { pt.y = 0.02; pt.vy = 0; pt.vx *= 0.75; pt.vz *= 0.75; pt.rx = 0; }
+        if (pt.y < 0.03) { pt.y = 0.03; pt.vy = 0; pt.vx *= 0.75; pt.vz *= 0.75; pt.rx = 0; }
       }
-    }
 
-    function stepRagdollOrAI(ent, dt, moveSpd) {
-      if (ent.ragdoll > 0 || ent.y > 0.01 || ent.koState) {
-        ent.ragdoll = Math.max(0, ent.ragdoll - dt);
-        ent.vy = (ent.vy || 0) - 22.0 * dt;
-        ent.x += ent.vx * dt; ent.y += ent.vy * dt; ent.z += ent.vz * dt;
-        ent.rx += (ent.vrx || 0) * dt; ent.rz += (ent.vrz || 0) * dt;
-
-        if (Math.abs(ent.x) > MAP_X) { ent.x = Math.sign(ent.x) * MAP_X; ent.vx *= -0.65; playSfx("crash"); }
-        if (Math.abs(ent.z) > MAP_Z) { ent.z = Math.sign(ent.z) * MAP_Z; ent.vz *= -0.65; playSfx("crash"); }
-        if (ent.y <= 0) {
-          ent.y = 0;
-          if (Math.abs(ent.vy) > 2.8) { ent.vy = -ent.vy * 0.4; playSfx("crash"); }
-          else ent.vy = 0;
-          ent.vx *= 0.82; ent.vz *= 0.82;
-        }
-
-        // Flying boss bowls over props AND other NPCs!
-        if (Math.hypot(ent.vx, ent.vz) > 2.5) {
-          for (const p of props) {
-            if (p === player.heldProp) continue;
-            if (Math.hypot(p.x - ent.x, p.z - ent.z) < p.radius + 0.75) {
-              p.resting = false;
-              p.vx += ent.vx * (1.1 / p.mass);
-              p.vz += ent.vz * (1.1 / p.mass);
-              p.vy = Math.max(p.vy, 3.2 / p.mass);
-              p.vrx = (Math.random() - 0.5) * 12;
-            }
-          }
-        }
-      } else {
-        ent.rx *= 0.8; ent.rz *= 0.8;
-        if (ent.stun && ent.stun > 0) { ent.stun -= dt; return; }
-        const dx = player.x - ent.x, dz = player.z - ent.z, d = Math.hypot(dx, dz) || 1;
-        if (d < 15.0) {
-          ent.yaw = Math.atan2(dx, dz);
-          if (d > 1.75) {
-            ent.x += (dx / d) * moveSpd * dt;
-            ent.z += (dz / d) * moveSpd * dt;
-            ent.walk += dt * 8.0;
-          }
-        }
+      // Broadcast Multiplayer State at 12Hz!
+      netSyncAcc += rawDt;
+      if (netSyncAcc >= 0.085) {
+        netSyncAcc = 0;
+        sendNetPacket({
+          t: "state", n: myNick, c: mySuitTint,
+          x: +player.x.toFixed(2), y: +player.y.toFixed(2), z: +player.z.toFixed(2),
+          yw: +player.yaw.toFixed(2), atk: player.netJustAttacked ? 1 : 0,
+          rd: !!player.ridingChair, pw: player.powerLv
+        });
+        player.netJustAttacked = false;
       }
     }
 
     // =========================================================================
-    // 12. WEBGL RENDER PIPELINE
+    // 10. RENDER PIPELINE
     // =========================================================================
-    const projM = mId(), viewM = mId(), vpM = mId(), rootM = mId(), partM = mId(), worldM = mId(), weaponM = mId();
+    const projM = mId(), viewM = mId(), vpM = mId(), rootM = mId(), partM = mId(), worldM = mId(), wepM = mId();
     const norm3 = new Float32Array(9);
-    let camX = -5, camZ = 7.5;
+    let camX = 0, camZ = 4.5;
 
     function drawMesh(mesh, mat, opts = {}) {
       gl.bindBuffer(gl.ARRAY_BUFFER, mesh.vbo);
@@ -1985,7 +2033,6 @@
       gl.vertexAttribPointer(loc.aSmooth, 3, gl.FLOAT, false, st, 24);
       gl.vertexAttribPointer(loc.aUV, 2, gl.FLOAT, false, st, 36);
       gl.vertexAttribPointer(loc.aColor, 3, gl.FLOAT, false, st, 44);
-
       gl.uniformMatrix4fv(loc.uModel, false, mat);
       nMat3(norm3, mat);
       gl.uniformMatrix3fv(loc.uNormalMat, false, norm3);
@@ -1993,127 +2040,91 @@
       const outW = opts.outline !== undefined ? opts.outline : 0.022;
       if (outW > 0) {
         gl.cullFace(gl.FRONT);
-        gl.uniform1f(loc.uOutline, outW);
-        gl.uniform1f(loc.uUnlit, 1.0);
-        gl.uniform3f(loc.uTint, 0.05, 0.07, 0.12);
-        gl.uniform1f(loc.uAlpha, 1.0);
+        gl.uniform1f(loc.uOutline, outW); gl.uniform1f(loc.uUnlit, 1.0);
+        gl.uniform3f(loc.uTint, 0.05, 0.07, 0.12); gl.uniform1f(loc.uAlpha, 1.0);
         gl.drawArrays(gl.TRIANGLES, 0, mesh.count);
       }
-
       gl.cullFace(gl.BACK);
-      gl.uniform1f(loc.uOutline, 0.0);
-      gl.uniform1f(loc.uUnlit, opts.unlit ? 1.0 : 0.0);
-      gl.uniform1f(loc.uUseTex, opts.faceTile !== undefined ? 1.0 : 0.0);
-      if (opts.faceTile !== undefined) {
-        const t = opts.faceTile;
-        gl.uniform2f(loc.uFaceOffset, (t % 4) * 0.25, Math.floor(t / 4) * 0.5);
-      }
+      gl.uniform1f(loc.uOutline, 0.0); gl.uniform1f(loc.uUnlit, opts.unlit ? 1.0 : 0.0);
+      gl.uniform1f(loc.uUseTex, opts.face !== undefined ? 1.0 : 0.0);
+      if (opts.face !== undefined) gl.uniform2f(loc.uFaceOffset, (opts.face % 4) * 0.25, Math.floor(opts.face / 4) * 0.5);
       gl.uniform3fv(loc.uTint, opts.tint || [1, 1, 1]);
       gl.uniform1f(loc.uFlash, opts.flash || 0.0);
       gl.uniform1f(loc.uAlpha, opts.alpha ?? 1.0);
       gl.drawArrays(gl.TRIANGLES, 0, mesh.count);
     }
 
-    function renderSDChar(opts) {
-      const {
-        x, y, z, rx = 0, yaw = 0, rz = 0, scale = 1,
-        torsoMesh, suitTint, hairMesh, faceTile,
-        walk = 0, moveAmt = 0, swingL = 0, swingR = 0, fistScaleR = 1,
-        heldWeapon = null, flash = 0, cheerJump = 0
-      } = opts;
+    function drawCharacter(o) {
+      const sc = o.scale || 1;
+      const legSw = Math.sin(o.walk || 0) * 0.65 * (o.moveAmt || 0);
+      mTRS(rootM, o.x, o.y + 0.44 * sc, o.z, o.rx || 0, o.yaw || 0, o.rz || 0, sc * (o.wideX || 1), sc, sc);
+      drawMesh(o.torso, rootM, { tint: o.tint, flash: o.flash });
 
-      const legSwing = Math.sin(walk) * 0.65 * moveAmt;
-      mTRS(rootM, x, y + 0.44 * scale + cheerJump, z, rx, yaw, rz, scale, scale, scale);
-      drawMesh(torsoMesh, rootM, { tint: suitTint, flash });
-
-      // Expressive Webtoon SD Head!
-      mTRS(partM, 0, 0.68, 0, 0, 0, 0);
+      // Head (keep head un-widened even on Hulk Bonbujang!)
+      mTRS(partM, 0, 0.69, 0, 0, 0, 0, 1 / (o.wideX || 1), 1, 1);
       mMul(worldM, rootM, partM);
-      drawMesh(M.sdHead, worldM, { faceTile, flash });
-      drawMesh(hairMesh, worldM, { flash });
+      drawMesh(M.sdHead, worldM, { face: o.face, flash: o.flash });
+      drawMesh(o.hat, worldM, { flash: o.flash });
 
-      // Left & Right Curved Arms
-      mTRS(partM, -0.35, 0.60, 0, swingL || legSwing, 0, 0.22);
+      const fScale = o.fistScale || 1;
+      mTRS(partM, -0.36, 0.60, 0, o.swL || legSw, 0, 0.22);
       mMul(worldM, rootM, partM);
-      drawMesh(M.limbArm, worldM, { tint: suitTint, flash });
+      drawMesh(M.limbArm, worldM, { tint: o.tint, flash: o.flash });
 
-      mTRS(partM, 0.35, 0.60, 0, swingR || -legSwing, 0, -0.22, fistScaleR, fistScaleR, fistScaleR);
+      mTRS(partM, 0.36, 0.60, 0, o.swR || -legSw, 0, -0.22, fScale, fScale, fScale);
       mMul(worldM, rootM, partM);
-      drawMesh(M.limbArm, worldM, { tint: suitTint, flash });
+      drawMesh(M.limbArm, worldM, { tint: o.tint, flash: o.flash });
 
-      // Attach held 3D weapon directly to Player's right hand!
-      if (heldWeapon) {
-        mTRS(partM, 0.0, -0.38, 0.12, Math.PI * 0.45, 0, 0, 0.85, 0.85, 0.85);
-        mMul(weaponM, worldM, partM);
-        drawMesh(heldWeapon.mesh, weaponM, { outline: 0.018 });
+      if (o.heldMesh) {
+        mTRS(partM, 0, -0.38, 0.12, Math.PI * 0.45, 0, 0, 0.85, 0.85, 0.85);
+        mMul(wepM, worldM, partM);
+        drawMesh(o.heldMesh, wepM, { outline: 0.016 });
       }
 
-      // Legs
-      mTRS(partM, -0.14, 0.02, 0, -legSwing, 0, 0);
-      mMul(worldM, rootM, partM);
-      drawMesh(M.limbLeg, worldM, { flash });
-
-      mTRS(partM, 0.14, 0.02, 0, legSwing, 0, 0);
-      mMul(worldM, rootM, partM);
-      drawMesh(M.limbLeg, worldM, { flash });
+      mTRS(partM, -0.15, 0.02, 0, -legSw, 0, 0); mMul(worldM, rootM, partM); drawMesh(M.limbLeg, worldM, { flash: o.flash });
+      mTRS(partM,  0.15, 0.02, 0,  legSw, 0, 0); mMul(worldM, rootM, partM); drawMesh(M.limbLeg, worldM, { flash: o.flash });
     }
 
     // =========================================================================
-    // 13. MAIN GAME LOOP
+    // 11. MAIN GAME LOOP
     // =========================================================================
-    populateOffice();
-    spawnMainBoss(0);
+    buildMegaWorld();
+    spawnAllBosses();
+    updateHud();
 
-    let prev = performance.now(), fCnt = 0, fAcc = 0;
+    let prev = performance.now(), rAcc = 0;
 
     function loop(now) {
       const rawDt = Math.min(0.05, (now - prev) / 1000);
       prev = now;
       const tSec = now * 0.001;
 
-      fCnt++; fAcc += rawDt;
-      if (fAcc >= 0.5) {
-        document.getElementById("fpsPill").textContent = `${Math.round(fCnt / fAcc)} FPS`;
-        fCnt = 0; fAcc = 0;
-        renderRadar();
-        syncHud();
-      }
+      rAcc += rawDt;
+      if (rAcc >= 0.35) { rAcc = 0; drawRadar(); updateHud(); }
 
-      stepWorld(rawDt);
+      stepSimulation(rawDt);
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cw = Math.floor(window.innerWidth * dpr), ch = Math.floor(window.innerHeight * dpr);
       if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
       gl.viewport(0, 0, cw, ch);
 
-      // Smooth Camera framing Player + nearby target
-      const dToBoss = Math.hypot(mainBoss.x - player.x, mainBoss.z - player.z);
-      const bossWeight = dToBoss < 13 ? 0.24 : 0.06;
-      const tx = player.x * (1 - bossWeight) + mainBoss.x * bossWeight;
-      const tz = player.z * (1 - bossWeight) + mainBoss.z * bossWeight;
-      camX += (tx - camX) * 0.11;
-      camZ += (tz - camZ) * 0.11;
-
+      camX += (player.x - camX) * 0.12;
+      camZ += (player.z - camZ) * 0.12;
       const portrait = window.innerHeight > window.innerWidth;
-      const zoom = (portrait ? 3.2 : 0.4) + (slowMo > 0 ? -2.0 : 0.0);
+      const zoom = (portrait ? 3.8 : 0.8) + (player.ridingChair ? 1.8 : 0) + (slowMo > 0 ? -2.0 : 0);
       let sx = 0, sy = 0;
-      if (shakeT > 0) {
-        shakeT = Math.max(0, shakeT - rawDt);
-        sx = (Math.random() - 0.5) * 2 * shakeMag;
-        sy = (Math.random() - 0.5) * 2 * shakeMag;
-        if (shakeT <= 0) shakeMag = 0;
-      }
+      if (shakeT > 0) { shakeT = Math.max(0, shakeT - rawDt); sx = (Math.random() - 0.5) * 2 * shakeMag; sy = (Math.random() - 0.5) * 2 * shakeMag; if (shakeT <= 0) shakeMag = 0; }
 
-      const camPos = [camX + sx, 10.6 + zoom * 0.75 + sy, camZ + 10.8 + zoom];
-      mPersp(projM, portrait ? 0.90 : 0.74, cw / ch, 0.4, 80.0);
+      const camPos = [camX + sx, 11.4 + zoom * 0.78 + sy, camZ + 11.6 + zoom];
+      mPersp(projM, portrait ? 0.90 : 0.75, cw / ch, 0.4, 95.0);
       mLook(viewM, camPos, [camX, 0.9, camZ], [0, 1, 0]);
       mMul(vpM, projM, viewM);
       lastVP.set(vpM);
 
-      gl.clearColor(0.06, 0.08, 0.14, 1.0);
+      gl.clearColor(0.05, 0.07, 0.13, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.enable(gl.DEPTH_TEST);
-      gl.enable(gl.CULL_FACE);
+      gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
 
       gl.useProgram(prog);
       gl.uniformMatrix4fv(loc.uVP, false, vpM);
@@ -2122,211 +2133,177 @@
       gl.bindTexture(gl.TEXTURE_2D, atlasTex);
       gl.uniform1i(loc.uTex, 0);
 
-      // 1. Expanded 4-Zone Office HQ
+      // 1. 7-Zone Mega HQ
       mTRS(rootM, 0, 0, 0, 0, 0, 0);
-      drawMesh(M.officeHQ, rootM, { outline: 0.0 });
+      drawMesh(M.megaHQ, rootM, { outline: 0 });
 
-      // 2. Ground Blob Shadows + Contextual Cyan Ring under Nearest Weapon!
-      gl.enable(gl.BLEND);
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-      gl.depthMask(false);
-
-      const shadowAt = (x, z, r) => {
-        mTRS(rootM, x, 0.018, z, 0, 0, 0, r * 2, 1, r * 2);
-        drawMesh(M.shadow, rootM, { outline: 0, unlit: true, tint: [0.03, 0.05, 0.09], alpha: 0.44 });
+      // 2. Ground Shadows & Contextual Rings
+      gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+      const shd = (x, z, r) => {
+        mTRS(rootM, x, 0.02, z, 0, 0, 0, r * 2, 1, r * 2);
+        drawMesh(M.shadow, rootM, { outline: 0, unlit: true, tint: [0.03, 0.05, 0.09], alpha: 0.45 });
       };
-      shadowAt(player.x, player.z, 0.48);
-      shadowAt(mainBoss.x, mainBoss.z, 0.62);
-      for (const n of npcs) shadowAt(n.x, n.z, 0.46);
-      for (const p of props) if (p !== player.heldProp) shadowAt(p.x, p.z, p.shadowR);
+      shd(player.x, player.z, 0.52);
+      bosses.forEach((b) => shd(b.x, b.z, 0.58 * b.def.scale));
+      remotePlayers.forEach((rp) => shd(rp.x, rp.z, 0.50));
+      if (aiPartyEnabled) aiAllies.forEach((a) => shd(a.x, a.z, 0.48));
 
-      if (nearestProp && !player.heldProp) {
-        const pulse = 1.0 + Math.sin(tSec * 7) * 0.12;
-        mTRS(rootM, nearestProp.x, 0.03, nearestProp.z, 0, tSec * 2, 0, pulse, 1, pulse);
+      if (nearestProp && !player.heldProp && !player.ridingChair) {
+        mTRS(rootM, nearestProp.x, 0.03, nearestProp.z, 0, tSec * 2.5, 0, 1.1, 1, 1.1);
         drawMesh(M.ring, rootM, { outline: 0, unlit: true, tint: [0.22, 0.78, 0.98], alpha: 0.85 });
       }
-      gl.depthMask(true);
-      gl.disable(gl.BLEND);
+      if (player.powerLv >= 2) {
+        const pulse = 0.9 + Math.sin(tSec * 8) * 0.12;
+        mTRS(rootM, player.x, 0.035, player.z, 0, -tSec * 3, 0, pulse, 1, pulse);
+        drawMesh(M.ring, rootM, { outline: 0, unlit: true, tint: [0.98, 0.82, 0.22], alpha: 0.75 });
+      }
+      gl.depthMask(true); gl.disable(gl.BLEND);
 
-      // 3. Props & Weapons
+      // 3. Environmental Hazards & Props
+      for (const hz of hazards) {
+        mTRS(rootM, hz.x, hz.y, hz.z, 0, 0, 0);
+        drawMesh(hz.mesh, rootM, { outline: 0.022 });
+      }
       for (const p of props) {
         if (p === player.heldProp) continue;
         mTRS(rootM, p.x, p.y, p.z, p.rx, p.ry, p.rz);
         drawMesh(p.mesh, rootM, { outline: 0.020 });
       }
 
-      // 4. Player (Webtoon SD Hero!)
+      // 4. Local Player
       {
-        const pMove = Math.min(1, Math.hypot(player.vx, player.vz) / 6.0);
-        let pYaw = player.yaw, swL = 0, swR = 0, fScale = 1;
-        if (player.atkTimer > 0) {
-          const pr = 1 - player.atkTimer / player.atkDur;
-          const arc = Math.sin(pr * Math.PI);
-          if (player.atkType === "spin" || player.atkType === "weaponSwing") {
-            pYaw += pr * Math.PI * 2;
-            swR = -1.75 * arc; fScale = 1 + 0.45 * arc;
-          } else if (player.atkType === "jab") {
-            swL = -1.65 * arc;
-          } else if (player.atkType === "upper") {
-            swR = -2.45 * arc; fScale = 1 + 0.65 * arc;
-          } else {
-            swR = -1.75 * arc; fScale = 1 + 0.50 * arc;
-          }
+        const mv = Math.min(1, Math.hypot(player.vx, player.vz) / 6.5);
+        let py = player.yaw, swL = 0, swR = 0, fs = 1 + (player.powerLv - 1) * 0.22;
+        if (player.atkTimer > 0 && !player.ridingChair) {
+          const pr = 1 - player.atkTimer / player.atkDur, arc = Math.sin(pr * Math.PI);
+          if (player.atkType === "spin" || player.atkType === "weaponSwing") { py += pr * 6.28; swR = -1.8 * arc; fs += 0.45 * arc; }
+          else if (player.atkType === "jab") swL = -1.65 * arc;
+          else { swR = -2.1 * arc; fs += 0.6 * arc; }
         }
-        renderSDChar({
-          x: player.x, y: player.y, z: player.z, yaw: pYaw, scale: 1.0,
-          torsoMesh: M.torsoShirt, suitTint: [1, 1, 1], hairMesh: M.hairHero,
-          faceTile: player.atkTimer > 0 ? 1 : 0,
-          walk: player.walk, moveAmt: pMove, swingL: swL, swingR: swR, fistScaleR: fScale,
-          heldWeapon: player.heldProp
+        drawCharacter({
+          x: player.x, y: player.ridingChair ? 0.36 : player.y, z: player.z, yaw: py,
+          scale: 1.0 + (player.powerLv - 1) * 0.04,
+          torso: M.torsoWorker, tint: [1, 1, 1], hat: M.hairHero,
+          face: player.atkTimer > 0 ? 1 : 0, walk: player.walk, moveAmt: player.ridingChair ? 0 : mv,
+          swL, swR, fistScale: fs, heldMesh: player.heldProp ? player.heldProp.mesh : null
         });
       }
 
-      // 5. Main Boss (Webtoon SD Boss with Dynamic Face Expressions 2 / 3 / 4!)
-      {
-        const cfg = BOSS_ROSTER[mainBoss.rosterIdx];
-        const bRag = mainBoss.ragdoll > 0 || mainBoss.y > 0.05 || mainBoss.koState;
-        const bFace = mainBoss.koState ? 4 : (bRag || mainBoss.flash > 0 ? 3 : (mainBoss.stun > 0 ? 4 : 2));
-        const flail = bRag ? Math.sin(tSec * 24) * 1.4 : 0;
-        renderSDChar({
-          x: mainBoss.x, y: mainBoss.y, z: mainBoss.z,
-          rx: mainBoss.rx, yaw: mainBoss.yaw, rz: mainBoss.rz, scale: cfg.scale,
-          torsoMesh: M.torsoBoss, suitTint: cfg.suit, hairMesh: M.hairBossBald,
-          faceTile: bFace, walk: mainBoss.walk, moveAmt: bRag ? 0 : 0.6,
-          swingL: flail, swingR: -flail, flash: mainBoss.flash > 0 ? 0.85 : 0
+      // 5. Real Online Remote Players & AI Co-op Teammates!
+      const remoteHtml = [];
+      const pushTag = (wx, wy, wz, text, isEmote = false) => {
+        const sc = project2D(wx, wy, wz, vpM, window.innerWidth, window.innerHeight);
+        if (sc && sc.x > 20 && sc.x < window.innerWidth - 20 && sc.y > 40 && sc.y < window.innerHeight - 30) {
+          remoteHtml.push(`<div class="${isEmote ? 'speech-pill emote' : 'player-tag'}" style="left:${sc.x.toFixed(0)}px;top:${sc.y.toFixed(0)}px;">${text}</div>`);
+        }
+      };
+      if (player.myEmoteT > 0) pushTag(player.x, 2.35, player.z, player.myEmote, true);
+
+      remotePlayers.forEach((rp) => {
+        if (rp.riding) { mTRS(rootM, rp.x, 0, rp.z, 0, rp.yaw, 0); drawMesh(M.chair, rootM); }
+        drawCharacter({
+          x: rp.x, y: rp.riding ? 0.36 : rp.y, z: rp.z, yaw: rp.yaw, scale: 1.0,
+          torso: M.torsoWorker, tint: rp.suit, hat: M.hairHero, face: rp.atkTimer > 0 ? 1 : 0,
+          walk: rp.walk, moveAmt: 0.7, swR: rp.atkTimer > 0 ? -1.7 : 0, fistScale: 1 + (rp.pwr - 1) * 0.2
         });
-      }
+        pushTag(rp.x, 2.05, rp.z, `🟢 ${rp.name}`);
+        if (rp.emoteT > 0) pushTag(rp.x, 2.48, rp.z, rp.emote, true);
+      });
 
-      // 6. All Office Coworkers, Sub-Managers & Security Guards!
-      let cheerSlot = 0;
-      document.getElementById("npcBubble0").style.opacity = "0";
-      document.getElementById("npcBubble1").style.opacity = "0";
-
-      for (const n of npcs) {
-        if (n.role === "coworker") {
-          const cheering = n.cheer > 0;
-          const jump = cheering ? Math.abs(Math.sin(tSec * 12)) * 0.25 : 0;
-          renderSDChar({
-            x: n.x, y: n.y, z: n.z, rx: n.rx, yaw: n.yaw, rz: n.rz, scale: 0.95,
-            torsoMesh: M.torsoShirt, suitTint: n.suit, hairMesh: M.hairCoworker,
-            faceTile: cheering ? 6 : 5,
-            swingL: cheering ? -2.4 : 0, swingR: cheering ? -2.4 : 0, cheerJump: jump
+      if (aiPartyEnabled) {
+        for (const a of aiAllies) {
+          drawCharacter({
+            x: a.x, y: 0, z: a.z, yaw: a.yaw, scale: 0.96,
+            torso: M.torsoWorker, tint: a.suit, hat: M.hairHero, face: a.atkT > 0 ? 1 : 0,
+            walk: a.walk, moveAmt: 0.7, swR: a.atkT > 0 ? -1.7 : 0
           });
-          if (cheering && cheerSlot < 2) {
-            const sc = project2D(n.x, n.y + 2.1, n.z, vpM, window.innerWidth, window.innerHeight);
-            if (sc) {
-              const bel = document.getElementById(`npcBubble${cheerSlot++}`);
-              bel.textContent = n.msg;
-              bel.style.left = `${sc.x}px`; bel.style.top = `${sc.y}px`;
-              bel.style.opacity = "1";
-            }
+          pushTag(a.x, 1.98, a.z, a.name);
+        }
+      }
+      document.getElementById("remoteLabels").innerHTML = remoteHtml.join("");
+
+      // 6. ALL 4 VISUALLY DISTINCT EXECUTIVES + FLOATING NAMEPLATES!
+      const spBub = document.getElementById("speechBubble");
+      let shownBubble = false;
+
+      bosses.forEach((b, idx) => {
+        const tagEl = document.getElementById(`bossTag${idx}`);
+        if (b.ko) { tagEl.style.opacity = "0"; return; }
+
+        const rag = b.ragdoll > 0 || b.y > 0.05;
+        const face = b.shockT > 0 ? 4 : (rag || b.flash > 0 ? 3 : b.def.face);
+        const jitterX = b.shockT > 0 ? (Math.random() - 0.5) * 0.22 : 0;
+        const flail = (rag || b.shockT > 0) ? Math.sin(tSec * 26) * 1.4 : 0;
+
+        drawCharacter({
+          x: b.x + jitterX, y: b.y, z: b.z, rx: b.rx, yaw: b.yaw, rz: b.rz,
+          scale: b.def.scale, wideX: idx === 2 ? 1.24 : 1.0,
+          torso: M[b.def.torso], tint: [1, 1, 1], hat: M[b.def.hat], face,
+          walk: b.walk, moveAmt: rag ? 0 : 0.65, swL: flail, swR: -flail,
+          heldMesh: b.def.clubInHand ? M.golfClub : null,
+          flash: (b.flash > 0 || b.shockT > 0) ? 0.75 : 0
+        });
+
+        const sc = project2D(b.x, b.y + 2.15 * b.def.scale, b.z, vpM, window.innerWidth, window.innerHeight);
+        if (sc && sc.x > 20 && sc.x < window.innerWidth - 20 && sc.y > 50 && sc.y < window.innerHeight - 30) {
+          const hpP = Math.max(0, (b.hp / b.maxHp) * 100);
+          tagEl.style.left = `${sc.x.toFixed(0)}px`;
+          tagEl.style.top = `${sc.y.toFixed(0)}px`;
+          tagEl.style.opacity = "1";
+          tagEl.innerHTML = `
+            <div style="font-size:10px;font-weight:900;color:#fff;"><span style="background:${b.def.badgeBg};padding:1px 4px;border-radius:4px;margin-right:3px;">${b.def.rank}</span>${b.def.name}</div>
+            <div style="width:100%;height:4px;background:rgba(255,255,255,0.18);border-radius:99px;margin-top:2px;overflow:hidden;"><div style="width:${hpP.toFixed(0)}%;height:100%;background:#f43f5e;"></div></div>
+          `;
+          if (!shownBubble && Math.hypot(b.x - player.x, b.z - player.z) < 12.0 && b.speechT > 0.3) {
+            shownBubble = true;
+            spBub.textContent = b.speech;
+            spBub.className = b.hurtSpeech ? "speech-pill hurt" : "speech-pill";
+            spBub.style.left = `${sc.x.toFixed(0)}px`;
+            spBub.style.top = `${(sc.y - 34).toFixed(0)}px`;
+            spBub.style.opacity = "1";
           }
         } else {
-          const rag = n.ragdoll > 0 || n.y > 0.05;
-          renderSDChar({
-            x: n.x, y: n.y, z: n.z, rx: n.rx, yaw: n.yaw, rz: n.rz, scale: 1.02,
-            torsoMesh: n.role === "guard" ? M.torsoShirt : M.torsoBoss,
-            suitTint: n.suit,
-            hairMesh: n.role === "guard" ? M.hairCapGuard : M.hairBossBald,
-            faceTile: rag ? 3 : 7,
-            walk: n.walk, moveAmt: rag ? 0 : 0.75,
-            swingL: rag ? Math.sin(tSec * 22) : 0, swingR: rag ? -Math.sin(tSec * 22) : 0,
-            flash: n.flash > 0 ? 0.85 : 0
-          });
+          tagEl.style.opacity = "0";
         }
-      }
+      });
+      if (!shownBubble) spBub.style.opacity = "0";
 
       // 7. Particles
       for (const pt of particles) {
-        mTRS(rootM, pt.x, pt.y, pt.z, pt.rx, pt.ry, pt.rz, pt.scale, pt.scale, pt.scale);
+        mTRS(rootM, pt.x, pt.y, pt.z, pt.rx, pt.ry, 0, pt.scale, pt.scale, pt.scale);
         drawMesh(pt.mesh, rootM, { outline: 0.012, tint: pt.tint });
       }
-
-      // 8. Boss Speech Bubble
-      const bossBub = document.getElementById("bossBubble");
-      if (!mainBoss.koState && mainBoss.speechTimer > 0.25) {
-        const bSc = project2D(mainBoss.x, mainBoss.y + 2.25 * BOSS_ROSTER[mainBoss.rosterIdx].scale, mainBoss.z, vpM, window.innerWidth, window.innerHeight);
-        if (bSc && bSc.x > 40 && bSc.x < window.innerWidth - 40 && bSc.y > 65 && bSc.y < window.innerHeight - 60) {
-          bossBub.style.left = `${bSc.x}px`; bossBub.style.top = `${bSc.y}px`;
-          bossBub.textContent = mainBoss.speech;
-          bossBub.className = mainBoss.hurtSpeech ? "webtoon-bubble hurt" : "webtoon-bubble";
-          bossBub.style.opacity = "1";
-        } else bossBub.style.opacity = "0";
-      } else bossBub.style.opacity = "0";
 
       requestAnimationFrame(loop);
     }
 
     // =========================================================================
-    // 14. PWA SERVICE WORKER & ONE-TAP INSTALL BUTTON LOGIC
+    // 12. PWA INSTALL PROMPT & SERVICE WORKER
     // =========================================================================
-    let deferredInstallPrompt = null;
-    const btnInstallPwa = document.getElementById("btnInstallPwa");
-    const installBtnLabel = document.getElementById("installBtnLabel");
+    let deferredPrompt = null;
+    const btnInstall = document.getElementById("btnInstallPwa");
     const pwaModal = document.getElementById("pwaModal");
 
-    const isStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      window.navigator.standalone === true;
-
-    if (isStandalone) {
-      btnInstallPwa.style.display = "none";
+    if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
+      btnInstall.style.display = "none";
     }
-
     if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
-      });
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
     }
+    window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; btnInstall.style.display = "inline-flex"; });
+    window.addEventListener("appinstalled", () => { deferredPrompt = null; btnInstall.style.display = "none"; });
 
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredInstallPrompt = e;
-      btnInstallPwa.style.display = "flex";
-      installBtnLabel.textContent = "앱 설치";
+    btnInstall.addEventListener("click", async () => {
+      if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice.catch(() => {}); deferredPrompt = null; }
+      else pwaModal.classList.remove("hidden");
     });
-
-    window.addEventListener("appinstalled", () => {
-      deferredInstallPrompt = null;
-      installBtnLabel.textContent = "설치 완료";
-      popText(player.x, 2.3, player.z, "📲 홈 화면 앱 설치 완료!", "#34d399", 24);
-      setTimeout(() => { btnInstallPwa.style.display = "none"; }, 1800);
-    });
-
-    function closePwaModal() {
+    document.getElementById("btnClosePwa").addEventListener("click", () => pwaModal.classList.add("hidden"));
+    document.getElementById("btnDismissPwa").addEventListener("click", () => pwaModal.classList.add("hidden"));
+    document.getElementById("btnFullscreen").addEventListener("click", () => {
+      const r = document.documentElement;
+      if (r.requestFullscreen) r.requestFullscreen().catch(() => {});
+      else if (r.webkitRequestFullscreen) r.webkitRequestFullscreen();
       pwaModal.classList.add("hidden");
-      pwaModal.classList.remove("flex");
-    }
-
-    btnInstallPwa.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      ensureAudio();
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        const choice = await deferredInstallPrompt.userChoice.catch(() => null);
-        if (choice && choice.outcome === "accepted") {
-          deferredInstallPrompt = null;
-        }
-      } else {
-        pwaModal.classList.remove("hidden");
-        pwaModal.classList.add("flex");
-      }
-    });
-
-    document.getElementById("btnClosePwaModal").addEventListener("click", closePwaModal);
-    document.getElementById("btnDismissPwa").addEventListener("click", closePwaModal);
-    pwaModal.addEventListener("click", (e) => {
-      if (e.target === pwaModal) closePwaModal();
-    });
-
-    document.getElementById("btnEnterFullscreen").addEventListener("click", () => {
-      const rootEl = document.documentElement;
-      if (rootEl.requestFullscreen) {
-        rootEl.requestFullscreen().catch(() => {});
-      } else if (rootEl.webkitRequestFullscreen) {
-        rootEl.webkitRequestFullscreen();
-      }
-      closePwaModal();
     });
 
     requestAnimationFrame(loop);
