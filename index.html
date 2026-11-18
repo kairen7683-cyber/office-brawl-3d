@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f19" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="칼퇴전쟁 3D" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="./icons/favicon.png" />
+  <title>칼퇴전쟁 3D: 웹툰 오피스 대난투</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0b0f19;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", sans-serif;
+      touch-action: none;
+    }
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Sleek Modern Glassmorphic Surfaces */
+    .glass-panel {
+      background: rgba(13, 18, 30, 0.68);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .install-cta-btn {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(6, 182, 212, 0.92));
+      border: 1px solid rgba(167, 243, 208, 0.55);
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      color: #041311;
+      transition: transform 0.1s ease, filter 0.15s ease;
+    }
+    .install-cta-btn:hover { filter: brightness(1.08); }
+    .install-cta-btn:active { transform: scale(0.93); }
+
+    /* Tactile Modern Action RPG / Brawler Controls */
+    .ctrl-sat {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 30% 25%, rgba(38, 49, 74, 0.88), rgba(13, 18, 30, 0.92));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      transition: transform 0.08s cubic-bezier(0.2, 0.9, 0.3, 1), border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .ctrl-sat:active, .ctrl-sat.pressed {
+      transform: scale(0.90);
+    }
+    .ctrl-sat.ready-highlight {
+      border-color: rgba(56, 189, 248, 0.85);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+    }
+
+    .ctrl-main {
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      width: 92px;
+      height: 92px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 32% 24%, #fb7185 0%, #e11d48 58%, #9f1239 100%);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      box-shadow:
+        0 10px 28px rgba(225, 29, 72, 0.48),
+        0 0 0 5px rgba(15, 23, 42, 0.55),
+        inset 0 2px 4px rgba(255, 255, 255, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      transition: transform 0.07s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.08s ease;
+    }
+    .ctrl-main:active, .ctrl-main.pressed {
+      transform: scale(0.91);
+      filter: brightness(1.12);
+    }
+
+    /* Floating Comic Popups & Webtoon Speech Bubbles */
+    .comic-pop {
+      position: absolute;
+      pointer-events: none;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.65), -1.5px -1.5px 0 #090d16, 1.5px -1.5px 0 #090d16, -1.5px 1.5px 0 #090d16, 1.5px 1.5px 0 #090d16;
+      transform: translate(-50%, -50%);
+      animation: floatDmg 0.72s cubic-bezier(0.16, 1.25, 0.3, 1) forwards;
+      white-space: nowrap;
+      z-index: 25;
+    }
+    @keyframes floatDmg {
+      0% { opacity: 0; transform: translate(-50%, -20%) scale(0.45) rotate(var(--r, -5deg)); }
+      20% { opacity: 1; transform: translate(-50%, -65%) scale(1.18) rotate(var(--r, -5deg)); }
+      80% { opacity: 1; transform: translate(-50%, -105%) scale(1.0) rotate(var(--r, -5deg)); }
+      100% { opacity: 0; transform: translate(-50%, -135%) scale(0.9) rotate(var(--r, -5deg)); }
+    }
+
+    .webtoon-bubble {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.96);
+      color: #0f172a;
+      border: 1.5px solid rgba(15, 23, 42, 0.85);
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 11.5px;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      transform: translate(-50%, -100%);
+      white-space: nowrap;
+      transition: opacity 0.14s ease;
+    }
+    .webtoon-bubble.hurt {
+      background: #fef08a;
+      color: #991b1b;
+      border-color: #7f1d1d;
+    }
+    .webtoon-bubble.npc-cheer {
+      background: rgba(16, 185, 129, 0.95);
+      color: #ffffff;
+      border-color: rgba(255,255,255,0.4);
+      font-size: 10.5px;
+      padding: 3px 9px;
+    }
+
+    @keyframes feverGlow {
+      0%, 100% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.55), inset 0 1px 2px rgba(255,255,255,0.5); transform: scale(1); }
+      50% { box-shadow: 0 0 28px rgba(250, 204, 21, 0.85), inset 0 1px 3px rgba(255,255,255,0.8); transform: scale(1.06); }
+    }
+    .ult-ready {
+      background: radial-gradient(circle at 30% 25%, #fde047, #10b981 75%) !important;
+      color: #090d16 !important;
+      border-color: #fef08a !important;
+      animation: feverGlow 0.85s infinite ease-in-out;
+    }
+
+    /* Offline-first fallback utilities so installed PWA works 100% in airplane mode */
+    .fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}
+    .inset-0{top:0;right:0;bottom:0;left:0}.inset-x-0{left:0;right:0}.inset-y-0{top:0;bottom:0}
+    .top-0{top:0}.bottom-0{bottom:0}.left-0{left:0}.right-0{right:0}.top-24{top:6rem}.bottom-2{bottom:.5rem}.bottom-3{bottom:.75rem}.left-2\.5{left:.625rem}.right-2\.5{right:.625rem}
+    .z-20{z-index:20}.z-30{z-index:30}.z-40{z-index:40}.z-50{z-index:50}
+    .flex{display:flex}.hidden{display:none}.block{display:block}.flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.shrink-0{flex-shrink:0}.min-w-0{min-width:0}
+    .items-center{align-items:center}.items-start{align-items:flex-start}.items-end{align-items:flex-end}
+    .justify-center{justify-content:center}.justify-between{justify-content:space-between}
+    .gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-3\.5{gap:.875rem}
+    .p-1\.5{padding:.375rem}.p-3{padding:.75rem}.p-3\.5{padding:.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.pb-5{padding-bottom:1.25rem}
+    .px-1\.5{padding-left:.375rem;padding-right:.375rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-3\.5{padding-left:.875rem;padding-right:.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}
+    .py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}
+    .mb-1{margin-bottom:.25rem}.mb-3{margin-bottom:.75rem}.mt-0\.5{margin-top:.125rem}.mt-1{margin-top:.25rem}.mt-4{margin-top:1rem}
+    .w-full{width:100%}.h-full{height:100%}.w-8{width:2rem}.h-8{height:2rem}.w-12{width:3rem}.h-12{height:3rem}.w-28{width:7rem}.h-28{height:7rem}.w-36{width:9rem}.h-36{height:9rem}.w-48{width:12rem}.h-48{height:12rem}.h-2\.5{height:.625rem}.h-3{height:.75rem}.w-px{width:1px}
+    .max-w-sm{max-width:24rem}.max-w-\[320px\]{max-width:320px}
+    .rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}
+    .overflow-hidden{overflow:hidden}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pointer-events-none{pointer-events:none}.pointer-events-auto{pointer-events:auto}
+    .text-white{color:#fff}.text-slate-200{color:#e2e8f0}.text-slate-300{color:#cbd5e1}.text-slate-950{color:#020617}.text-amber-200{color:#fde68a}.text-amber-300{color:#fcd34d}.text-amber-400{color:#fbbf24}.text-rose-400{color:#fb7185}.text-cyan-200{color:#a5f3fc}.text-cyan-300{color:#67e8f9}.text-sky-200{color:#bae6fd}.text-emerald-300{color:#6ee7b7}
+    .text-xs{font-size:.75rem;line-height:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-base{font-size:1rem}.text-lg{font-size:1.125rem}.text-2xl{font-size:1.5rem}
+    .font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-black{font-weight:900}.font-mono{font-family:monospace}
+    .text-center{text-align:center}.leading-none{line-height:1}.tracking-tight{letter-spacing:-.025em}.tracking-widest{letter-spacing:.1em}
+    .opacity-0{opacity:0}.object-cover{object-fit:cover}
+
+
+    /* Complete compiled utility classes (Zero external CDN, 0ms FOUC) */
+    button{background:none;border:none;padding:0;font:inherit;cursor:pointer}
+    .-rotate-90{transform:rotate(-90deg)}.-translate-x-1\/2{transform:translateX(-50%)}.-translate-y-2{transform:translateY(-.5rem)}
+    .left-1\/2{left:50%}.w-3\.5{width:.875rem}.h-3\.5{height:.875rem}.pt-1\.5{padding-top:.375rem}
+    .border{border-width:1px;border-style:solid}.border-t{border-top-width:1px;border-top-style:solid}
+    .border-white{border-color:#fff}.border-white\/10{border-color:rgba(255,255,255,.1)}.border-white\/20{border-color:rgba(255,255,255,.2)}.border-white\/30{border-color:rgba(255,255,255,.3)}.border-amber-400\/60{border-color:rgba(251,191,36,.6)}
+    .bg-black\/65{background-color:rgba(0,0,0,.65)}.bg-white\/5{background-color:rgba(255,255,255,.05)}.bg-white\/10{background-color:rgba(255,255,255,.1)}.bg-white\/15{background-color:rgba(255,255,255,.15)}.bg-white\/80{background-color:rgba(255,255,255,.8)}
+    .bg-rose-500\/90{background-color:rgba(244,63,94,.9)}.bg-slate-900\/25{background-color:rgba(15,23,42,.25)}.bg-slate-950\/35{background-color:rgba(2,6,23,.35)}
+    .backdrop-blur-sm{backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}.backdrop-blur-md{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+    .bg-gradient-to-b{background-image:linear-gradient(to bottom,rgba(255,255,255,.95),rgba(203,213,225,.9))}
+    #bossHpFill{background-image:linear-gradient(to right,#f43f5e,#fb923c,#fcd34d)}
+    #comboHud{background-image:linear-gradient(to right,#fbbf24,#f43f5e)}
+    .text-\[9px\]{font-size:9px;line-height:1.1}.text-\[9\.5px\]{font-size:9.5px;line-height:1.1}.text-\[10px\]{font-size:10px;line-height:1.2}.text-\[11px\]{font-size:11px;line-height:1.25}.text-\[11\.5px\]{font-size:11.5px;line-height:1.25}
+    .text-white\/75{color:rgba(255,255,255,.75)}.text-sky-300{color:#7dd3fc}.leading-relaxed{line-height:1.6}
+    .opacity-45{opacity:.45}.shadow-lg{box-shadow:0 10px 15px -3px rgba(0,0,0,.35)}.shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}.shadow-\[0_4px_16px_rgba\(0\,0\,0\,0\.5\)\]{box-shadow:0 4px 16px rgba(0,0,0,.5)}.drop-shadow{filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+    .space-y-2\.5>*+*{margin-top:.625rem}
+    .transition{transition:all .15s ease}.transition-all{transition:all .2s ease}.transition-opacity{transition:opacity .15s ease}.transition-transform{transition:transform .1s ease}
+    .duration-75{transition-duration:75ms}.duration-100{transition-duration:.1s}.duration-150{transition-duration:.15s}.duration-200{transition-duration:.2s}.duration-500{transition-duration:.5s}
+    @media(min-width:768px){.md\:p-4{padding:1rem}.md\:text-sm{font-size:.875rem}.md\:text-xl{font-size:1.25rem}}
+    @media(min-width:1024px){.lg\:flex{display:flex}}
+
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- 2D Projected Speech Bubbles & Hit Popups -->
+  <div id="overlayLayer" class="fixed inset-0 pointer-events-none overflow-hidden z-20">
+    <div id="bossBubble" class="webtoon-bubble" style="opacity:0;"></div>
+    <div id="npcBubble0" class="webtoon-bubble npc-cheer" style="opacity:0;"></div>
+    <div id="npcBubble1" class="webtoon-bubble npc-cheer" style="opacity:0;"></div>
+  </div>
+
+  <!-- SLEEK TOP HUD -->
+  <div class="fixed top-0 left-0 right-0 p-3 md:p-4 flex items-start justify-between gap-2.5 pointer-events-none z-30">
+    <!-- Top-Left: Sleek Radar Minimap & Zone Pill -->
+    <div class="flex flex-col items-start gap-1.5">
+      <div class="glass-panel rounded-2xl p-1.5 relative">
+        <canvas id="radarCanvas" width="98" height="82" class="rounded-xl block"></canvas>
+        <div class="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between text-[9px] font-bold text-white/75">
+          <span id="zoneBadge">영업본부</span>
+          <span class="text-rose-400">● 타겟</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top-Center: Boss Health Bar (Action RPG Style with Trailing Damage Bar) -->
+    <div class="glass-panel rounded-2xl px-3.5 py-2 flex-1 max-w-[320px] text-white">
+      <div class="flex items-center justify-between gap-2 mb-1">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span id="bossLvPill" class="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-rose-500/90 text-white shrink-0">LV.1</span>
+          <span id="bossNameHud" class="text-xs md:text-sm font-extrabold tracking-tight truncate">꼰대 김부장</span>
+        </div>
+        <span id="koBadgeHud" class="text-[11px] font-bold text-amber-300 shrink-0">참교육 0</span>
+      </div>
+      <!-- Dual-layer HP bar (white delayed trail + vibrant crimson fill) -->
+      <div class="relative w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+        <div id="bossHpTrail" class="absolute inset-y-0 left-0 bg-white/80 rounded-full transition-all duration-500" style="width:100%"></div>
+        <div id="bossHpFill" class="absolute inset-y-0 left-0 bg-gradient-to-r from-rose-500 via-orange-400 to-amber-300 rounded-full transition-all duration-75" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- Top-Right: Wanted Level, Combo & Sleek Utility Pills -->
+    <div class="flex flex-col items-end gap-1.5 pointer-events-auto">
+      <div class="glass-panel rounded-full px-3 py-1 flex items-center gap-2 text-xs">
+        <span id="wantedHud" class="tracking-widest text-[11px] text-amber-400">★☆☆☆☆</span>
+        <span class="w-px h-3 bg-white/15"></span>
+        <span id="fpsPill" class="font-mono text-[10px] text-slate-300">60 FPS</span>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button id="btnInstallPwa" class="install-cta-btn rounded-full px-3 h-8 flex items-center gap-1 text-[11.5px] font-black tracking-tight" title="홈 화면에 앱으로 설치">
+          <span>📲</span>
+          <span id="installBtnLabel">앱 설치</span>
+        </button>
+        <button id="btnSound" class="glass-panel rounded-full w-8 h-8 flex items-center justify-center text-xs text-white hover:bg-white/10 active:scale-90 transition" title="사운드">
+          🔊
+        </button>
+        <button id="btnReset" class="glass-panel rounded-full px-2.5 h-8 flex items-center justify-center text-[11px] font-bold text-slate-200 hover:bg-white/10 active:scale-90 transition" title="사무실 리셋">
+          🔄 복구
+        </button>
+      </div>
+
+      <div id="comboHud" class="opacity-0 transition-opacity duration-150 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-rose-500 text-slate-950 font-black text-xs shadow-lg">
+        3 COMBO!
+      </div>
+    </div>
+  </div>
+
+  <!-- PWA Install Guide & Fullscreen Modal -->
+  <div id="pwaModal" class="fixed inset-0 bg-black/65 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="glass-panel rounded-3xl max-w-sm w-full p-5 text-white border border-white/20 shadow-2xl">
+      <div class="flex items-center justify-between gap-3 mb-3">
+        <div class="flex items-center gap-3">
+          <img src="./icons/icon-192.png" alt="칼퇴전쟁 3D" class="w-12 h-12 rounded-2xl shadow-lg border border-white/30 object-cover" />
+          <div>
+            <div class="text-sm font-black tracking-tight">칼퇴전쟁 3D 앱 설치</div>
+            <div class="text-[11px] text-emerald-300 font-semibold">오프라인 60FPS · 전체화면 지원</div>
+          </div>
+        </div>
+        <button id="btnClosePwaModal" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <div id="pwaModalBody" class="text-xs text-slate-200 space-y-2.5 leading-relaxed bg-white/5 rounded-2xl p-3.5 border border-white/10">
+        <div>📱 <b class="text-amber-300">아이폰 / 아이패드 (Safari)</b><br/>하단 <b class="text-white">공유 버튼 [↑]</b> 터치 후 <b class="text-emerald-300">'홈 화면에 추가'</b>를 선택하면 네이티브 앱처럼 설치됩니다.</div>
+        <div class="pt-1.5 border-t border-white/10">🤖 <b class="text-cyan-300">안드로이드 / PC (Chrome·Edge)</b><br/>브라우저 우측 상단 메뉴(<b class="text-white">⋮</b>) 또는 주소창 우측의 <b class="text-emerald-300">'앱 설치 / 홈 화면에 추가'</b>를 눌러주세요.</div>
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <button id="btnEnterFullscreen" class="flex-1 py-2.5 rounded-xl install-cta-btn text-xs font-black">
+          ⛶ 지금 전체화면으로 플레이
+        </button>
+        <button id="btnDismissPwa" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-slate-200">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KO / Clear Cinematic Toast -->
+  <div id="koToast" class="fixed inset-x-0 top-24 flex justify-center pointer-events-none z-40 opacity-0 transition-all duration-200 transform -translate-y-2">
+    <div class="glass-panel border-amber-400/60 rounded-2xl px-5 py-2.5 text-center">
+      <div id="koToastTitle" class="text-lg md:text-xl font-black text-amber-300 tracking-tight">결재 완료! 김부장 참교육 성공!</div>
+      <div id="koToastSub" class="text-[11px] text-slate-300 font-semibold mt-0.5">다음 임원이 엘리베이터에서 내립니다...</div>
+    </div>
+  </div>
+
+  <!-- Subtle Desktop Keycap Bar -->
+  <div class="hidden lg:flex fixed bottom-3 left-1/2 -translate-x-1/2 glass-panel rounded-full px-4 py-1.5 text-[11px] text-slate-300 font-medium gap-3.5 pointer-events-none z-30">
+    <span><b class="text-white">WASD</b> 이동</span>
+    <span><b class="text-rose-400">J / Space / 클릭</b> 공격·무기스윙</span>
+    <span><b class="text-cyan-300">L / 우클릭</b> 무기 집기·투척</span>
+    <span><b class="text-amber-300">K</b> 어퍼컷</span>
+    <span><b class="text-sky-300">Shift</b> 대시 태클</span>
+    <span><b class="text-emerald-300">E</b> 사표 폭격</span>
+  </div>
+
+  <!-- SLEEK MODERN MOBILE CONTROL DECK -->
+  <div class="fixed inset-x-0 bottom-0 p-4 pb-5 flex items-end justify-between pointer-events-none z-30">
+    <!-- Left: Precision Floating Glass Thumbstick -->
+    <div id="joyTouchArea" class="relative w-36 h-36 pointer-events-auto flex items-center justify-center">
+      <!-- Outer Frosted Ring with Directional Glow SVG -->
+      <div id="joyBase" class="relative w-28 h-28 rounded-full bg-slate-950/35 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center transition-transform duration-100">
+        <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-45" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4 6" />
+          <path d="M50 8 L53 13 L47 13 Z M50 92 L53 87 L47 87 Z M8 50 L13 47 L13 53 Z M92 50 L87 47 L87 53 Z" fill="rgba(255,255,255,0.35)" />
+        </svg>
+        <!-- Satin Thumb Puck -->
+        <div id="joyPuck" class="w-12 h-12 rounded-full bg-gradient-to-b from-white/95 to-slate-300/90 shadow-[0_4px_16px_rgba(0,0,0,0.5)] border border-white flex items-center justify-center">
+          <div class="w-3.5 h-3.5 rounded-full bg-slate-900/25"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Ergonomic Radial Arc Action Cluster -->
+    <div class="relative w-48 h-48 pointer-events-auto">
+      <!-- Ultimate Orb (Top-Right above main cluster, fills 0..100%) -->
+      <button id="btnUlt" class="ctrl-sat" style="right: 8px; bottom: 116px; width: 54px; height: 54px;">
+        <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3.5" />
+          <circle id="ultArc" cx="30" cy="30" r="26" fill="none" stroke="#10b981" stroke-width="3.5" stroke-dasharray="163.36" stroke-dashoffset="163.36" stroke-linecap="round" />
+        </svg>
+        <span class="text-base leading-none">📄</span>
+        <span id="ultPctText" class="text-[9px] font-extrabold text-emerald-300 mt-0.5">0%</span>
+      </button>
+
+      <!-- Satellite 1 (Top-Left of Arc): Contextual Grab / Throw Weapon -->
+      <button id="btnGrab" class="ctrl-sat" style="right: 74px; bottom: 96px;">
+        <span id="grabIcon" class="text-lg leading-none">🖐️</span>
+        <span id="grabText" class="text-[9.5px] font-bold text-cyan-200 mt-0.5 tracking-tight">집기</span>
+      </button>
+
+      <!-- Satellite 2 (Mid-Left of Arc): Uppercut Launcher -->
+      <button id="btnUpper" class="ctrl-sat" style="right: 108px; bottom: 50px;">
+        <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 60 60">
+          <circle id="upperArc" cx="30" cy="30" r="27" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="169.6" stroke-dashoffset="0" stroke-linecap="round" />
+        </svg>
+        <span class="text-base leading-none">💥</span>
+        <span class="text-[9.5px] font-bold text-amber-200 mt-0.5">어퍼컷</span>
+      </button>
+
+      <!-- Satellite 3 (Bottom-Left of Arc): Dash / Shoulder Tackle -->
+      <button id="btnDash" class="ctrl-sat" style="right: 112px; bottom: -2px; width: 52px; height: 52px;">
+        <span class="text-sm leading-none">⚡</span>
+        <span class="text-[9px] font-bold text-sky-200 mt-0.5">대시</span>
+      </button>
+
+      <!-- Primary Main Attack Hub (Bottom-Right Anchor) -->
+      <button id="btnAttack" class="ctrl-main">
+        <!-- 3-Combo Pips Ring -->
+        <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+          <circle id="pip1" cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="0" stroke-linecap="round" opacity="0.25" />
+          <circle id="pip2" cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-96" stroke-linecap="round" opacity="0.25" />
+          <circle id="pip3" cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-192" stroke-linecap="round" opacity="0.25" />
+        </svg>
+        <span id="mainAtkIcon" class="text-2xl leading-none drop-shadow">🥊</span>
+        <span id="mainAtkText" class="text-[11px] font-black tracking-tight mt-1">죽방</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    "use strict";
+
+    // =========================================================================
+    // 1. PROCEDURAL SOUND & MOBILE HAPTICS
+    // =========================================================================
+    let audioCtx = null;
+    let soundOn = true;
+
+    function haptic(ms = 18) {
+      if (navigator.vibrate) {
+        try { navigator.vibrate(ms); } catch (_) {}
+      }
+    }
+
+    function ensureAudio() {
+      if (!soundOn) return null;
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+      return audioCtx;
+    }
+
+    function playSfx(kind) {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+
+      if (kind === "swing" || kind === "dash") {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "triangle";
+        o.frequency.setValueAtTime(kind === "dash" ? 380 : 280, t);
+        o.frequency.exponentialRampToValueAtTime(90, t + 0.10);
+        g.gain.setValueAtTime(0.14, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.10);
+        o.connect(g).connect(ctx.destination);
+        o.start(t); o.stop(t + 0.11);
+      } else if (kind === "hit" || kind === "heavy") {
+        const hv = kind === "heavy";
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(hv ? 175 : 230, t);
+        o.frequency.exponentialRampToValueAtTime(hv ? 34 : 48, t + (hv ? 0.22 : 0.13));
+        g.gain.setValueAtTime(hv ? 0.46 : 0.34, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + (hv ? 0.24 : 0.14));
+        o.connect(g).connect(ctx.destination);
+        o.start(t); o.stop(t + 0.25);
+
+        const len = Math.floor(ctx.sampleRate * (hv ? 0.13 : 0.08));
+        const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        const ch = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.7);
+        const src = ctx.createBufferSource(); src.buffer = buf;
+        const flt = ctx.createBiquadFilter(); flt.type = "bandpass"; flt.frequency.value = hv ? 1300 : 1850;
+        const ng = ctx.createGain(); ng.gain.setValueAtTime(hv ? 0.42 : 0.28, t); ng.gain.exponentialRampToValueAtTime(0.005, t + 0.13);
+        src.connect(flt).connect(ng).connect(ctx.destination);
+        src.start(t);
+      } else if (kind === "crash") {
+        const len = Math.floor(ctx.sampleRate * 0.15);
+        const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        const ch = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.0);
+        const src = ctx.createBufferSource(); src.buffer = buf;
+        const flt = ctx.createBiquadFilter(); flt.type = "lowpass"; flt.frequency.value = 1050;
+        const g = ctx.createGain(); g.gain.setValueAtTime(0.20, t); g.gain.exponentialRampToValueAtTime(0.005, t + 0.15);
+        src.connect(flt).connect(g).connect(ctx.destination);
+        src.start(t);
+      } else if (kind === "ko") {
+        [523.25, 659.25, 783.99, 1046.5].forEach((fq, i) => {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = "triangle";
+          const st = t + i * 0.065;
+          o.frequency.setValueAtTime(fq, st);
+          g.gain.setValueAtTime(0.20, st);
+          g.gain.exponentialRampToValueAtTime(0.001, st + 0.34);
+          o.connect(g).connect(ctx.destination);
+          o.start(st); o.stop(st + 0.35);
+        });
+      }
+    }
+
+    // =========================================================================
+    // 2. 4x4 MATRIX & PROJECTION MATH
+    // =========================================================================
+    const mId = () => { const m = new Float32Array(16); m[0]=m[5]=m[10]=m[15]=1; return m; };
+    function mMul(o, a, b) {
+      const a00=a[0],a01=a[1],a02=a[2],a03=a[3], a10=a[4],a11=a[5],a12=a[6],a13=a[7],
+            a20=a[8],a21=a[9],a22=a[10],a23=a[11], a30=a[12],a31=a[13],a32=a[14],a33=a[15];
+      for (let c = 0; c < 4; c++) {
+        const b0=b[c*4], b1=b[c*4+1], b2=b[c*4+2], b3=b[c*4+3];
+        o[c*4]   = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+        o[c*4+1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+        o[c*4+2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+        o[c*4+3] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+      }
+      return o;
+    }
+    function mPersp(o, fov, asp, n, f) {
+      const t = 1 / Math.tan(fov * 0.5), nf = 1 / (n - f);
+      o.fill(0); o[0] = t / asp; o[5] = t; o[10] = (f + n) * nf; o[11] = -1; o[14] = 2 * f * n * nf;
+      return o;
+    }
+    function mLook(o, e, c, u) {
+      let zx=e[0]-c[0], zy=e[1]-c[1], zz=e[2]-c[2];
+      let l=Math.hypot(zx,zy,zz)||1; zx/=l; zy/=l; zz/=l;
+      let xx=u[1]*zz-u[2]*zy, xy=u[2]*zx-u[0]*zz, xz=u[0]*zy-u[1]*zx;
+      l=Math.hypot(xx,xy,xz)||1; xx/=l; xy/=l; xz/=l;
+      const yx=zy*xz-zz*xy, yy=zz*xx-zx*xz, yz=zx*xy-zy*xx;
+      o.set([xx,yx,zx,0, xy,yy,zy,0, xz,yz,zz,0, -(xx*e[0]+xy*e[1]+xz*e[2]), -(yx*e[0]+yy*e[1]+yz*e[2]), -(zx*e[0]+zy*e[1]+zz*e[2]), 1]);
+      return o;
+    }
+    function mTRS(o, x, y, z, rx, ry, rz, sx=1, sy=1, sz=1) {
+      const cx=Math.cos(rx), sxn=Math.sin(rx), cy=Math.cos(ry), syn=Math.sin(ry), cz=Math.cos(rz), szn=Math.sin(rz);
+      o[0]=(cy*cz+syn*sxn*szn)*sx; o[1]=(cx*szn)*sx; o[2]=(-syn*cz+cy*sxn*szn)*sx; o[3]=0;
+      o[4]=(-cy*szn+syn*sxn*cz)*sy; o[5]=(cx*cz)*sy; o[6]=(syn*szn+cy*sxn*cz)*sy; o[7]=0;
+      o[8]=(syn*cx)*sz; o[9]=(-sxn)*sz; o[10]=(cy*cx)*sz; o[11]=0;
+      o[12]=x; o[13]=y; o[14]=z; o[15]=1;
+      return o;
+    }
+    function nMat3(o, m) {
+      const a00=m[0],a01=m[1],a02=m[2], a10=m[4],a11=m[5],a12=m[6], a20=m[8],a21=m[9],a22=m[10];
+      const b01=a22*a11-a12*a21, b11=-a22*a10+a12*a20, b21=a21*a10-a11*a20;
+      let d = a00*b01 + a01*b11 + a02*b21; d = d ? 1/d : 1;
+      o.set([b01*d, (-a22*a01+a02*a21)*d, (a12*a01-a02*a11)*d, b11*d, (a22*a00-a02*a20)*d, (-a12*a00+a02*a10)*d, b21*d, (-a21*a00+a01*a20)*d, (a11*a00-a01*a10)*d]);
+    }
+    function project2D(wx, wy, wz, vp, w, h) {
+      const x = wx*vp[0] + wy*vp[4] + wz*vp[8] + vp[12];
+      const y = wx*vp[1] + wy*vp[5] + wz*vp[9] + vp[13];
+      const ww = wx*vp[3] + wy*vp[7] + wz*vp[11] + vp[15];
+      if (ww <= 0.1) return null;
+      return { x: (x / ww * 0.5 + 0.5) * w, y: (1 - (y / ww * 0.5 + 0.5)) * h };
+    }
+
+    // =========================================================================
+    // 3. WEBGL CONTEXT & 8-TILE WEBTOON EXPRESSION TEXTURE ATLAS (1024x512)
+    // =========================================================================
+    const canvas = document.getElementById("gameCanvas");
+    const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
+
+    // 8 Webtoon Face Tiles in a single 1024x512 Atlas (4 cols x 2 rows, 256x256 each):
+    // 0: Player Cool | 1: Player Fierce | 2: Boss Smug | 3: Boss Hurt (> <)
+    // 4: Boss KO (@ @) | 5: Coworker Tired | 6: Coworker Cheer (^o^) | 7: Guard Shades
+    const atlasCanvas = document.createElement("canvas");
+    atlasCanvas.width = 1024;
+    atlasCanvas.height = 512;
+    const actx = atlasCanvas.getContext("2d");
+
+    function buildWebtoonFaceAtlas() {
+      for (let tile = 0; tile < 8; tile++) {
+        const ox = (tile % 4) * 256;
+        const oy = Math.floor(tile / 4) * 256;
+        actx.save();
+        actx.translate(ox, oy);
+
+        // Skin tone base
+        actx.fillStyle = tile === 5 ? "#f3c6a8" : "#fdba8c";
+        actx.fillRect(0, 0, 256, 256);
+
+        // Cheek blush
+        actx.fillStyle = "rgba(244, 63, 94, 0.20)";
+        actx.beginPath();
+        actx.ellipse(66, 152, 22, 12, 0, 0, Math.PI * 2);
+        actx.ellipse(190, 152, 22, 12, 0, 0, Math.PI * 2);
+        actx.fill();
+
+        actx.lineCap = "round";
+        actx.lineJoin = "round";
+
+        if (tile === 0 || tile === 1) {
+          // PLAYER: Cool Determined Webtoon Hero (0) / Fierce Battle Shout (1)
+          actx.strokeStyle = "#0f172a";
+          actx.lineWidth = 8;
+          actx.beginPath();
+          actx.moveTo(54, tile === 1 ? 86 : 94); actx.lineTo(104, 105);
+          actx.moveTo(202, tile === 1 ? 86 : 94); actx.lineTo(152, 105);
+          actx.stroke();
+
+          // Anime eyes
+          [80, 176].forEach((ex) => {
+            actx.fillStyle = "#ffffff";
+            actx.strokeStyle = "#0f172a";
+            actx.lineWidth = 5;
+            actx.beginPath(); actx.ellipse(ex, 125, 21, 17, 0, 0, Math.PI * 2); actx.fill(); actx.stroke();
+            actx.fillStyle = "#1d4ed8";
+            actx.beginPath(); actx.arc(ex, 126, 11, 0, Math.PI * 2); actx.fill();
+            actx.fillStyle = "#0f172a";
+            actx.beginPath(); actx.arc(ex, 126, 6, 0, Math.PI * 2); actx.fill();
+            actx.fillStyle = "#ffffff";
+            actx.beginPath(); actx.arc(ex + 5, 120, 4, 0, Math.PI * 2); actx.fill();
+          });
+
+          if (tile === 0) {
+            actx.strokeStyle = "#7c2d12"; actx.lineWidth = 5;
+            actx.beginPath(); actx.arc(128, 166, 18, 0.15 * Math.PI, 0.82 * Math.PI); actx.stroke();
+          } else {
+            actx.fillStyle = "#991b1b"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
+            actx.beginPath(); actx.roundRect(98, 164, 60, 34, 12); actx.fill(); actx.stroke();
+            actx.fillStyle = "#ffffff"; actx.fillRect(106, 166, 44, 9);
+          }
+        } else if (tile === 2) {
+          // BOSS SMUG: Annoying glasses + raised brow + mustache + cocky smirk!
+          actx.strokeStyle = "#18181b"; actx.lineWidth = 9;
+          actx.beginPath();
+          actx.moveTo(50, 84); actx.lineTo(104, 100);
+          actx.moveTo(206, 92); actx.lineTo(152, 98);
+          actx.stroke();
+
+          [80, 176].forEach((ex) => {
+            actx.fillStyle = "#ffffff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
+            actx.beginPath(); actx.ellipse(ex, 122, 22, 16, 0, 0, Math.PI * 2); actx.fill(); actx.stroke();
+            actx.fillStyle = "#0f172a";
+            actx.beginPath(); actx.arc(ex + 2, 123, 8.5, 0, Math.PI * 2); actx.fill();
+            actx.fillStyle = "#ffffff";
+            actx.beginPath(); actx.arc(ex + 5, 118, 3.5, 0, Math.PI * 2); actx.fill();
+          });
+
+          // Glasses with shiny diagonal glare
+          actx.strokeStyle = "#111827"; actx.lineWidth = 6;
+          actx.strokeRect(48, 100, 62, 42);
+          actx.strokeRect(146, 100, 62, 42);
+          actx.beginPath(); actx.moveTo(110, 120); actx.lineTo(146, 120); actx.stroke();
+
+          actx.fillStyle = "#27272a";
+          actx.beginPath(); actx.roundRect(96, 156, 64, 13, 6); actx.fill();
+          actx.strokeStyle = "#7c2d12"; actx.lineWidth = 5;
+          actx.beginPath(); actx.arc(132, 172, 22, 0.1 * Math.PI, 0.78 * Math.PI); actx.stroke();
+        } else if (tile === 3) {
+          // BOSS HURT: > < Comic Eyes + Red Slap Bruise + Screaming Missing Tooth!
+          actx.fillStyle = "rgba(225, 29, 72, 0.68)";
+          actx.beginPath(); actx.ellipse(186, 152, 35, 24, -0.25, 0, Math.PI * 2); actx.fill();
+
+          actx.strokeStyle = "#0f172a"; actx.lineWidth = 9;
+          actx.beginPath();
+          actx.moveTo(54, 102); actx.lineTo(98, 122); actx.lineTo(54, 142);
+          actx.moveTo(202, 102); actx.lineTo(158, 122); actx.lineTo(202, 142);
+          actx.stroke();
+
+          actx.fillStyle = "#7f1d1d"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
+          actx.beginPath(); actx.roundRect(90, 162, 76, 48, 16); actx.fill(); actx.stroke();
+          actx.fillStyle = "#ffffff";
+          actx.fillRect(100, 164, 22, 12);
+          actx.fillRect(136, 164, 22, 12);
+          actx.fillStyle = "#fb7185";
+          actx.beginPath(); actx.ellipse(128, 198, 22, 10, 0, 0, Math.PI * 2); actx.fill();
+        } else if (tile === 4) {
+          // BOSS KO / DIZZY: Swirl @ @ Eyes + Swollen Cheek + Tongue Out!
+          actx.fillStyle = "rgba(147, 51, 234, 0.40)";
+          actx.beginPath(); actx.ellipse(72, 148, 28, 20, 0, 0, Math.PI * 2); actx.fill();
+
+          actx.strokeStyle = "#0f172a"; actx.lineWidth = 5.5;
+          [80, 176].forEach((ex) => {
+            actx.fillStyle = "#ffffff";
+            actx.beginPath(); actx.arc(ex, 120, 22, 0, Math.PI * 2); actx.fill(); actx.stroke();
+            actx.beginPath();
+            for (let a = 0; a < Math.PI * 3.8; a += 0.3) {
+              const r = a * 1.5;
+              const px = ex + Math.cos(a) * r, py = 120 + Math.sin(a) * r;
+              if (a === 0) actx.moveTo(px, py); else actx.lineTo(px, py);
+            }
+            actx.stroke();
+          });
+
+          actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
+          actx.beginPath(); actx.moveTo(96, 176); actx.quadraticCurveTo(128, 164, 160, 176); actx.stroke();
+          actx.fillStyle = "#fb7185";
+          actx.beginPath(); actx.roundRect(130, 173, 22, 28, 10); actx.fill(); actx.stroke();
+        } else if (tile === 5) {
+          // COWORKER TIRED: Half-lidded eyes + heavy dark circles + sweat drop
+          [80, 176].forEach((ex) => {
+            actx.fillStyle = "rgba(71, 85, 105, 0.45)";
+            actx.beginPath(); actx.arc(ex, 132, 18, 0, Math.PI); actx.fill();
+            actx.fillStyle = "#ffffff"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 4.5;
+            actx.beginPath(); actx.arc(ex, 124, 16, 0, Math.PI); actx.closePath(); actx.fill(); actx.stroke();
+            actx.fillStyle = "#0f172a";
+            actx.beginPath(); actx.arc(ex, 129, 6, 0, Math.PI * 2); actx.fill();
+          });
+          actx.strokeStyle = "#475569"; actx.lineWidth = 4.5;
+          actx.beginPath(); actx.moveTo(108, 176); actx.lineTo(148, 172); actx.stroke();
+          // Blue anime sweat drop
+          actx.fillStyle = "#38bdf8";
+          actx.beginPath(); actx.ellipse(212, 96, 8, 14, 0, 0, Math.PI * 2); actx.fill();
+        } else if (tile === 6) {
+          // COWORKER CHEERING: Happy ^ ^ arches + big open smile!
+          actx.strokeStyle = "#0f172a"; actx.lineWidth = 8;
+          actx.beginPath();
+          actx.arc(80, 128, 18, Math.PI * 1.1, Math.PI * 1.9);
+          actx.stroke();
+          actx.beginPath();
+          actx.arc(176, 128, 18, Math.PI * 1.1, Math.PI * 1.9);
+          actx.stroke();
+
+          actx.fillStyle = "#ef4444"; actx.strokeStyle = "#0f172a"; actx.lineWidth = 5;
+          actx.beginPath(); actx.arc(128, 164, 24, 0, Math.PI); actx.closePath(); actx.fill(); actx.stroke();
+        } else if (tile === 7) {
+          // SECURITY / SUB-MANAGER: Dark Aviator Shades + Stern Frown!
+          actx.fillStyle = "#090d16"; actx.strokeStyle = "#38bdf8"; actx.lineWidth = 4;
+          actx.beginPath();
+          actx.roundRect(44, 102, 74, 36, 10);
+          actx.roundRect(138, 102, 74, 36, 10);
+          actx.fill(); actx.stroke();
+          actx.strokeStyle = "#090d16"; actx.lineWidth = 7;
+          actx.beginPath(); actx.moveTo(118, 114); actx.lineTo(138, 114); actx.stroke();
+          actx.beginPath(); actx.moveTo(104, 176); actx.quadraticCurveTo(128, 164, 152, 176); actx.stroke();
+        }
+
+        actx.restore();
+      }
+    }
+    buildWebtoonFaceAtlas();
+
+    const atlasTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, atlasTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlasCanvas);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // =========================================================================
+    // 4. WEBGL CEL-SHADING + TOON OUTLINE + FACE ATLAS SHADER
+    // =========================================================================
+    const VS = `
+      attribute vec3 aPos;
+      attribute vec3 aNormal;
+      attribute vec3 aSmooth;
+      attribute vec2 aUV;
+      attribute vec3 aColor;
+
+      uniform mat4 uModel;
+      uniform mat4 uVP;
+      uniform mat3 uNormalMat;
+      uniform float uOutline;
+
+      varying vec3 vNormal;
+      varying vec3 vWorldPos;
+      varying vec2 vUV;
+      varying vec3 vColor;
+
+      void main() {
+        vec3 p = aPos + aSmooth * uOutline;
+        vec4 wp = uModel * vec4(p, 1.0);
+        vWorldPos = wp.xyz;
+        vNormal = normalize(uNormalMat * aNormal);
+        vUV = aUV;
+        vColor = aColor;
+        gl_Position = uVP * wp;
+      }
+    `;
+
+    const FS = `
+      precision mediump float;
+      varying vec3 vNormal;
+      varying vec3 vWorldPos;
+      varying vec2 vUV;
+      varying vec3 vColor;
+
+      uniform sampler2D uTex;
+      uniform vec2 uFaceOffset;
+      uniform float uUseTex;
+      uniform vec3 uTint;
+      uniform float uUnlit;
+      uniform float uAlpha;
+      uniform vec3 uCamPos;
+      uniform float uFlash;
+
+      void main() {
+        if (uUnlit > 0.5) {
+          gl_FragColor = vec4(uTint, uAlpha);
+          return;
+        }
+        vec3 N = normalize(vNormal);
+        vec3 L = normalize(vec3(0.48, 0.86, 0.45));
+        float ndl = dot(N, L);
+        float band = ndl > 0.45 ? 1.05 : (ndl > -0.02 ? 0.86 : 0.62);
+
+        vec3 base = vColor * uTint;
+        if (uUseTex > 0.5 && vUV.x >= 0.0) {
+          vec2 uv = uFaceOffset + vec2(vUV.x * 0.25, vUV.y * 0.5);
+          base = texture2D(uTex, uv).rgb;
+        }
+
+        vec3 V = normalize(uCamPos - vWorldPos);
+        float rim = pow(1.0 - max(dot(N, V), 0.0), 3.2) * 0.12;
+        vec3 col = base * band + vec3(rim);
+        col = mix(col, vec3(1.0, 0.96, 0.88), uFlash);
+        gl_FragColor = vec4(col, uAlpha);
+      }
+    `;
+
+    function mkSh(t, s) { const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); return sh; }
+    const prog = gl.createProgram();
+    gl.attachShader(prog, mkSh(gl.VERTEX_SHADER, VS));
+    gl.attachShader(prog, mkSh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    const loc = {
+      aPos: gl.getAttribLocation(prog, "aPos"),
+      aNormal: gl.getAttribLocation(prog, "aNormal"),
+      aSmooth: gl.getAttribLocation(prog, "aSmooth"),
+      aUV: gl.getAttribLocation(prog, "aUV"),
+      aColor: gl.getAttribLocation(prog, "aColor"),
+      uModel: gl.getUniformLocation(prog, "uModel"),
+      uVP: gl.getUniformLocation(prog, "uVP"),
+      uNormalMat: gl.getUniformLocation(prog, "uNormalMat"),
+      uOutline: gl.getUniformLocation(prog, "uOutline"),
+      uTex: gl.getUniformLocation(prog, "uTex"),
+      uFaceOffset: gl.getUniformLocation(prog, "uFaceOffset"),
+      uUseTex: gl.getUniformLocation(prog, "uUseTex"),
+      uTint: gl.getUniformLocation(prog, "uTint"),
+      uUnlit: gl.getUniformLocation(prog, "uUnlit"),
+      uAlpha: gl.getUniformLocation(prog, "uAlpha"),
+      uCamPos: gl.getUniformLocation(prog, "uCamPos"),
+      uFlash: gl.getUniformLocation(prog, "uFlash"),
+    };
+    gl.enableVertexAttribArray(loc.aPos);
+    gl.enableVertexAttribArray(loc.aNormal);
+    gl.enableVertexAttribArray(loc.aSmooth);
+    gl.enableVertexAttribArray(loc.aUV);
+    gl.enableVertexAttribArray(loc.aColor);
+
+    // =========================================================================
+    // 5. HYBRID MESH BUILDER (Smooth Organic SD Characters + Crisp Office Props)
+    // =========================================================================
+    const rgb = (h) => [((h >> 16) & 255) / 255, ((h >> 8) & 255) / 255, (h & 255) / 255];
+
+    class GeoBuilder {
+      constructor() { this.v = []; } // 14 floats: pos(3), norm(3), smooth(3), uv(2), col(3)
+
+      tri(p1, p2, p3, n1, n2, n3, s1, s2, s3, u1, u2, u3, col) {
+        const pv = (p, n, s, u) => {
+          this.v.push(p[0],p[1],p[2], n[0],n[1],n[2], s[0],s[1],s[2], u[0],u[1], col[0],col[1],col[2]);
+        };
+        pv(p1,n1,s1,u1); pv(p2,n2,s2,u2); pv(p3,n3,s3,u3);
+      }
+
+      addEllipsoid(rx, ry, rz, latS, lonS, col, ox=0, oy=0, oz=0, faceUV=false) {
+        const mk = (i, j) => {
+          const th = (i / latS) * Math.PI, ph = (j / lonS) * Math.PI * 2;
+          const st = Math.sin(th), ct = Math.cos(th), sp = Math.sin(ph), cp = Math.cos(ph);
+          const nx = st * sp, ny = ct, nz = st * cp;
+          const p = [nx * rx + ox, ny * ry + oy, nz * rz + oz];
+          const nl = Math.hypot(nx / rx, ny / ry, nz / rz) || 1;
+          const n = [(nx / rx) / nl, (ny / ry) / nl, (nz / rz) / nl];
+          let uv = [-1, -1];
+          if (faceUV && nz > 0.18) {
+            uv = [
+              Math.max(0.04, Math.min(0.96, nx * 0.65 + 0.5)),
+              Math.max(0.04, Math.min(0.96, 0.5 - ny * 0.65))
+            ];
+          }
+          return { p, n, uv };
+        };
+        for (let i = 0; i < latS; i++) {
+          for (let j = 0; j < lonS; j++) {
+            const a=mk(i,j), b=mk(i+1,j), c=mk(i+1,j+1), d=mk(i,j+1);
+            this.tri(a.p,b.p,c.p, a.n,b.n,c.n, a.n,b.n,c.n, a.uv,b.uv,c.uv, col);
+            this.tri(a.p,c.p,d.p, a.n,c.n,d.n, a.n,c.n,d.n, a.uv,c.uv,d.uv, col);
+          }
+        }
+        return this;
+      }
+
+      addLathe(prof, segs, col, ox=0, oy=0, oz=0, sx=1, sz=1) {
+        for (let p = 0; p < prof.length - 1; p++) {
+          const [r0, y0] = prof[p], [r1, y1] = prof[p + 1];
+          const dy = y1 - y0, dr = r0 - r1;
+          for (let s = 0; s < segs; s++) {
+            const a0 = (s / segs) * Math.PI * 2, a1 = ((s + 1) / segs) * Math.PI * 2;
+            const mk = (r, y, a) => {
+              const ca = Math.cos(a), sa = Math.sin(a);
+              const pos = [ca * r * sx + ox, y + oy, sa * r * sz + oz];
+              const nl = Math.hypot(ca * dy, dr, sa * dy) || 1;
+              const n = [(ca * dy) / nl, dr / nl, (sa * dy) / nl];
+              return { p: pos, n, uv: [-1, -1] };
+            };
+            const v00=mk(r0,y0,a0), v01=mk(r0,y0,a1), v10=mk(r1,y1,a0), v11=mk(r1,y1,a1);
+            this.tri(v00.p,v11.p,v01.p, v00.n,v11.n,v01.n, v00.n,v11.n,v01.n, v00.uv,v11.uv,v01.uv, col);
+            this.tri(v00.p,v10.p,v11.p, v00.n,v10.n,v11.n, v00.n,v10.n,v11.n, v00.uv,v10.uv,v11.uv, col);
+          }
+        }
+        return this;
+      }
+
+      addBox(w, h, d, col, ox=0, oy=0, oz=0) {
+        const hx=w*0.5, hy=h*0.5, hz=d*0.5;
+        const raw = [
+          [-hx,-hy,-hz],[hx,-hy,-hz],[hx,hy,-hz],[-hx,hy,-hz],
+          [-hx,-hy,hz],[hx,-hy,hz],[hx,hy,hz],[-hx,hy,hz]
+        ];
+        const sm = raw.map(([x,y,z]) => { const l=Math.hypot(x,y,z)||1; return [x/l,y/l,z/l]; });
+        const wc = raw.map(([x,y,z]) => [x+ox,y+oy,z+oz]);
+        const faces = [
+          { idx:[4,5,6,7], n:[0,0,1] }, { idx:[1,0,3,2], n:[0,0,-1] },
+          { idx:[3,7,6,2], n:[0,1,0] }, { idx:[0,1,5,4], n:[0,-1,0] },
+          { idx:[5,1,2,6], n:[1,0,0] }, { idx:[0,4,7,3], n:[-1,0,0] }
+        ];
+        const u = [-1,-1];
+        for (const f of faces) {
+          const [a,b,c,di] = f.idx;
+          this.tri(wc[a],wc[b],wc[c], f.n,f.n,f.n, sm[a],sm[b],sm[c], u,u,u, col);
+          this.tri(wc[a],wc[c],wc[di], f.n,f.n,f.n, sm[a],sm[c],sm[di], u,u,u, col);
+        }
+        return this;
+      }
+
+      build() {
+        const vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.v), gl.STATIC_DRAW);
+        return { vbo, count: this.v.length / 14 };
+      }
+    }
+
+    // =========================================================================
+    // 6. CREATE EXPANDED 4-ZONE OFFICE & WEBTOON SD CHARACTER MESHES
+    // =========================================================================
+    const M = {};
+    const MAP_X = 21.5, MAP_Z = 16.5;
+
+    // Expanded 4-Zone HQ Static Floor & Partitions (44m x 34m!)
+    {
+      const g = new GeoBuilder();
+      // Base tiled carpet across entire 44x34 floor
+      for (let gx = -11; gx < 11; gx++) {
+        for (let gz = -8; gz < 8; gz++) {
+          const x = (gx + 0.5) * 2.0, z = (gz + 0.5) * 2.06;
+          let c = (gx + gz) % 2 === 0 ? rgb(0x273043) : rgb(0x222a3b);
+          // Zone 2: NW Breakroom Cafe checkered warm tile
+          if (x < -3.8 && z < -2.0) {
+            c = (gx + gz) % 2 === 0 ? rgb(0x3a4252) : rgb(0x2e3543);
+          }
+          // Zone 3: NE VIP CEO Suite plush burgundy carpet!
+          else if (x > 4.2 && z < -2.0) {
+            c = (gx + gz) % 2 === 0 ? rgb(0x4c1d2e) : rgb(0x3f1625);
+          }
+          // Zone 4: SE Executive Boardroom deep royal navy carpet!
+          else if (x > 6.2 && z > -1.0) {
+            c = (gx + gz) % 2 === 0 ? rgb(0x1d2d4e) : rgb(0x182542);
+          }
+          g.addBox(2.0, 0.12, 2.06, c, x, -0.06, z);
+        }
+      }
+      // VIP Gold Carpet Trim
+      g.addBox(16.6, 0.02, 0.18, rgb(0xf59e0b), 12.8, 0.01, -2.2);
+      g.addBox(0.18, 0.02, 14.0, rgb(0xf59e0b), 4.5, 0.01, -9.2);
+
+      // Perimeter Back Wall + Large Panoramic Windows
+      g.addBox(44.4, 3.4, 0.45, rgb(0xdbe4f0), 0, 1.7, -16.7);
+      g.addBox(44.4, 0.5, 0.50, rgb(0x334155), 0, 0.25, -16.65);
+      for (let wx = -17; wx <= 17; wx += 6.8) {
+        g.addBox(4.6, 1.85, 0.48, rgb(0x7dd3fc), wx, 1.95, -16.68);
+      }
+      // Side Perimeter Walls
+      g.addBox(0.45, 2.6, 33.6, rgb(0x475569), -22.0, 1.3, 0);
+      g.addBox(0.45, 2.6, 33.6, rgb(0x475569),  22.0, 1.3, 0);
+
+      // Sleek Waist-High Internal Zone Partitions (1.35m tall so 3D camera NEVER gets blocked!)
+      // Breakroom divider
+      g.addBox(11.0, 1.35, 0.28, rgb(0x64748b), -16.2, 0.68, -2.2);
+      g.addBox(0.28, 1.35, 9.5, rgb(0x64748b), -4.0, 0.68, -11.8);
+      // VIP CEO Room divider (wood & gold)
+      g.addBox(0.30, 1.45, 9.5, rgb(0x78350f), 4.5, 0.72, -11.8);
+      g.addBox(10.5, 1.45, 0.30, rgb(0x78350f), 16.5, 0.72, -2.2);
+      // Boardroom glass-frame divider
+      g.addBox(0.26, 1.30, 10.5, rgb(0x3b82f6), 6.4, 0.65, 10.8);
+      g.addBox(9.5, 1.30, 0.26, rgb(0x3b82f6), 17.0, 0.65, -0.8);
+
+      M.officeHQ = g.build();
+    }
+
+    // --- WEBTOON SD CHARACTER PARTS (Smooth Organic Curved Meshes!) ---
+    // Shared UV-Mapped Webtoon Head
+    M.sdHead = new GeoBuilder()
+      .addEllipsoid(0.44, 0.41, 0.40, 18, 22, rgb(0xfdba8c), 0, 0.38, 0, true)
+      .addEllipsoid(0.08, 0.10, 0.06, 6, 8, rgb(0xfdba8c), -0.43, 0.36, 0)
+      .addEllipsoid(0.08, 0.10, 0.06, 6, 8, rgb(0xfdba8c),  0.43, 0.36, 0)
+      .build();
+
+    // Hair variants!
+    M.hairHero = new GeoBuilder()
+      .addEllipsoid(0.47, 0.24, 0.44, 12, 16, rgb(0x0f172a), 0, 0.59, -0.04)
+      .addEllipsoid(0.32, 0.12, 0.24, 8, 10, rgb(0x0f172a), 0.12, 0.72, 0.18)
+      .build();
+
+    M.hairBossBald = new GeoBuilder()
+      // Horseshoe side hair + shiny bald crown!
+      .addEllipsoid(0.48, 0.18, 0.44, 12, 16, rgb(0x27272a), 0, 0.48, -0.08)
+      .addEllipsoid(0.36, 0.14, 0.34, 10, 14, rgb(0xfdba8c), 0, 0.66, 0.04)
+      .build();
+
+    M.hairCoworker = new GeoBuilder()
+      .addEllipsoid(0.46, 0.25, 0.44, 12, 16, rgb(0x3f2718), 0, 0.58, -0.03)
+      .build();
+
+    M.hairCapGuard = new GeoBuilder()
+      .addEllipsoid(0.47, 0.22, 0.45, 12, 16, rgb(0x1e3a8a), 0, 0.60, 0)
+      .addEllipsoid(0.36, 0.05, 0.26, 8, 12, rgb(0x0f172a), 0, 0.52, 0.32) // Cap visor
+      .build();
+
+    // Torso meshes (Smooth tapered blazer/shirt!)
+    M.torsoShirt = new GeoBuilder()
+      .addLathe([[0.0, 0.0], [0.30, 0.03], [0.34, 0.36], [0.27, 0.66], [0.0, 0.70]], 16, rgb(0xf8fafc), 0, 0.0, 0, 1.05, 0.78)
+      .addLathe([[0.02, 0.0], [0.07, 0.08], [0.04, 0.34], [0.0, 0.36]], 8, rgb(0x2563eb), 0, 0.24, 0.24, 1.0, 0.4)
+      .build();
+
+    M.torsoBoss = new GeoBuilder()
+      // Plump rounded executive belly suit!
+      .addLathe([[0.0, 0.0], [0.38, 0.04], [0.46, 0.34], [0.36, 0.68], [0.0, 0.72]], 18, rgb(0xffffff), 0, 0.0, 0, 1.08, 0.92)
+      .addEllipsoid(0.24, 0.26, 0.12, 10, 12, rgb(0xf8fafc), 0, 0.42, 0.34)
+      .addLathe([[0.02, 0.0], [0.08, 0.09], [0.05, 0.38], [0.0, 0.40]], 8, rgb(0xef4444), 0, 0.24, 0.41, 1.0, 0.4)
+      .build();
+
+    M.limbArm = new GeoBuilder()
+      .addLathe([[0.08, -0.36], [0.10, 0.0], [0.0, 0.03]], 10, rgb(0xffffff))
+      .addEllipsoid(0.12, 0.12, 0.12, 8, 10, rgb(0xfdba8c), 0, -0.39, 0.02)
+      .build();
+
+    M.limbLeg = new GeoBuilder()
+      .addLathe([[0.085, -0.40], [0.115, 0.0], [0.0, 0.02]], 10, rgb(0x1e293b))
+      .addEllipsoid(0.105, 0.075, 0.17, 8, 10, rgb(0x090d16), 0, -0.41, 0.05)
+      .build();
+
+    // --- 10 THROWABLE / SWINGABLE OFFICE WEAPONS & FURNITURE MESHES! ---
+    M.desk = new GeoBuilder()
+      .addBox(2.1, 0.11, 1.02, rgb(0xd4955e), 0, 0.75, 0)
+      .addBox(0.10, 0.74, 0.94, rgb(0x475569), -0.95, 0.37, 0)
+      .addBox(0.10, 0.74, 0.94, rgb(0x475569),  0.95, 0.37, 0)
+      .build();
+
+    M.vipDesk = new GeoBuilder()
+      .addBox(2.9, 0.14, 1.25, rgb(0x7c2d12), 0, 0.78, 0)
+      .addBox(2.7, 0.72, 1.05, rgb(0x451a03), 0, 0.38, 0)
+      .addBox(2.74, 0.08, 1.09, rgb(0xfbbf24), 0, 0.68, 0)
+      .build();
+
+    M.boardTable = new GeoBuilder()
+      .addBox(2.4, 0.12, 5.2, rgb(0x9a6b4c), 0, 0.76, 0)
+      .addBox(0.25, 0.74, 0.25, rgb(0x334155), 0, 0.37, -1.8)
+      .addBox(0.25, 0.74, 0.25, rgb(0x334155), 0, 0.37,  1.8)
+      .build();
+
+    M.vending = new GeoBuilder()
+      .addBox(1.25, 2.05, 0.85, rgb(0xdc2626), 0, 1.02, 0)
+      .addBox(0.95, 1.15, 0.88, rgb(0xfef08a), -0.05, 1.25, 0.02)
+      .build();
+
+    // Weapons!
+    M.chair = new GeoBuilder()
+      .addBox(0.60, 0.10, 0.60, rgb(0x2563eb), 0, 0.45, 0)
+      .addBox(0.56, 0.54, 0.10, rgb(0x1d4ed8), 0, 0.76, -0.25)
+      .addLathe([[0.04, 0.06], [0.04, 0.44]], 6, rgb(0x334155))
+      .addBox(0.60, 0.05, 0.09, rgb(0x1e293b), 0, 0.05, 0)
+      .addBox(0.09, 0.05, 0.60, rgb(0x1e293b), 0, 0.05, 0)
+      .build();
+
+    M.monitor = new GeoBuilder()
+      .addBox(0.76, 0.48, 0.07, rgb(0x1e293b), 0, 0.35, 0)
+      .addBox(0.68, 0.40, 0.08, rgb(0x38bdf8), 0, 0.35, 0.01)
+      .addBox(0.10, 0.18, 0.07, rgb(0x334155), 0, 0.10, 0)
+      .addBox(0.32, 0.04, 0.22, rgb(0x334155), 0, 0.02, 0)
+      .build();
+
+    M.keyboard = new GeoBuilder()
+      .addBox(0.56, 0.05, 0.23, rgb(0xf1f5f9), 0, 0.025, 0)
+      .addBox(0.50, 0.06, 0.17, rgb(0x38bdf8), 0, 0.035, 0)
+      .build();
+
+    M.coffeePot = new GeoBuilder()
+      .addLathe([[0.0,0],[0.16,0.02],[0.18,0.18],[0.13,0.34],[0.15,0.38],[0.0,0.38]], 12, rgb(0x451a03))
+      .addBox(0.06, 0.22, 0.10, rgb(0x111827), 0.18, 0.20, 0)
+      .build();
+
+    M.extinguisher = new GeoBuilder()
+      .addLathe([[0.0,0],[0.14,0.02],[0.14,0.52],[0.06,0.62],[0.0,0.64]], 12, rgb(0xdc2626))
+      .addBox(0.16, 0.07, 0.06, rgb(0x111827), 0.03, 0.66, 0)
+      .build();
+
+    M.golfClub = new GeoBuilder()
+      .addLathe([[0.022, 0], [0.026, 1.15]], 8, rgb(0xfacc15))
+      .addBox(0.22, 0.10, 0.08, rgb(0xfde047), 0.09, 0.05, 0)
+      .addLathe([[0.034, 0.85], [0.034, 1.16]], 8, rgb(0x111827))
+      .build();
+
+    M.printer = new GeoBuilder()
+      .addBox(0.82, 0.56, 0.72, rgb(0xe2e8f0), 0, 0.28, 0)
+      .addBox(0.66, 0.08, 0.52, rgb(0x334155), 0, 0.57, 0)
+      .addBox(0.42, 0.04, 0.30, rgb(0xffffff), 0, 0.61, 0.12)
+      .build();
+
+    M.waterJug = new GeoBuilder()
+      .addLathe([[0.0,0],[0.23,0.03],[0.24,0.50],[0.09,0.62],[0.09,0.72],[0.0,0.72]], 14, rgb(0x60a5fa))
+      .build();
+
+    M.plant = new GeoBuilder()
+      .addLathe([[0.0,0],[0.19,0.02],[0.25,0.42],[0.0,0.43]], 10, rgb(0xd97706))
+      .addEllipsoid(0.38, 0.26, 0.38, 8, 10, rgb(0x22c55e), 0, 0.68, 0)
+      .build();
+
+    M.trophy = new GeoBuilder()
+      .addBox(0.26, 0.12, 0.26, rgb(0x451a03), 0, 0.06, 0)
+      .addLathe([[0.05,0.12],[0.04,0.30],[0.20,0.56],[0.22,0.72],[0.0,0.72]], 12, rgb(0xfacc15))
+      .build();
+
+    M.paper = new GeoBuilder().addBox(0.26, 0.015, 0.36, rgb(0xffffff)).build();
+    M.spark = new GeoBuilder().addEllipsoid(0.10, 0.10, 0.10, 6, 8, rgb(0xfde047)).build();
+    M.shadow = new GeoBuilder().addLathe([[0.5, 0], [0.0, 0.005]], 14, rgb(0x060911)).build();
+    M.ring = new GeoBuilder().addLathe([[0.58, 0], [0.68, 0.01], [0.58, 0.02]], 18, rgb(0x38bdf8)).build();
+
+    // =========================================================================
+    // 7. POPULATE WORLD: MAIN BOSS, SUB-MANAGERS, 9 COWORKERS, GUARDS, 30+ PROPS
+    // =========================================================================
+    const BOSS_ROSTER = [
+      {
+        lv: "LV.1", name: "꼰대 김부장", suit: [0.30, 0.36, 0.46], scale: 1.06, hp: 130,
+        taunts: ["금요일 5시50분 회의 시작하자!", "라떼는 주말도 반납했어~", "보고서 줄간격 다시 맞춰와!", "오늘 회식 불참은 없겠지?"]
+      },
+      {
+        lv: "LV.2", name: "열정페이 박상무", suit: [0.16, 0.28, 0.55], scale: 1.14, hp: 175,
+        taunts: ["야근수당 대신 열정을 배워라!", "단톡방 답장이 2분이나 늦었네?", "휴가 가서도 노트북 켜놔~"]
+      },
+      {
+        lv: "LV.3", name: "법인카드 최전무", suit: [0.42, 0.15, 0.48], scale: 1.20, hp: 220,
+        taunts: ["내일 새벽 등산 워크샵 필수다!", "내 황금 골프채 닦아놨나?", "요즘 젊은이들은 근성이 없어!"]
+      },
+      {
+        lv: "CEO", name: "블랙기업 왕회장", suit: [0.52, 0.22, 0.10], scale: 1.30, hp: 290,
+        taunts: ["보너스는 구내식당 식권 1장이다!", "주 100시간 일해야 성공한다!", "누가 감히 정시 퇴근을 꿈꾸나?!"]
+      }
+    ];
+
+    const HURT_LINES = ["억!! 결재 해줄게!!", "살려줘!! 칼퇴 승인!!", "아악 연봉 올려줄게!!", "재택근무 허가한다악!!", "꾸웨에엑!!"];
+    const CHEER_LINES = ["나이스 죽방!!", "사이다!!", "내 속이 뻥 뚫리네!", "칼퇴 가즈아!!", "영웅이다!!"];
+
+    const player = {
+      x: -5.0, y: 0, z: 7.5,
+      vx: 0, vz: 0, yaw: Math.PI,
+      walk: 0,
+      atkTimer: 0, atkDur: 0.22, atkType: "jab",
+      comboStep: 0, comboReset: 0,
+      upperCd: 0, dashCd: 0, dashTimer: 0,
+      heldProp: null,
+      weaponUses: 0,
+      fever: 0
+    };
+
+    const mainBoss = {
+      isMain: true,
+      rosterIdx: 0,
+      x: 11.5, y: 0, z: -8.5,
+      vx: 0, vy: 0, vz: 0,
+      rx: 0, rz: 0, vrx: 0, vrz: 0,
+      yaw: 0, walk: 0,
+      hp: 130, maxHp: 130,
+      ragdoll: 0, stun: 0, flash: 0,
+      koState: false, respawn: 0,
+      speechTimer: 2.0, speech: "금요일 5시50분 회의 시작하자!", hurtSpeech: false
+    };
+
+    let npcs = []; // Coworkers, Sub-Managers, HR Security Guards!
+    let props = [];
+    let particles = [];
+    let koTotal = 0;
+    let comboCount = 0, comboTimer = 0;
+    let wanted = 1, guardTimer = 5.0;
+    let hpTrailPct = 100;
+
+    let hitStop = 0, slowMo = 0, shakeT = 0, shakeMag = 0;
+    let nearestProp = null;
+
+    function addWeaponProp(cfg) {
+      props.push({
+        vx: 0, vy: 0, vz: 0, rx: 0, ry: cfg.ry || 0, rz: 0, vrx: 0, vrz: 0,
+        resting: !!cfg.resting,
+        grabbable: cfg.grabbable !== false,
+        uses: cfg.uses || 3,
+        aoe: cfg.aoe || 1.8,
+        dmg: cfg.dmg || 32,
+        mass: cfg.mass || 1.0,
+        radius: cfg.radius || 0.48,
+        shadowR: cfg.shadowR || 0.48,
+        ...cfg
+      });
+    }
+
+    function populateOffice() {
+      props = [];
+      npcs = [];
+      particles = [];
+
+      // 1. Zone 1: Main Open Office (8 Workstations + Printers + Coworkers + Sub-Manager)
+      const desks = [
+        [-16.0, 2.5], [-10.0, 2.5], [-4.0, 2.5], [1.5, 2.5],
+        [-16.0, 9.5], [-10.0, 9.5], [-4.0, 9.5], [1.5, 9.5]
+      ];
+      desks.forEach(([dx, dz], idx) => {
+        addWeaponProp({ type: "desk", mesh: M.desk, x: dx, y: 0, z: dz, grabbable: false, mass: 3.8, radius: 1.05, shadowR: 1.1 });
+        addWeaponProp({ type: "chair", label: "회전의자", icon: "🪑", mesh: M.chair, x: dx, y: 0, z: dz + 0.95, ry: Math.PI, dmg: 30, uses: 3, mass: 1.1 });
+        addWeaponProp({ type: "monitor", label: "모니터", icon: "🖥️", mesh: M.monitor, x: dx - 0.28, y: 0.80, z: dz - 0.1, resting: true, dmg: 34, uses: 2, mass: 0.85, fx: "spark" });
+        addWeaponProp({ type: "keyboard", label: "청축 키보드", icon: "⌨️", mesh: M.keyboard, x: dx - 0.25, y: 0.80, z: dz + 0.25, resting: true, dmg: 26, uses: 4, mass: 0.45, fx: "paper" });
+        if (idx % 2 === 0) {
+          npcs.push({
+            role: "coworker", name: "동료 사원",
+            x: dx + (idx % 4 === 0 ? -1.35 : 1.35), y: 0, z: dz + 0.5,
+            vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, yaw: 0, walk: Math.random() * 6,
+            suit: [0.88, 0.92, 0.98], cheer: 0, ragdoll: 0, msg: ""
+          });
+        }
+      });
+
+      // Office Laser Printers & Fire Extinguishers
+      addWeaponProp({ type: "printer", label: "레이저 복합기", icon: "🖨️", mesh: M.printer, x: -7.0, y: 0, z: 6.0, dmg: 48, uses: 2, aoe: 2.8, mass: 1.8, fx: "paper" });
+      addWeaponProp({ type: "extinguisher", label: "분말 소화기", icon: "🧯", mesh: M.extinguisher, x: 3.5, y: 0, z: -1.2, dmg: 40, uses: 3, aoe: 3.4, mass: 1.0, fx: "smoke" });
+
+      // 2. Zone 2: NW Breakroom & Cafe (-21..-4, -16..-3)
+      addWeaponProp({ type: "vending", mesh: M.vending, x: -18.5, y: 0, z: -14.8, grabbable: false, mass: 5.0, radius: 0.9, shadowR: 0.95 });
+      addWeaponProp({ type: "coffeePot", label: "열탕 커피포트", icon: "☕", mesh: M.coffeePot, x: -14.5, y: 0, z: -12.5, dmg: 32, uses: 2, aoe: 2.4, mass: 0.5, radius: 0.35 });
+      addWeaponProp({ type: "coffeePot", label: "열탕 커피포트", icon: "☕", mesh: M.coffeePot, x: -11.5, y: 0, z: -9.0, dmg: 32, uses: 2, aoe: 2.4, mass: 0.5, radius: 0.35 });
+      addWeaponProp({ type: "waterJug", label: "20L 생수통", icon: "💧", mesh: M.waterJug, x: -8.5, y: 0, z: -14.2, dmg: 38, uses: 3, mass: 1.3 });
+      addWeaponProp({ type: "waterJug", label: "20L 생수통", icon: "💧", mesh: M.waterJug, x: -7.2, y: 0, z: -14.2, dmg: 38, uses: 3, mass: 1.3 });
+      addWeaponProp({ type: "extinguisher", label: "분말 소화기", icon: "🧯", mesh: M.extinguisher, x: -5.2, y: 0, z: -5.5, dmg: 40, uses: 3, aoe: 3.4, mass: 1.0, fx: "smoke" });
+
+      // Breakroom chatting coworkers
+      npcs.push(
+        { role: "coworker", name: "김대리", x: -13.2, y: 0, z: -8.5, vx:0,vy:0,vz:0,rx:0,rz:0, yaw: 1.2, walk:0, suit:[0.82,0.95,0.90], cheer:0, ragdoll:0, msg:"" },
+        { role: "coworker", name: "박사원", x: -11.4, y: 0, z: -7.8, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:-1.8, walk:0, suit:[0.95,0.88,0.92], cheer:0, ragdoll:0, msg:"" }
+      );
+
+      // 3. Zone 3: NE VIP CEO Suite (5..21, -16..-3)
+      addWeaponProp({ type: "vipDesk", mesh: M.vipDesk, x: 13.5, y: 0, z: -12.2, grabbable: false, mass: 6.0, radius: 1.4, shadowR: 1.5 });
+      addWeaponProp({ type: "golfClub", label: "황금 골프채", icon: "⛳", mesh: M.golfClub, x: 17.8, y: 0, z: -13.2, dmg: 52, uses: 5, aoe: 2.4, mass: 0.7 });
+      addWeaponProp({ type: "golfClub", label: "황금 골프채", icon: "⛳", mesh: M.golfClub, x: 8.2, y: 0, z: -6.5, dmg: 52, uses: 5, aoe: 2.4, mass: 0.7 });
+      addWeaponProp({ type: "trophy", label: "황금 트로피", icon: "🏆", mesh: M.trophy, x: 13.5, y: 0.92, z: -12.0, resting: true, dmg: 58, uses: 3, mass: 0.9 });
+      addWeaponProp({ type: "plant", label: "대형 화분", icon: "🪴", mesh: M.plant, x: 6.5, y: 0, z: -14.2, dmg: 35, uses: 2, mass: 1.2 });
+      addWeaponProp({ type: "plant", label: "대형 화분", icon: "🪴", mesh: M.plant, x: 19.5, y: 0, z: -5.2, dmg: 35, uses: 2, mass: 1.2 });
+
+      // 4. Zone 4: SE Executive Boardroom (7..21, -1..16)
+      addWeaponProp({ type: "boardTable", mesh: M.boardTable, x: 14.2, y: 0, z: 7.5, grabbable: false, mass: 7.0, radius: 1.6, shadowR: 1.9 });
+      for (let cz = 5.5; cz <= 9.5; cz += 2.0) {
+        addWeaponProp({ type: "chair", label: "회의실 의자", icon: "🪑", mesh: M.chair, x: 12.2, y: 0, z: cz, ry: Math.PI * 0.5, dmg: 30, uses: 3, mass: 1.1 });
+        addWeaponProp({ type: "chair", label: "회의실 의자", icon: "🪑", mesh: M.chair, x: 16.2, y: 0, z: cz, ry: -Math.PI * 0.5, dmg: 30, uses: 3, mass: 1.1 });
+      }
+      addWeaponProp({ type: "printer", label: "회의실 복합기", icon: "🖨️", mesh: M.printer, x: 19.2, y: 0, z: 1.8, dmg: 48, uses: 2, aoe: 2.8, mass: 1.8, fx: "paper" });
+      addWeaponProp({ type: "extinguisher", label: "분말 소화기", icon: "🧯", mesh: M.extinguisher, x: 8.2, y: 0, z: 1.8, dmg: 40, uses: 3, aoe: 3.4, mass: 1.0, fx: "smoke" });
+
+      npcs.push(
+        { role: "coworker", name: "정주임", x: 12.0, y: 0, z: 11.8, vx:0,vy:0,vz:0,rx:0,rz:0, yaw: 0.3, walk:0, suit:[0.85,0.90,0.98], cheer:0, ragdoll:0, msg:"" },
+        { role: "coworker", name: "최사원", x: 16.0, y: 0, z: 11.8, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:-0.3, walk:0, suit:[0.92,0.92,0.86], cheer:0, ragdoll:0, msg:"" }
+      );
+
+      // 2 Roaming Nagging Sub-Managers ("강팀장", "이차장") so there's ALWAYS someone to smack in every zone!
+      npcs.push(
+        { role: "subboss", name: "잔소리 강팀장", x: -6.5, y: 0, z: 4.5, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:0, walk:0, hp:70, maxHp:70, suit:[0.25,0.38,0.35], cheer:0, ragdoll:0, flash:0 },
+        { role: "subboss", name: "보고서 이차장", x: 14.0, y: 0, z: 3.2, vx:0,vy:0,vz:0,rx:0,rz:0, yaw:0, walk:0, hp:70, maxHp:70, suit:[0.38,0.28,0.25], cheer:0, ragdoll:0, flash:0 }
+      );
+    }
+
+    function spawnMainBoss(idx) {
+      const cfg = BOSS_ROSTER[idx % BOSS_ROSTER.length];
+      mainBoss.rosterIdx = idx % BOSS_ROSTER.length;
+      const spawns = [[-2.0, 2.5], [12.5, -8.5], [13.5, 4.5], [-11.5, -8.5]];
+      const sp = spawns[idx % spawns.length];
+      mainBoss.x = sp[0]; mainBoss.y = 2.6; mainBoss.z = sp[1];
+      mainBoss.vx = mainBoss.vy = mainBoss.vz = 0;
+      mainBoss.rx = mainBoss.rz = mainBoss.vrx = mainBoss.vrz = 0;
+      mainBoss.maxHp = cfg.hp; mainBoss.hp = cfg.hp;
+      hpTrailPct = 100;
+      mainBoss.ragdoll = 0; mainBoss.stun = 0; mainBoss.flash = 0;
+      mainBoss.koState = false;
+      mainBoss.speech = cfg.taunts[0];
+      mainBoss.hurtSpeech = false;
+      mainBoss.speechTimer = 3.2;
+
+      document.getElementById("bossLvPill").textContent = cfg.lv;
+      document.getElementById("bossNameHud").textContent = cfg.name;
+      syncHud();
+    }
+
+    // =========================================================================
+    // 8. EFFECTS, POPUPS, RADAR MINIMAP & HUD SYNC
+    // =========================================================================
+    const overlayLayer = document.getElementById("overlayLayer");
+    let lastVP = mId();
+
+    function popText(wx, wy, wz, text, color = "#fde047", px = 24) {
+      const sc = project2D(wx, wy, wz, lastVP, window.innerWidth, window.innerHeight);
+      if (!sc) return;
+      const el = document.createElement("div");
+      el.className = "comic-pop";
+      el.textContent = text;
+      el.style.left = `${sc.x}px`;
+      el.style.top = `${sc.y}px`;
+      el.style.color = color;
+      el.style.fontSize = `${px}px`;
+      el.style.setProperty("--r", `${(Math.random() * 18 - 9).toFixed(1)}deg`);
+      overlayLayer.appendChild(el);
+      setTimeout(() => el.remove(), 740);
+    }
+
+    function burstParticles(x, y, z, count, kind = "paper") {
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const spd = 2.5 + Math.random() * 6.5;
+        particles.push({
+          mesh: kind === "paper" ? M.paper : M.spark,
+          x, y: y + 0.35, z,
+          vx: Math.cos(a) * spd,
+          vy: 2.8 + Math.random() * 5.2,
+          vz: Math.sin(a) * spd,
+          rx: Math.random() * 3, ry: Math.random() * 3, rz: 0,
+          vrx: (Math.random() - 0.5) * 14, vry: (Math.random() - 0.5) * 14,
+          scale: kind === "smoke" ? 2.4 + Math.random() * 1.5 : (kind === "paper" ? 0.95 : 0.8),
+          life: kind === "smoke" ? 0.55 : 2.2,
+          flutter: kind === "paper",
+          tint: kind === "smoke" ? [0.95, 0.97, 1.0] : (kind === "spark" ? [1.0, 0.82, 0.2] : [1, 1, 1])
+        });
+      }
+    }
+
+    function syncHud() {
+      const pct = Math.max(0, Math.min(100, (mainBoss.hp / mainBoss.maxHp) * 100));
+      document.getElementById("bossHpFill").style.width = `${pct}%`;
+      setTimeout(() => {
+        hpTrailPct = pct;
+        document.getElementById("bossHpTrail").style.width = `${hpTrailPct}%`;
+      }, 180);
+
+      document.getElementById("koBadgeHud").textContent = `참교육 ${koTotal}`;
+      wanted = Math.min(5, 1 + Math.floor((koTotal * 1.5 + comboCount * 0.2) / 2));
+      document.getElementById("wantedHud").textContent = "★".repeat(wanted) + "☆".repeat(5 - wanted);
+
+      const comboEl = document.getElementById("comboHud");
+      if (comboCount >= 2 && comboTimer > 0) {
+        comboEl.textContent = `${comboCount} COMBO!`;
+        comboEl.style.opacity = "1";
+      } else {
+        comboEl.style.opacity = "0";
+      }
+
+      // Combo pips around Primary Attack Button
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`pip${i}`).style.opacity = i <= player.comboStep ? "0.95" : "0.22";
+      }
+
+      // Primary Attack vs Weapon Swing icon
+      if (player.heldProp) {
+        document.getElementById("mainAtkIcon").textContent = player.heldProp.icon;
+        document.getElementById("mainAtkText").textContent = `휘두르기(${player.weaponUses})`;
+      } else {
+        document.getElementById("mainAtkIcon").textContent = "🥊";
+        document.getElementById("mainAtkText").textContent = "죽방";
+      }
+
+      // Ultimate radial progress
+      const f = Math.round(player.fever);
+      const offset = 163.36 * (1 - f / 100);
+      document.getElementById("ultArc").style.strokeDashoffset = `${offset.toFixed(1)}`;
+      document.getElementById("ultPctText").textContent = f >= 100 ? "MAX!" : `${f}%`;
+      const btnUlt = document.getElementById("btnUlt");
+      if (f >= 100) btnUlt.classList.add("ult-ready");
+      else btnUlt.classList.remove("ult-ready");
+
+      // Zone name
+      let zLabel = "제3영업본부";
+      if (player.x < -3.8 && player.z < -2.0) zLabel = "☕ 탕비실";
+      else if (player.x > 4.2 && player.z < -2.0) zLabel = "👑 VIP 사장실";
+      else if (player.x > 6.2 && player.z > -1.0) zLabel = "📊 대회의실";
+      document.getElementById("zoneBadge").textContent = zLabel;
+    }
+
+    // Sleek Radar Minimap Renderer
+    const radarCvs = document.getElementById("radarCanvas");
+    const rctx = radarCvs.getContext("2d");
+
+    function renderRadar() {
+      const rw = radarCvs.width, rh = radarCvs.height;
+      rctx.clearRect(0, 0, rw, rh);
+      rctx.fillStyle = "rgba(8, 12, 22, 0.75)";
+      rctx.fillRect(0, 0, rw, rh);
+
+      const mx = (wx) => ((wx + MAP_X) / (MAP_X * 2)) * rw;
+      const mz = (wz) => ((wz + MAP_Z) / (MAP_Z * 2)) * rh;
+
+      // Zone tints on radar
+      rctx.fillStyle = "rgba(251, 191, 36, 0.14)"; // VIP
+      rctx.fillRect(mx(4.5), 0, rw - mx(4.5), mz(-2.2));
+      rctx.fillStyle = "rgba(56, 189, 248, 0.12)"; // Breakroom
+      rctx.fillRect(0, 0, mx(-4.0), mz(-2.2));
+      rctx.fillStyle = "rgba(99, 102, 241, 0.12)"; // Boardroom
+      rctx.fillRect(mx(6.4), mz(-0.8), rw - mx(6.4), rh - mz(-0.8));
+
+      // Weapons (small cyan dots)
+      rctx.fillStyle = "rgba(103, 232, 249, 0.65)";
+      for (const p of props) {
+        if (!p.grabbable || p === player.heldProp) continue;
+        rctx.fillRect(mx(p.x) - 1, mz(p.z) - 1, 2, 2);
+      }
+
+      // Coworkers & Sub-bosses
+      for (const n of npcs) {
+        rctx.fillStyle = n.role === "coworker" ? "rgba(148,163,184,0.75)" : "#fb923c";
+        rctx.beginPath();
+        rctx.arc(mx(n.x), mz(n.z), n.role === "coworker" ? 1.8 : 2.8, 0, Math.PI * 2);
+        rctx.fill();
+      }
+
+      // Main Boss pulsing target beacon!
+      rctx.fillStyle = "#f43f5e";
+      rctx.beginPath();
+      rctx.arc(mx(mainBoss.x), mz(mainBoss.z), 4.0, 0, Math.PI * 2);
+      rctx.fill();
+
+      // Player directional arrow
+      const px = mx(player.x), pz = mz(player.z);
+      rctx.save();
+      rctx.translate(px, pz);
+      rctx.rotate(Math.atan2(Math.sin(player.yaw), Math.cos(player.yaw)));
+      rctx.fillStyle = "#ffffff";
+      rctx.beginPath();
+      rctx.arc(0, 0, 3.2, 0, Math.PI * 2);
+      rctx.fill();
+      rctx.restore();
+    }
+
+    // =========================================================================
+    // 9. COMBAT MECHANICS (Punch Combo, Weapon Swing, Throw, Uppercut, Dash, Ult)
+    // =========================================================================
+    function applyHitToBossOrNpc(target, dmg, dirX, dirZ, force, liftY, word, heavy) {
+      target.vx = dirX * force;
+      target.vz = dirZ * force;
+      target.vy = Math.max(target.vy || 0, liftY);
+      target.ragdoll = Math.max(target.ragdoll || 0, heavy ? 1.5 : 0.85);
+      target.flash = 0.14;
+      target.vrx = (Math.random() - 0.5) * 15;
+      target.vrz = (Math.random() - 0.5) * 15;
+
+      comboCount++;
+      comboTimer = 2.8;
+      player.fever = Math.min(100, player.fever + (heavy ? 16 : 9));
+
+      // Nearby coworkers cheer wildly!
+      for (const n of npcs) {
+        if (n.role === "coworker" && Math.hypot(n.x - target.x, n.z - target.z) < 9.5) {
+          n.cheer = 2.4;
+          n.msg = CHEER_LINES[(Math.random() * CHEER_LINES.length) | 0];
+        }
+      }
+
+      if (target.isMain) {
+        target.hp = Math.max(0, target.hp - dmg);
+        target.stun = Math.max(target.stun, 1.3);
+        target.speech = HURT_LINES[(Math.random() * HURT_LINES.length) | 0];
+        target.hurtSpeech = true;
+        target.speechTimer = 2.0;
+
+        if (target.hp <= 0 && !target.koState) {
+          target.koState = true;
+          target.respawn = 2.7;
+          target.vy = 9.5;
+          target.vx = dirX * 14.5;
+          target.vz = dirZ * 14.5;
+          slowMo = 0.85;
+          koTotal++;
+          playSfx("ko");
+          haptic(60);
+          burstParticles(target.x, target.y + 1.0, target.z, 20, "paper");
+
+          const toast = document.getElementById("koToast");
+          const next = BOSS_ROSTER[(target.rosterIdx + 1) % BOSS_ROSTER.length];
+          document.getElementById("koToastTitle").textContent = `${BOSS_ROSTER[target.rosterIdx].name} 참교육 완료!!`;
+          document.getElementById("koToastSub").textContent = `다음 타겟 [${next.name}] 출현!`;
+          toast.style.opacity = "1";
+          setTimeout(() => { toast.style.opacity = "0"; }, 2300);
+        }
+      } else {
+        // Sub-manager or Security Guard
+        target.hp = (target.hp || 60) - dmg;
+        if (target.hp <= 0) {
+          koTotal++;
+          burstParticles(target.x, 0.8, target.z, 8, "paper");
+          popText(target.x, 2.0, target.z, `${target.name} 퇴장!!`, "#38bdf8", 22);
+          // Respawn subboss elsewhere or remove guard
+          if (target.role === "guard") {
+            const idx = npcs.indexOf(target);
+            if (idx >= 0) npcs.splice(idx, 1);
+          } else {
+            target.hp = target.maxHp;
+            target.x = (Math.random() - 0.5) * 26;
+            target.z = (Math.random() - 0.5) * 20;
+            target.y = 3.5;
+          }
+        }
+      }
+
+      hitStop = heavy ? 0.065 : 0.038;
+      shakeMag = Math.max(shakeMag, heavy ? 0.42 : 0.18);
+      shakeT = Math.max(shakeT, heavy ? 0.25 : 0.14);
+      haptic(heavy ? 32 : 14);
+      burstParticles(target.x, target.y + 1.1, target.z, heavy ? 9 : 5, "spark");
+      popText(target.x, target.y + 1.95, target.z, word, heavy ? "#fb7185" : "#fde047", heavy ? 30 : 23);
+      playSfx(heavy ? "heavy" : "hit");
+      syncHud();
+    }
+
+    function findBestCombatTarget(maxRange) {
+      let best = null, bestD = maxRange;
+      const dMain = Math.hypot(mainBoss.x - player.x, mainBoss.z - player.z);
+      if (!mainBoss.koState && dMain < bestD) { best = mainBoss; bestD = dMain; }
+      for (const n of npcs) {
+        if (n.role === "coworker") continue;
+        const d = Math.hypot(n.x - player.x, n.z - player.z);
+        if (d < bestD) { best = n; bestD = d; }
+      }
+      return best;
+    }
+
+    function doAttack() {
+      if (player.atkTimer > 0.05) return;
+
+      const tgt = findBestCombatTarget(3.9);
+      if (tgt) {
+        const dx = tgt.x - player.x, dz = tgt.z - player.z;
+        const d = Math.hypot(dx, dz) || 1;
+        player.yaw = Math.atan2(dx, dz);
+        if (d > 1.2) {
+          player.x += (dx / d) * Math.min(0.65, d - 1.1);
+          player.z += (dz / d) * Math.min(0.65, d - 1.1);
+        }
+      }
+
+      const wielding = !!player.heldProp;
+      const seq = ["jab", "cross", "spin"];
+      const stepType = wielding ? "weaponSwing" : seq[player.comboStep];
+      player.comboStep = (player.comboStep + 1) % 3;
+      player.comboReset = 1.2;
+      player.atkType = stepType;
+      player.atkDur = stepType === "spin" || wielding ? 0.28 : 0.19;
+      player.atkTimer = player.atkDur;
+
+      const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
+      const reach = wielding ? 2.75 : 2.30;
+      let hitAny = false;
+
+      const checkTarget = (ent) => {
+        if (Math.hypot(ent.x - player.x, ent.z - player.z) < reach) {
+          hitAny = true;
+          if (wielding) {
+            const wp = player.heldProp;
+            applyHitToBossOrNpc(ent, wp.dmg * 0.85, dirX, dirZ, 11.5, 5.2, `${wp.icon} 풀스윙!!`, true);
+            if (wp.fx) burstParticles(ent.x, 1.0, ent.z, 10, wp.fx);
+          } else {
+            const fin = stepType === "spin";
+            applyHitToBossOrNpc(ent, fin ? 24 : 13, dirX, dirZ, fin ? 11.2 : 5.2, fin ? 5.5 : 2.0, fin ? "풀스윙 죽방!!" : "죽방!", fin);
+          }
+        }
+      };
+
+      if (!mainBoss.koState) checkTarget(mainBoss);
+      for (const n of npcs.slice()) {
+        if (n.role !== "coworker") checkTarget(n);
+      }
+
+      if (wielding && hitAny) {
+        player.weaponUses--;
+        if (player.weaponUses <= 0) {
+          popText(player.x, 2.2, player.z, `${player.heldProp.label} 박살!`, "#67e8f9", 20);
+          const idx = props.indexOf(player.heldProp);
+          if (idx >= 0) props.splice(idx, 1);
+          player.heldProp = null;
+        }
+      }
+
+      if (!hitAny) playSfx("swing");
+      syncHud();
+    }
+
+    function doUppercut() {
+      if (player.upperCd > 0 || player.atkTimer > 0.05) return;
+      player.upperCd = 1.8;
+      const tgt = findBestCombatTarget(4.0);
+      if (tgt) {
+        const dx = tgt.x - player.x, dz = tgt.z - player.z, d = Math.hypot(dx, dz) || 1;
+        player.yaw = Math.atan2(dx, dz);
+        if (d > 1.1) { player.x += (dx / d) * Math.min(0.8, d - 1.0); player.z += (dz / d) * Math.min(0.8, d - 1.0); }
+      }
+      player.atkType = "upper";
+      player.atkDur = 0.34;
+      player.atkTimer = 0.34;
+
+      const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
+      let landed = false;
+      const hitTgt = findBestCombatTarget(2.6);
+      if (hitTgt) {
+        landed = true;
+        slowMo = 0.26;
+        applyHitToBossOrNpc(hitTgt, 32, dirX, dirZ, 9.5, 9.6, "💥 승룡 어퍼컷!!", true);
+      }
+      if (!landed) playSfx("swing");
+    }
+
+    function doDash() {
+      if (player.dashCd > 0) return;
+      player.dashCd = 1.1;
+      player.dashTimer = 0.20;
+      playSfx("dash");
+      burstParticles(player.x, 0.2, player.z, 4, "smoke");
+    }
+
+    function doGrabOrThrow() {
+      if (player.heldProp) {
+        const p = player.heldProp;
+        player.heldProp = null;
+        const tgt = findBestCombatTarget(14.0) || mainBoss;
+        const dx = tgt.x - player.x, dz = tgt.z - player.z, d = Math.hypot(dx, dz) || 1;
+        player.yaw = Math.atan2(dx, dz);
+        const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
+
+        p.x = player.x + dirX * 0.85;
+        p.y = 1.45;
+        p.z = player.z + dirZ * 0.85;
+        p.vx = dirX * 18.5;
+        p.vy = 3.0;
+        p.vz = dirZ * 18.5;
+        p.vrx = 13; p.vrz = 10;
+        p.hot = 1.1;
+        player.atkType = "throw"; player.atkDur = 0.22; player.atkTimer = 0.22;
+        playSfx("swing");
+        syncHud();
+        return;
+      }
+
+      if (nearestProp) {
+        nearestProp.resting = false;
+        nearestProp.vx = nearestProp.vy = nearestProp.vz = 0;
+        nearestProp.rx = nearestProp.rz = 0;
+        player.heldProp = nearestProp;
+        player.weaponUses = nearestProp.uses || 3;
+        popText(player.x, 2.1, player.z, `${nearestProp.icon} ${nearestProp.label}!`, "#67e8f9", 21);
+        playSfx("swing");
+        haptic(12);
+        syncHud();
+      } else {
+        popText(player.x, 1.9, player.z, "주변 의자·무기 가까이!", "#cbd5e1", 17);
+      }
+    }
+
+    function doUltimate() {
+      if (player.fever < 100) return;
+      player.fever = 0;
+      slowMo = 0.55;
+      shakeMag = 0.65; shakeT = 0.45;
+      haptic(75);
+      playSfx("ko");
+      burstParticles(player.x, 1.2, player.z, 34, "paper");
+      burstParticles(player.x, 1.0, player.z, 16, "spark");
+      popText(player.x, 2.6, player.z, "📄 사표 폭격!! 전원 칼퇴!!", "#34d399", 34);
+
+      const blast = (ent) => {
+        const dx = ent.x - player.x, dz = ent.z - player.z, d = Math.hypot(dx, dz) || 1;
+        if (d < 11.5) applyHitToBossOrNpc(ent, 75, dx / d, dz / d, 16.5, 10.5, "사표 직격!!", true);
+      };
+      if (!mainBoss.koState) blast(mainBoss);
+      for (const n of npcs.slice()) {
+        if (n.role !== "coworker") blast(n);
+      }
+      syncHud();
+    }
+
+    // =========================================================================
+    // 10. SLEEK INPUT CONTROLLERS (Floating Thumbstick + Radial Arc + PC)
+    // =========================================================================
+    const keys = {};
+    window.addEventListener("keydown", (e) => {
+      if (e.repeat) return;
+      keys[e.code] = true;
+      if (e.code === "Space" || e.code === "KeyJ") { e.preventDefault(); doAttack(); }
+      if (e.code === "KeyK") { e.preventDefault(); doUppercut(); }
+      if (e.code === "KeyL") { e.preventDefault(); doGrabOrThrow(); }
+      if (e.code === "ShiftLeft" || e.code === "ShiftRight") { e.preventDefault(); doDash(); }
+      if (e.code === "KeyE") { e.preventDefault(); doUltimate(); }
+    });
+    window.addEventListener("keyup", (e) => { keys[e.code] = false; });
+
+    canvas.addEventListener("pointerdown", (e) => {
+      ensureAudio();
+      if (e.pointerType === "mouse") {
+        if (e.button === 0) doAttack();
+        if (e.button === 2) doGrabOrThrow();
+      }
+    });
+    window.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    // Precision Floating Glass Thumbstick
+    const joyArea = document.getElementById("joyTouchArea");
+    const joyBase = document.getElementById("joyBase");
+    const joyPuck = document.getElementById("joyPuck");
+    let joyPtr = null, joyOrigin = { x: 0, y: 0 }, joyVec = { x: 0, y: 0 };
+
+    joyArea.addEventListener("pointerdown", (e) => {
+      ensureAudio(); e.stopPropagation();
+      joyPtr = e.pointerId;
+      joyArea.setPointerCapture(e.pointerId);
+      const r = joyBase.getBoundingClientRect();
+      joyOrigin = { x: r.left + r.width * 0.5, y: r.top + r.height * 0.5 };
+      joyBase.style.transform = "scale(1.05)";
+      moveStick(e.clientX, e.clientY);
+    });
+    joyArea.addEventListener("pointermove", (e) => {
+      if (e.pointerId === joyPtr) moveStick(e.clientX, e.clientY);
+    });
+    const releaseStick = (e) => {
+      if (e.pointerId !== joyPtr) return;
+      joyPtr = null; joyVec.x = 0; joyVec.y = 0;
+      joyBase.style.transform = "scale(1)";
+      joyPuck.style.transform = "translate(0px, 0px)";
+    };
+    joyArea.addEventListener("pointerup", releaseStick);
+    joyArea.addEventListener("pointercancel", releaseStick);
+
+    function moveStick(cx, cy) {
+      let dx = cx - joyOrigin.x, dy = cy - joyOrigin.y;
+      const maxR = 40, d = Math.hypot(dx, dy);
+      if (d > maxR) { dx = (dx / d) * maxR; dy = (dy / d) * maxR; }
+      joyVec.x = dx / maxR; joyVec.y = dy / maxR;
+      joyPuck.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+    }
+
+    function wireBtn(id, fn) {
+      const b = document.getElementById(id);
+      b.addEventListener("pointerdown", (e) => {
+        ensureAudio(); e.preventDefault(); e.stopPropagation();
+        b.classList.add("pressed");
+        fn();
+      });
+      const up = () => b.classList.remove("pressed");
+      b.addEventListener("pointerup", up);
+      b.addEventListener("pointercancel", up);
+      b.addEventListener("pointerleave", up);
+    }
+
+    wireBtn("btnAttack", doAttack);
+    wireBtn("btnGrab", doGrabOrThrow);
+    wireBtn("btnUpper", doUppercut);
+    wireBtn("btnDash", doDash);
+    wireBtn("btnUlt", doUltimate);
+
+    document.getElementById("btnSound").addEventListener("click", (e) => {
+      soundOn = !soundOn;
+      e.currentTarget.textContent = soundOn ? "🔊" : "🔇";
+    });
+    document.getElementById("btnReset").addEventListener("click", () => {
+      player.heldProp = null;
+      populateOffice();
+      spawnMainBoss(mainBoss.rosterIdx);
+      popText(player.x, 2.2, player.z, "사무실 복구 완료!", "#93c5fd", 22);
+    });
+
+    // =========================================================================
+    // 11. SIMULATION STEP (Physics, Ragdoll Bowling, Nearest Weapon Highlight)
+    // =========================================================================
+    function stepWorld(rawDt) {
+      if (hitStop > 0) { hitStop -= rawDt; return; }
+      const dt = slowMo > 0 ? rawDt * 0.30 : rawDt;
+      if (slowMo > 0) slowMo -= rawDt;
+
+      if (player.atkTimer > 0) player.atkTimer = Math.max(0, player.atkTimer - rawDt);
+      if (player.comboReset > 0) {
+        player.comboReset -= rawDt;
+        if (player.comboReset <= 0) { player.comboStep = 0; syncHud(); }
+      }
+      if (player.upperCd > 0) player.upperCd = Math.max(0, player.upperCd - rawDt);
+      if (player.dashCd > 0) player.dashCd = Math.max(0, player.dashCd - rawDt);
+      document.getElementById("upperArc").style.strokeDashoffset = `${(169.6 * (player.upperCd / 1.8)).toFixed(1)}`;
+
+      if (comboTimer > 0) {
+        comboTimer -= rawDt;
+        if (comboTimer <= 0) { comboCount = 0; syncHud(); }
+      }
+
+      // Player movement + Dash Tackle
+      let ix = joyVec.x, iz = joyVec.y;
+      if (keys["KeyW"] || keys["ArrowUp"]) iz -= 1;
+      if (keys["KeyS"] || keys["ArrowDown"]) iz += 1;
+      if (keys["KeyA"] || keys["ArrowLeft"]) ix -= 1;
+      if (keys["KeyD"] || keys["ArrowRight"]) ix += 1;
+      const ilen = Math.hypot(ix, iz);
+
+      if (player.dashTimer > 0) {
+        player.dashTimer -= rawDt;
+        player.vx = Math.sin(player.yaw) * 16.5;
+        player.vz = Math.cos(player.yaw) * 16.5;
+        // Shoulder tackle enemies in path!
+        const hitTgt = findBestCombatTarget(1.55);
+        if (hitTgt && (hitTgt.ragdoll || 0) <= 0.1) {
+          applyHitToBossOrNpc(hitTgt, 15, Math.sin(player.yaw), Math.cos(player.yaw), 10.5, 3.8, "⚡ 태클!!", false);
+        }
+      } else if (ilen > 0.05) {
+        const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
+        const spd = 7.4;
+        player.vx = nx * spd; player.vz = nz * spd;
+        if (player.atkTimer <= 0.04) player.yaw = Math.atan2(nx, nz);
+        player.walk += dt * 13.5;
+      } else {
+        player.vx *= 0.74; player.vz *= 0.74;
+      }
+
+      player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + player.vx * dt));
+      player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + player.vz * dt));
+
+      // Find nearest grabbable weapon for sleek contextual button!
+      nearestProp = null;
+      if (!player.heldProp) {
+        let bestD = 2.5;
+        for (const p of props) {
+          if (!p.grabbable) continue;
+          const d = Math.hypot(p.x - player.x, p.z - player.z);
+          if (d < bestD) { bestD = d; nearestProp = p; }
+        }
+      }
+      const btnGrab = document.getElementById("btnGrab");
+      if (player.heldProp) {
+        btnGrab.classList.add("ready-highlight");
+        document.getElementById("grabIcon").textContent = "🎯";
+        document.getElementById("grabText").textContent = "던지기!";
+      } else if (nearestProp) {
+        btnGrab.classList.add("ready-highlight");
+        document.getElementById("grabIcon").textContent = nearestProp.icon;
+        document.getElementById("grabText").textContent = "집기";
+      } else {
+        btnGrab.classList.remove("ready-highlight");
+        document.getElementById("grabIcon").textContent = "🖐️";
+        document.getElementById("grabText").textContent = "집기";
+      }
+
+      // Main Boss update
+      if (mainBoss.flash > 0) mainBoss.flash -= rawDt;
+      if (mainBoss.koState) {
+        mainBoss.respawn -= rawDt;
+        if (mainBoss.respawn <= 0) spawnMainBoss(mainBoss.rosterIdx + 1);
+      }
+      stepRagdollOrAI(mainBoss, dt, 2.4);
+
+      mainBoss.speechTimer -= rawDt;
+      if (mainBoss.speechTimer <= 0 && !mainBoss.koState) {
+        const ts = BOSS_ROSTER[mainBoss.rosterIdx].taunts;
+        mainBoss.speech = ts[(Math.random() * ts.length) | 0];
+        mainBoss.hurtSpeech = false;
+        mainBoss.speechTimer = 3.6;
+      }
+
+      // Spawn HR Security Guards when Wanted >= 2
+      const guardCount = npcs.filter((n) => n.role === "guard").length;
+      if (wanted >= 2 && guardCount < Math.min(4, wanted)) {
+        guardTimer -= dt;
+        if (guardTimer <= 0) {
+          guardTimer = 6.5;
+          npcs.push({
+            role: "guard", name: "보안요원",
+            x: 0, y: 2.0, z: 15.5, vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, yaw: Math.PI, walk: 0,
+            hp: 50, maxHp: 50, suit: [0.12, 0.22, 0.45], cheer: 0, ragdoll: 0, flash: 0
+          });
+        }
+      }
+
+      // NPCs update
+      for (const n of npcs) {
+        if (n.flash > 0) n.flash -= rawDt;
+        if (n.cheer > 0) n.cheer -= rawDt;
+        if (n.role === "coworker") {
+          if (n.ragdoll > 0 || n.y > 0.01) {
+            stepRagdollOrAI(n, dt, 0);
+          } else {
+            n.rx *= 0.8; n.rz *= 0.8;
+            // Face toward nearby action!
+            n.yaw = Math.atan2(mainBoss.x - n.x, mainBoss.z - n.z);
+          }
+        } else {
+          stepRagdollOrAI(n, dt, n.role === "guard" ? 3.1 : 2.1);
+        }
+      }
+
+      // Props & Thrown Weapon Explosions!
+      for (const p of props) {
+        if (p === player.heldProp) continue;
+        if (!p.resting) {
+          p.vy -= 21.0 * dt;
+          p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
+          p.rx += p.vrx * dt; p.rz += p.vrz * dt;
+          if (Math.abs(p.x) > MAP_X) { p.x = Math.sign(p.x) * MAP_X; p.vx *= -0.55; }
+          if (Math.abs(p.z) > MAP_Z) { p.z = Math.sign(p.z) * MAP_Z; p.vz *= -0.55; }
+          if (p.y <= 0) {
+            p.y = 0;
+            if (Math.abs(p.vy) > 2.6) { p.vy = -p.vy * 0.35; playSfx("crash"); }
+            else p.vy = 0;
+            p.vx *= 0.82; p.vz *= 0.82; p.vrx *= 0.8; p.vrz *= 0.8; p.rx *= 0.88; p.rz *= 0.88;
+          }
+        }
+
+        // Thrown weapon missile AOE hit!
+        if (p.hot && p.hot > 0) {
+          p.hot -= dt;
+          const targets = [mainBoss, ...npcs.filter((n) => n.role !== "coworker")];
+          for (const t of targets) {
+            if (t.koState) continue;
+            if (Math.hypot(p.x - t.x, p.z - t.z) < p.radius + 0.95 && Math.abs(p.y - (t.y + 0.9)) < 1.5) {
+              p.hot = 0;
+              const sl = Math.hypot(p.vx, p.vz) || 1;
+              // AOE splash on all nearby enemies!
+              for (const sub of targets) {
+                if (!sub.koState && Math.hypot(p.x - sub.x, p.z - sub.z) <= p.aoe) {
+                  applyHitToBossOrNpc(sub, p.dmg, p.vx / sl, p.vz / sl, 13.5, 7.8, `${p.icon} ${p.label} 폭발!!`, true);
+                }
+              }
+              if (p.fx) burstParticles(p.x, p.y + 0.4, p.z, 16, p.fx);
+              p.vx *= -0.35; p.vz *= -0.35; p.vy = 4.5;
+              break;
+            }
+          }
+        }
+      }
+
+      // Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pt = particles[i];
+        pt.life -= dt;
+        if (pt.life <= 0) { particles.splice(i, 1); continue; }
+        pt.vy -= 10.5 * dt;
+        if (pt.flutter && pt.vy < 0) { pt.vy *= 0.91; pt.vx += Math.sin(pt.life * 9 + i) * 3.5 * dt; }
+        pt.x += pt.vx * dt; pt.y += pt.vy * dt; pt.z += pt.vz * dt;
+        pt.rx += pt.vrx * dt; pt.ry += pt.vry * dt;
+        if (pt.y < 0.02) { pt.y = 0.02; pt.vy = 0; pt.vx *= 0.75; pt.vz *= 0.75; pt.rx = 0; }
+      }
+    }
+
+    function stepRagdollOrAI(ent, dt, moveSpd) {
+      if (ent.ragdoll > 0 || ent.y > 0.01 || ent.koState) {
+        ent.ragdoll = Math.max(0, ent.ragdoll - dt);
+        ent.vy = (ent.vy || 0) - 22.0 * dt;
+        ent.x += ent.vx * dt; ent.y += ent.vy * dt; ent.z += ent.vz * dt;
+        ent.rx += (ent.vrx || 0) * dt; ent.rz += (ent.vrz || 0) * dt;
+
+        if (Math.abs(ent.x) > MAP_X) { ent.x = Math.sign(ent.x) * MAP_X; ent.vx *= -0.65; playSfx("crash"); }
+        if (Math.abs(ent.z) > MAP_Z) { ent.z = Math.sign(ent.z) * MAP_Z; ent.vz *= -0.65; playSfx("crash"); }
+        if (ent.y <= 0) {
+          ent.y = 0;
+          if (Math.abs(ent.vy) > 2.8) { ent.vy = -ent.vy * 0.4; playSfx("crash"); }
+          else ent.vy = 0;
+          ent.vx *= 0.82; ent.vz *= 0.82;
+        }
+
+        // Flying boss bowls over props AND other NPCs!
+        if (Math.hypot(ent.vx, ent.vz) > 2.5) {
+          for (const p of props) {
+            if (p === player.heldProp) continue;
+            if (Math.hypot(p.x - ent.x, p.z - ent.z) < p.radius + 0.75) {
+              p.resting = false;
+              p.vx += ent.vx * (1.1 / p.mass);
+              p.vz += ent.vz * (1.1 / p.mass);
+              p.vy = Math.max(p.vy, 3.2 / p.mass);
+              p.vrx = (Math.random() - 0.5) * 12;
+            }
+          }
+        }
+      } else {
+        ent.rx *= 0.8; ent.rz *= 0.8;
+        if (ent.stun && ent.stun > 0) { ent.stun -= dt; return; }
+        const dx = player.x - ent.x, dz = player.z - ent.z, d = Math.hypot(dx, dz) || 1;
+        if (d < 15.0) {
+          ent.yaw = Math.atan2(dx, dz);
+          if (d > 1.75) {
+            ent.x += (dx / d) * moveSpd * dt;
+            ent.z += (dz / d) * moveSpd * dt;
+            ent.walk += dt * 8.0;
+          }
+        }
+      }
+    }
+
+    // =========================================================================
+    // 12. WEBGL RENDER PIPELINE
+    // =========================================================================
+    const projM = mId(), viewM = mId(), vpM = mId(), rootM = mId(), partM = mId(), worldM = mId(), weaponM = mId();
+    const norm3 = new Float32Array(9);
+    let camX = -5, camZ = 7.5;
+
+    function drawMesh(mesh, mat, opts = {}) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.vbo);
+      const st = 14 * 4;
+      gl.vertexAttribPointer(loc.aPos, 3, gl.FLOAT, false, st, 0);
+      gl.vertexAttribPointer(loc.aNormal, 3, gl.FLOAT, false, st, 12);
+      gl.vertexAttribPointer(loc.aSmooth, 3, gl.FLOAT, false, st, 24);
+      gl.vertexAttribPointer(loc.aUV, 2, gl.FLOAT, false, st, 36);
+      gl.vertexAttribPointer(loc.aColor, 3, gl.FLOAT, false, st, 44);
+
+      gl.uniformMatrix4fv(loc.uModel, false, mat);
+      nMat3(norm3, mat);
+      gl.uniformMatrix3fv(loc.uNormalMat, false, norm3);
+
+      const outW = opts.outline !== undefined ? opts.outline : 0.022;
+      if (outW > 0) {
+        gl.cullFace(gl.FRONT);
+        gl.uniform1f(loc.uOutline, outW);
+        gl.uniform1f(loc.uUnlit, 1.0);
+        gl.uniform3f(loc.uTint, 0.05, 0.07, 0.12);
+        gl.uniform1f(loc.uAlpha, 1.0);
+        gl.drawArrays(gl.TRIANGLES, 0, mesh.count);
+      }
+
+      gl.cullFace(gl.BACK);
+      gl.uniform1f(loc.uOutline, 0.0);
+      gl.uniform1f(loc.uUnlit, opts.unlit ? 1.0 : 0.0);
+      gl.uniform1f(loc.uUseTex, opts.faceTile !== undefined ? 1.0 : 0.0);
+      if (opts.faceTile !== undefined) {
+        const t = opts.faceTile;
+        gl.uniform2f(loc.uFaceOffset, (t % 4) * 0.25, Math.floor(t / 4) * 0.5);
+      }
+      gl.uniform3fv(loc.uTint, opts.tint || [1, 1, 1]);
+      gl.uniform1f(loc.uFlash, opts.flash || 0.0);
+      gl.uniform1f(loc.uAlpha, opts.alpha ?? 1.0);
+      gl.drawArrays(gl.TRIANGLES, 0, mesh.count);
+    }
+
+    function renderSDChar(opts) {
+      const {
+        x, y, z, rx = 0, yaw = 0, rz = 0, scale = 1,
+        torsoMesh, suitTint, hairMesh, faceTile,
+        walk = 0, moveAmt = 0, swingL = 0, swingR = 0, fistScaleR = 1,
+        heldWeapon = null, flash = 0, cheerJump = 0
+      } = opts;
+
+      const legSwing = Math.sin(walk) * 0.65 * moveAmt;
+      mTRS(rootM, x, y + 0.44 * scale + cheerJump, z, rx, yaw, rz, scale, scale, scale);
+      drawMesh(torsoMesh, rootM, { tint: suitTint, flash });
+
+      // Expressive Webtoon SD Head!
+      mTRS(partM, 0, 0.68, 0, 0, 0, 0);
+      mMul(worldM, rootM, partM);
+      drawMesh(M.sdHead, worldM, { faceTile, flash });
+      drawMesh(hairMesh, worldM, { flash });
+
+      // Left & Right Curved Arms
+      mTRS(partM, -0.35, 0.60, 0, swingL || legSwing, 0, 0.22);
+      mMul(worldM, rootM, partM);
+      drawMesh(M.limbArm, worldM, { tint: suitTint, flash });
+
+      mTRS(partM, 0.35, 0.60, 0, swingR || -legSwing, 0, -0.22, fistScaleR, fistScaleR, fistScaleR);
+      mMul(worldM, rootM, partM);
+      drawMesh(M.limbArm, worldM, { tint: suitTint, flash });
+
+      // Attach held 3D weapon directly to Player's right hand!
+      if (heldWeapon) {
+        mTRS(partM, 0.0, -0.38, 0.12, Math.PI * 0.45, 0, 0, 0.85, 0.85, 0.85);
+        mMul(weaponM, worldM, partM);
+        drawMesh(heldWeapon.mesh, weaponM, { outline: 0.018 });
+      }
+
+      // Legs
+      mTRS(partM, -0.14, 0.02, 0, -legSwing, 0, 0);
+      mMul(worldM, rootM, partM);
+      drawMesh(M.limbLeg, worldM, { flash });
+
+      mTRS(partM, 0.14, 0.02, 0, legSwing, 0, 0);
+      mMul(worldM, rootM, partM);
+      drawMesh(M.limbLeg, worldM, { flash });
+    }
+
+    // =========================================================================
+    // 13. MAIN GAME LOOP
+    // =========================================================================
+    populateOffice();
+    spawnMainBoss(0);
+
+    let prev = performance.now(), fCnt = 0, fAcc = 0;
+
+    function loop(now) {
+      const rawDt = Math.min(0.05, (now - prev) / 1000);
+      prev = now;
+      const tSec = now * 0.001;
+
+      fCnt++; fAcc += rawDt;
+      if (fAcc >= 0.5) {
+        document.getElementById("fpsPill").textContent = `${Math.round(fCnt / fAcc)} FPS`;
+        fCnt = 0; fAcc = 0;
+        renderRadar();
+        syncHud();
+      }
+
+      stepWorld(rawDt);
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const cw = Math.floor(window.innerWidth * dpr), ch = Math.floor(window.innerHeight * dpr);
+      if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
+      gl.viewport(0, 0, cw, ch);
+
+      // Smooth Camera framing Player + nearby target
+      const dToBoss = Math.hypot(mainBoss.x - player.x, mainBoss.z - player.z);
+      const bossWeight = dToBoss < 13 ? 0.24 : 0.06;
+      const tx = player.x * (1 - bossWeight) + mainBoss.x * bossWeight;
+      const tz = player.z * (1 - bossWeight) + mainBoss.z * bossWeight;
+      camX += (tx - camX) * 0.11;
+      camZ += (tz - camZ) * 0.11;
+
+      const portrait = window.innerHeight > window.innerWidth;
+      const zoom = (portrait ? 3.2 : 0.4) + (slowMo > 0 ? -2.0 : 0.0);
+      let sx = 0, sy = 0;
+      if (shakeT > 0) {
+        shakeT = Math.max(0, shakeT - rawDt);
+        sx = (Math.random() - 0.5) * 2 * shakeMag;
+        sy = (Math.random() - 0.5) * 2 * shakeMag;
+        if (shakeT <= 0) shakeMag = 0;
+      }
+
+      const camPos = [camX + sx, 10.6 + zoom * 0.75 + sy, camZ + 10.8 + zoom];
+      mPersp(projM, portrait ? 0.90 : 0.74, cw / ch, 0.4, 80.0);
+      mLook(viewM, camPos, [camX, 0.9, camZ], [0, 1, 0]);
+      mMul(vpM, projM, viewM);
+      lastVP.set(vpM);
+
+      gl.clearColor(0.06, 0.08, 0.14, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.enable(gl.DEPTH_TEST);
+      gl.enable(gl.CULL_FACE);
+
+      gl.useProgram(prog);
+      gl.uniformMatrix4fv(loc.uVP, false, vpM);
+      gl.uniform3fv(loc.uCamPos, camPos);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, atlasTex);
+      gl.uniform1i(loc.uTex, 0);
+
+      // 1. Expanded 4-Zone Office HQ
+      mTRS(rootM, 0, 0, 0, 0, 0, 0);
+      drawMesh(M.officeHQ, rootM, { outline: 0.0 });
+
+      // 2. Ground Blob Shadows + Contextual Cyan Ring under Nearest Weapon!
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.depthMask(false);
+
+      const shadowAt = (x, z, r) => {
+        mTRS(rootM, x, 0.018, z, 0, 0, 0, r * 2, 1, r * 2);
+        drawMesh(M.shadow, rootM, { outline: 0, unlit: true, tint: [0.03, 0.05, 0.09], alpha: 0.44 });
+      };
+      shadowAt(player.x, player.z, 0.48);
+      shadowAt(mainBoss.x, mainBoss.z, 0.62);
+      for (const n of npcs) shadowAt(n.x, n.z, 0.46);
+      for (const p of props) if (p !== player.heldProp) shadowAt(p.x, p.z, p.shadowR);
+
+      if (nearestProp && !player.heldProp) {
+        const pulse = 1.0 + Math.sin(tSec * 7) * 0.12;
+        mTRS(rootM, nearestProp.x, 0.03, nearestProp.z, 0, tSec * 2, 0, pulse, 1, pulse);
+        drawMesh(M.ring, rootM, { outline: 0, unlit: true, tint: [0.22, 0.78, 0.98], alpha: 0.85 });
+      }
+      gl.depthMask(true);
+      gl.disable(gl.BLEND);
+
+      // 3. Props & Weapons
+      for (const p of props) {
+        if (p === player.heldProp) continue;
+        mTRS(rootM, p.x, p.y, p.z, p.rx, p.ry, p.rz);
+        drawMesh(p.mesh, rootM, { outline: 0.020 });
+      }
+
+      // 4. Player (Webtoon SD Hero!)
+      {
+        const pMove = Math.min(1, Math.hypot(player.vx, player.vz) / 6.0);
+        let pYaw = player.yaw, swL = 0, swR = 0, fScale = 1;
+        if (player.atkTimer > 0) {
+          const pr = 1 - player.atkTimer / player.atkDur;
+          const arc = Math.sin(pr * Math.PI);
+          if (player.atkType === "spin" || player.atkType === "weaponSwing") {
+            pYaw += pr * Math.PI * 2;
+            swR = -1.75 * arc; fScale = 1 + 0.45 * arc;
+          } else if (player.atkType === "jab") {
+            swL = -1.65 * arc;
+          } else if (player.atkType === "upper") {
+            swR = -2.45 * arc; fScale = 1 + 0.65 * arc;
+          } else {
+            swR = -1.75 * arc; fScale = 1 + 0.50 * arc;
+          }
+        }
+        renderSDChar({
+          x: player.x, y: player.y, z: player.z, yaw: pYaw, scale: 1.0,
+          torsoMesh: M.torsoShirt, suitTint: [1, 1, 1], hairMesh: M.hairHero,
+          faceTile: player.atkTimer > 0 ? 1 : 0,
+          walk: player.walk, moveAmt: pMove, swingL: swL, swingR: swR, fistScaleR: fScale,
+          heldWeapon: player.heldProp
+        });
+      }
+
+      // 5. Main Boss (Webtoon SD Boss with Dynamic Face Expressions 2 / 3 / 4!)
+      {
+        const cfg = BOSS_ROSTER[mainBoss.rosterIdx];
+        const bRag = mainBoss.ragdoll > 0 || mainBoss.y > 0.05 || mainBoss.koState;
+        const bFace = mainBoss.koState ? 4 : (bRag || mainBoss.flash > 0 ? 3 : (mainBoss.stun > 0 ? 4 : 2));
+        const flail = bRag ? Math.sin(tSec * 24) * 1.4 : 0;
+        renderSDChar({
+          x: mainBoss.x, y: mainBoss.y, z: mainBoss.z,
+          rx: mainBoss.rx, yaw: mainBoss.yaw, rz: mainBoss.rz, scale: cfg.scale,
+          torsoMesh: M.torsoBoss, suitTint: cfg.suit, hairMesh: M.hairBossBald,
+          faceTile: bFace, walk: mainBoss.walk, moveAmt: bRag ? 0 : 0.6,
+          swingL: flail, swingR: -flail, flash: mainBoss.flash > 0 ? 0.85 : 0
+        });
+      }
+
+      // 6. All Office Coworkers, Sub-Managers & Security Guards!
+      let cheerSlot = 0;
+      document.getElementById("npcBubble0").style.opacity = "0";
+      document.getElementById("npcBubble1").style.opacity = "0";
+
+      for (const n of npcs) {
+        if (n.role === "coworker") {
+          const cheering = n.cheer > 0;
+          const jump = cheering ? Math.abs(Math.sin(tSec * 12)) * 0.25 : 0;
+          renderSDChar({
+            x: n.x, y: n.y, z: n.z, rx: n.rx, yaw: n.yaw, rz: n.rz, scale: 0.95,
+            torsoMesh: M.torsoShirt, suitTint: n.suit, hairMesh: M.hairCoworker,
+            faceTile: cheering ? 6 : 5,
+            swingL: cheering ? -2.4 : 0, swingR: cheering ? -2.4 : 0, cheerJump: jump
+          });
+          if (cheering && cheerSlot < 2) {
+            const sc = project2D(n.x, n.y + 2.1, n.z, vpM, window.innerWidth, window.innerHeight);
+            if (sc) {
+              const bel = document.getElementById(`npcBubble${cheerSlot++}`);
+              bel.textContent = n.msg;
+              bel.style.left = `${sc.x}px`; bel.style.top = `${sc.y}px`;
+              bel.style.opacity = "1";
+            }
+          }
+        } else {
+          const rag = n.ragdoll > 0 || n.y > 0.05;
+          renderSDChar({
+            x: n.x, y: n.y, z: n.z, rx: n.rx, yaw: n.yaw, rz: n.rz, scale: 1.02,
+            torsoMesh: n.role === "guard" ? M.torsoShirt : M.torsoBoss,
+            suitTint: n.suit,
+            hairMesh: n.role === "guard" ? M.hairCapGuard : M.hairBossBald,
+            faceTile: rag ? 3 : 7,
+            walk: n.walk, moveAmt: rag ? 0 : 0.75,
+            swingL: rag ? Math.sin(tSec * 22) : 0, swingR: rag ? -Math.sin(tSec * 22) : 0,
+            flash: n.flash > 0 ? 0.85 : 0
+          });
+        }
+      }
+
+      // 7. Particles
+      for (const pt of particles) {
+        mTRS(rootM, pt.x, pt.y, pt.z, pt.rx, pt.ry, pt.rz, pt.scale, pt.scale, pt.scale);
+        drawMesh(pt.mesh, rootM, { outline: 0.012, tint: pt.tint });
+      }
+
+      // 8. Boss Speech Bubble
+      const bossBub = document.getElementById("bossBubble");
+      if (!mainBoss.koState && mainBoss.speechTimer > 0.25) {
+        const bSc = project2D(mainBoss.x, mainBoss.y + 2.25 * BOSS_ROSTER[mainBoss.rosterIdx].scale, mainBoss.z, vpM, window.innerWidth, window.innerHeight);
+        if (bSc && bSc.x > 40 && bSc.x < window.innerWidth - 40 && bSc.y > 65 && bSc.y < window.innerHeight - 60) {
+          bossBub.style.left = `${bSc.x}px`; bossBub.style.top = `${bSc.y}px`;
+          bossBub.textContent = mainBoss.speech;
+          bossBub.className = mainBoss.hurtSpeech ? "webtoon-bubble hurt" : "webtoon-bubble";
+          bossBub.style.opacity = "1";
+        } else bossBub.style.opacity = "0";
+      } else bossBub.style.opacity = "0";
+
+      requestAnimationFrame(loop);
+    }
+
+    // =========================================================================
+    // 14. PWA SERVICE WORKER & ONE-TAP INSTALL BUTTON LOGIC
+    // =========================================================================
+    let deferredInstallPrompt = null;
+    const btnInstallPwa = document.getElementById("btnInstallPwa");
+    const installBtnLabel = document.getElementById("installBtnLabel");
+    const pwaModal = document.getElementById("pwaModal");
+
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+
+    if (isStandalone) {
+      btnInstallPwa.style.display = "none";
+    }
+
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      btnInstallPwa.style.display = "flex";
+      installBtnLabel.textContent = "앱 설치";
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      installBtnLabel.textContent = "설치 완료";
+      popText(player.x, 2.3, player.z, "📲 홈 화면 앱 설치 완료!", "#34d399", 24);
+      setTimeout(() => { btnInstallPwa.style.display = "none"; }, 1800);
+    });
+
+    function closePwaModal() {
+      pwaModal.classList.add("hidden");
+      pwaModal.classList.remove("flex");
+    }
+
+    btnInstallPwa.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      ensureAudio();
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice.catch(() => null);
+        if (choice && choice.outcome === "accepted") {
+          deferredInstallPrompt = null;
+        }
+      } else {
+        pwaModal.classList.remove("hidden");
+        pwaModal.classList.add("flex");
+      }
+    });
+
+    document.getElementById("btnClosePwaModal").addEventListener("click", closePwaModal);
+    document.getElementById("btnDismissPwa").addEventListener("click", closePwaModal);
+    pwaModal.addEventListener("click", (e) => {
+      if (e.target === pwaModal) closePwaModal();
+    });
+
+    document.getElementById("btnEnterFullscreen").addEventListener("click", () => {
+      const rootEl = document.documentElement;
+      if (rootEl.requestFullscreen) {
+        rootEl.requestFullscreen().catch(() => {});
+      } else if (rootEl.webkitRequestFullscreen) {
+        rootEl.webkitRequestFullscreen();
+      }
+      closePwaModal();
+    });
+
+    requestAnimationFrame(loop);
+  })();
+  </script>
+</body>
+</html>
