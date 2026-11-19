@@ -1,4 +1,4 @@
-const CACHE_NAME = "office-brawl-3d-v4";
+const CACHE_NAME = "office-brawl-3d-v5";
 const PRECACHE_ASSETS = [
   "./",
   "./index.html",

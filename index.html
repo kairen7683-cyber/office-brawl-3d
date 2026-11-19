@@ -11,7 +11,7 @@
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link rel="icon" type="image/png" href="./icons/favicon.png" />
-  <title>칼퇴전쟁 3D: 멀티플레이 임원 참교육 대난투</title>
+  <title>칼퇴전쟁 3D V4: 전국 공장·해외법인 포털 레이드 &amp; 서울본사 폭파 작전</title>
   <style>
     * {
       box-sizing: border-box;
@@ -242,92 +242,128 @@
 
   <!-- Floating 2D World Labels Layer -->
   <div id="overlayLayer" class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index:20;">
-    <!-- 4 Simultaneous Executive Floating Nameplates & HP Bars -->
     <div id="bossTag0" class="boss-tag"></div>
     <div id="bossTag1" class="boss-tag"></div>
     <div id="bossTag2" class="boss-tag"></div>
     <div id="bossTag3" class="boss-tag"></div>
+    <div id="bossTag4" class="boss-tag"></div>
+    <div id="portalTag" class="player-tag" style="opacity:0; background:rgba(88,28,135,0.9); border-color:#e879f9; color:#fdf4ff; font-size:11.5px; padding:4px 10px;">🌀 다음 지역 포털</div>
     <div id="speechBubble" class="speech-pill" style="opacity:0;"></div>
     <div id="remoteLabels"></div>
   </div>
 
+  <!-- Screen Flash & Finale Detonation Cutscene Banner -->
+  <div id="whiteFlash" class="fixed inset-0 pointer-events-none" style="background:#fff; opacity:0; transition:opacity 0.25s; z-index:48;"></div>
+  <div id="finaleModal" class="fixed inset-0 hidden items-center justify-center pointer-events-auto" style="background:rgba(9,5,15,0.82); backdrop-filter:blur(8px); padding:16px; z-index:60;">
+    <div class="glass" style="max-width:400px; width:100%; border-radius:26px; padding:24px; text-align:center; border-color:rgba(251,191,36,0.6);">
+      <div id="finaleIcon" style="font-size:52px; line-height:1.1;">💥🏢🔥</div>
+      <div id="finaleTitle" style="font-size:22px; font-weight:900; color:#fde047; margin-top:8px;">서울본사 완전 폭파 성공!!</div>
+      <div id="finaleDesc" style="font-size:13px; color:#e2e8f0; line-height:1.6; margin-top:8px;">
+        울산·여수·창원공장부터 해외법인, 그리고 서울본사 천회장까지 완벽 참교육 완료!<br/>전 사원 유급 평생 칼퇴가 선포되었습니다!
+      </div>
+      <div id="finaleStats" style="margin-top:12px; padding:10px; border-radius:14px; background:rgba(255,255,255,0.07); font-size:12px; font-weight:800; color:#4ade80;"></div>
+      <div class="flex" style="gap:8px; margin-top:16px;">
+        <button id="btnNextOrRetry" class="pill-btn cta-amber" style="flex:1; height:42px; justify-content:center; font-size:13px;">🚀 다시 처음부터 레이드</button>
+        <button id="btnStayFree" class="glass pill-btn" style="height:42px; padding:0 14px; font-size:12px;">자유 난투</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage Select Modal -->
+  <div id="stageModal" class="fixed inset-0 hidden items-center justify-center pointer-events-auto" style="background:rgba(4,7,15,0.75); backdrop-filter:blur(6px); padding:16px; z-index:56;">
+    <div class="glass" style="max-width:360px; width:100%; border-radius:24px; padding:18px;">
+      <div class="flex items-center justify-between" style="margin-bottom:10px;">
+        <div style="font-size:15px; font-weight:900;">🌀 월드 투어 스테이지 이동</div>
+        <button id="btnCloseStage" style="width:28px; height:28px; border-radius:99px; background:rgba(255,255,255,0.1); font-weight:800;">✕</button>
+      </div>
+      <div id="stageListBtns" class="flex flex-col" style="gap:7px;"></div>
+    </div>
+  </div>
+
   <!-- ==================== TOP SLEEK HUD ==================== -->
-  <div class="fixed top-0 inset-x-0 flex items-start justify-between pointer-events-none" style="padding: max(10px, env(safe-area-inset-top)) 12px 8px; z-index:30; gap:8px;">
-    <!-- Top-Left: Expanded 7-Zone HQ Radar + Cash & Power-Up Button -->
-    <div class="flex flex-col items-start pointer-events-auto" style="gap:6px;">
-      <div class="glass" style="border-radius:16px; padding:6px; position:relative;">
-        <canvas id="radarCanvas" width="116" height="92" style="display:block; border-radius:11px;"></canvas>
-        <div class="flex items-center justify-between" style="margin-top:4px; padding:0 2px; font-size:9.5px; font-weight:800;">
-          <span id="zoneLabel" style="color:#7dd3fc;">중앙 로비</span>
-          <span style="color:#fbbf24;">👑대표 · 🐗본부장</span>
+  <div class="fixed top-0 inset-x-0 flex items-start justify-between pointer-events-none" style="padding: max(8px, env(safe-area-inset-top)) 10px 8px; z-index:30; gap:6px;">
+    <!-- Top-Left: Radar + Stage Select + Cash/Upgrade -->
+    <div class="flex flex-col items-start pointer-events-auto" style="gap:5px;">
+      <div class="glass" style="border-radius:15px; padding:5px; position:relative;">
+        <canvas id="radarCanvas" width="112" height="88" style="display:block; border-radius:10px;"></canvas>
+        <div class="flex items-center justify-between" style="margin-top:3px; padding:0 2px; font-size:9.5px; font-weight:800;">
+          <span id="zoneLabel" style="color:#7dd3fc;">🏭 울산공장</span>
+          <button id="btnStageSelect" style="color:#f0abfc; font-weight:900; text-decoration:underline;">이동▾</button>
         </div>
       </div>
 
-      <!-- Severance Cash & One-Tap Fist Upgrade! -->
-      <div class="glass flex items-center" style="border-radius:999px; padding:4px 6px 4px 11px; gap:8px;">
+      <div class="glass flex items-center" style="border-radius:999px; padding:3px 5px 3px 10px; gap:6px;">
         <div>
-          <div style="font-size:9px; color:#94a3b8; font-weight:700;">비자금·위자료</div>
-          <div id="cashHud" style="font-size:12.5px; font-weight:900; color:#4ade80; font-family:monospace;">₩0</div>
+          <div style="font-size:8.5px; color:#94a3b8; font-weight:700;">비자금</div>
+          <div id="cashHud" style="font-size:12px; font-weight:900; color:#4ade80; font-family:monospace;">₩0</div>
         </div>
-        <button id="btnUpgrade" class="pill-btn cta-amber" style="height:28px; padding:0 9px; font-size:10.5px;">
+        <button id="btnUpgrade" class="pill-btn cta-amber" style="height:26px; padding:0 8px; font-size:10px;">
           <span>💪</span>
-          <span id="upgradeLabel">주먹강화 LV.1</span>
+          <span id="upgradeLabel">강화 LV.1</span>
         </button>
       </div>
     </div>
 
-    <!-- Top-Center: Sudden Office Event Banner & Nearest Target Boss Bar -->
-    <div class="flex flex-col items-center" style="flex:1; max-width:330px; gap:6px;">
-      <div class="glass" style="width:100%; border-radius:16px; padding:7px 12px;">
-        <div class="flex items-center justify-between" style="margin-bottom:4px; gap:6px;">
-          <div class="flex items-center truncate" style="gap:5px;">
-            <span id="focusRankBadge" style="padding:2px 6px; border-radius:6px; font-size:10px; font-weight:900; background:#e11d48;">부장</span>
-            <span id="focusBossName" class="truncate" style="font-size:12.5px; font-weight:900;">꼰대 김부장</span>
-          </div>
-          <span id="koHud" style="font-size:11px; font-weight:800; color:#fcd34d; flex-shrink:0;">참교육 0</span>
+    <!-- Top-Center: STAGE MISSION TRACKER + TIMER + BOSS HP -->
+    <div class="flex flex-col items-center" style="flex:1; max-width:350px; gap:5px;">
+      <div class="glass" style="width:100%; border-radius:15px; padding:6px 10px; border-color:rgba(56,189,248,0.32);">
+        <div class="flex items-center justify-between" style="gap:6px;">
+          <span id="stageBadge" style="font-size:11px; font-weight:900; color:#fde047;">🏭 STAGE 1/5 · 울산공장</span>
+          <span id="timerHud" style="padding:1px 8px; border-radius:99px; background:rgba(225,29,72,0.28); border:1px solid rgba(251,113,133,0.55); font-size:12px; font-weight:900; font-family:monospace; color:#fecdd3;">⏱ 02:00</span>
         </div>
-        <div style="position:relative; width:100%; height:9px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden;">
+        <div id="missionHud" style="margin-top:3px; font-size:10.5px; font-weight:800; color:#a5f3fc; display:flex; justify-content:space-between; gap:4px;">
+          <span id="objBossText">🥊 빌런 0/3</span>
+          <span id="objItemText">🔑 보안키 0/3</span>
+          <span id="objPortalText" style="color:#c084fc;">🌀 잠김</span>
+        </div>
+      </div>
+
+      <div class="glass" style="width:100%; border-radius:13px; padding:5px 10px;">
+        <div class="flex items-center justify-between" style="margin-bottom:3px; gap:6px;">
+          <div class="flex items-center truncate" style="gap:5px;">
+            <span id="focusRankBadge" style="padding:1px 5px; border-radius:5px; font-size:9.5px; font-weight:900; background:#e11d48;">공장장</span>
+            <span id="focusBossName" class="truncate" style="font-size:11.5px; font-weight:900;">울산 독사 마공장장</span>
+          </div>
+          <span id="koHud" style="font-size:10px; font-weight:800; color:#fcd34d; flex-shrink:0;">참교육 0</span>
+        </div>
+        <div style="position:relative; width:100%; height:7px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden;">
           <div id="hpTrail" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.8); border-radius:999px; transition:width 0.45s ease;"></div>
           <div id="hpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#f43f5e,#fb923c,#fde047); border-radius:999px; transition:width 0.08s ease;"></div>
         </div>
       </div>
 
-      <!-- Random Sudden Corporate Event Ticker -->
-      <div id="eventTicker" class="glass hidden" style="border-radius:999px; padding:4px 12px; border-color:rgba(250,204,21,0.65); font-size:11px; font-weight:800; color:#fef08a; text-align:center;">
-        📢 돌발 미션 진행중!
+      <div id="eventTicker" class="glass hidden" style="border-radius:999px; padding:3px 11px; border-color:rgba(250,204,21,0.7); font-size:10.5px; font-weight:800; color:#fef08a; text-align:center;">
+        📢 미션 알림
       </div>
     </div>
 
     <!-- Top-Right: Multiplayer Room Pill, PWA Install & Quick Emotes -->
-    <div class="flex flex-col items-end pointer-events-auto" style="gap:6px;">
-      <div class="flex items-center" style="gap:5px;">
-        <button id="btnMulti" class="pill-btn cta-violet" title="실시간 멀티플레이 방 설정 및 친구 초대">
+    <div class="flex flex-col items-end pointer-events-auto" style="gap:5px;">
+      <div class="flex items-center" style="gap:4px;">
+        <button id="btnMulti" class="pill-btn cta-violet" style="height:29px; padding:0 9px;" title="실시간 멀티플레이 방 설정 및 친구 초대">
           <span id="multiDot" style="width:7px; height:7px; border-radius:99px; background:#4ade80; display:inline-block;"></span>
-          <span id="multiCountText">멀티 1명</span>
+          <span id="multiCountText">참교육단 3명</span>
         </button>
-        <button id="btnInstallPwa" class="pill-btn cta-emerald" title="홈 화면에 앱 설치">
+        <button id="btnInstallPwa" class="pill-btn cta-emerald" style="height:29px; padding:0 9px;" title="홈 화면에 앱 설치">
           <span>📲</span>
           <span id="installBtnLabel">설치</span>
         </button>
       </div>
 
-      <div class="flex items-center" style="gap:5px;">
-        <button id="btnAiParty" class="glass pill-btn" style="height:28px; font-size:10.5px; color:#a5f3fc;" title="AI 동료 다굴 파티원 ON/OFF">
-          🤖 동료지원 ON
-        </button>
-        <button id="btnSound" class="glass pill-btn" style="height:28px; width:30px; padding:0; justify-content:center;">🔊</button>
-        <button id="btnReset" class="glass pill-btn" style="height:28px; padding:0 8px; font-size:10.5px; color:#cbd5e1;">🔄</button>
+      <div class="flex items-center" style="gap:4px;">
+        <button id="btnAiParty" class="glass pill-btn" style="height:26px; font-size:10px; color:#a5f3fc;">🤖 동료 ON</button>
+        <button id="btnSound" class="glass pill-btn" style="height:26px; width:28px; padding:0; justify-content:center;">🔊</button>
+        <button id="btnReset" class="glass pill-btn" style="height:26px; padding:0 7px; font-size:10px; color:#cbd5e1;" title="현재 스테이지 재시작">🔄</button>
       </div>
 
-      <!-- Quick Multiplayer Emote Bar -->
       <div class="glass flex items-center" style="border-radius:999px; padding:2px 5px; gap:2px;">
-        <button class="emote-btn" data-emote="🔥 다굴쳐!!" style="padding:3px 6px; font-size:12px;" title="다굴쳐!">🔥</button>
-        <button class="emote-btn" data-emote="😂 ㅋㅋㅋㅋ" style="padding:3px 6px; font-size:12px;" title="ㅋㅋㅋ">😂</button>
-        <button class="emote-btn" data-emote="💰 대표 금고털자!" style="padding:3px 6px; font-size:12px;" title="금고털자!">💰</button>
-        <button class="emote-btn" data-emote="🍻 칼퇴 가즈아!!" style="padding:3px 6px; font-size:12px;" title="칼퇴!">🍻</button>
+        <button class="emote-btn" data-emote="🔥 빨리 찾자!!" style="padding:2px 5px; font-size:11.5px;">🔥</button>
+        <button class="emote-btn" data-emote="🌀 포털 열렸다!!" style="padding:2px 5px; font-size:11.5px;">🌀</button>
+        <button class="emote-btn" data-emote="💣 폭탄 설치해!!" style="padding:2px 5px; font-size:11.5px;">💣</button>
+        <button class="emote-btn" data-emote="💥 회사 폭파 가즈아!!" style="padding:2px 5px; font-size:11.5px;">💥</button>
       </div>
 
-      <div id="comboBadge" style="opacity:0; transition:opacity 0.15s; padding:2px 10px; border-radius:999px; background:linear-gradient(90deg,#fbbf24,#f43f5e); color:#090d16; font-size:11px; font-weight:900;">
+      <div id="comboBadge" style="opacity:0; transition:opacity 0.15s; padding:2px 9px; border-radius:999px; background:linear-gradient(90deg,#fbbf24,#f43f5e); color:#090d16; font-size:10.5px; font-weight:900;">
         3 COMBO!
       </div>
     </div>
@@ -827,52 +863,87 @@
     }
 
     const M = {};
-    const MAP_X = 36.5, MAP_Z = 28.5; // Massive 74m x 58m 7-Zone Corporate HQ!
+    const MAP_X = 36.5, MAP_Z = 28.5;
 
-    // Build 7-Zone Mega HQ Static Geometry
-    {
+    function buildStageMap(stIdx) {
       const g = new Geo();
       for (let gx = -15; gx < 15; gx++) {
         for (let gz = -12; gz < 12; gz++) {
           const x = (gx + 0.5) * 2.5, z = (gz + 0.5) * 2.45;
-          let c = (gx + gz) % 2 === 0 ? rgb(0x252e42) : rgb(0x20283a);
-          // 1. NW Cafeteria & Snack Lounge
-          if (x < -10 && z < -4) c = (gx + gz) % 2 === 0 ? rgb(0x3b4354) : rgb(0x2f3646);
-          // 2. North-Center High-Voltage Server Room (Cyan/Dark Tech Grid!)
-          else if (x >= -10 && x <= 10 && z < -10) c = (gx + gz) % 2 === 0 ? rgb(0x112438) : rgb(0x0d1b2a);
-          // 3. NE Royal CEO Penthouse (Burgundy & Gold!)
-          else if (x > 10 && z < -4) c = (gx + gz) % 2 === 0 ? rgb(0x52182b) : rgb(0x421222);
-          // 4. SE Grand Boardroom (Deep Navy!)
-          else if (x > 10 && z > 4) c = (gx + gz) % 2 === 0 ? rgb(0x1b2b52) : rgb(0x152242);
-          // 5. South-Center Gym & Putting Green (Turf Green!)
-          else if (x >= -8 && x <= 10 && z > 12) c = (gx + gz) % 2 === 0 ? rgb(0x154734) : rgb(0x113b2b);
-          // 6. Central Marble Lobby
-          else if (Math.abs(x) <= 9 && Math.abs(z) <= 8) c = (gx + gz) % 2 === 0 ? rgb(0x333d52) : rgb(0x2c3548);
+          const chk = (gx + gz) % 2 === 0;
+          let c;
+          if (stIdx === 0) {
+            // 울산공장: Industrial Concrete + Yellow Assembly Line Lanes
+            c = Math.abs(z) < 4.5 ? (chk ? rgb(0x334155) : rgb(0x293548)) : (chk ? rgb(0x27272a) : rgb(0x1f242d));
+            if (Math.abs(Math.abs(z) - 4.6) < 0.9) c = gx % 2 === 0 ? rgb(0xeab308) : rgb(0x18181b);
+          } else if (stIdx === 1) {
+            // 여수공장: Petrochemical Dark Steel + Acid/Chemical Hazard Zones
+            c = (x > 8 && z < -4) ? (chk ? rgb(0x14532d) : rgb(0x166534)) : (chk ? rgb(0x1e293b) : rgb(0x172033));
+            if (Math.abs(x) < 3.0) c = chk ? rgb(0x0f766e) : rgb(0x115e59);
+          } else if (stIdx === 2) {
+            // 창원공장: Heavy Precision Machinery Steel Blue + Foundry Red Zone
+            c = (x < -8 && z < -4) ? (chk ? rgb(0x451a03) : rgb(0x3b1506)) : (chk ? rgb(0x243042) : rgb(0x1d283a));
+            if (Math.abs(z - 10) < 2.5) c = gx % 2 === 0 ? rgb(0xf97316) : rgb(0x1e293b);
+          } else if (stIdx === 3) {
+            // 해외법인 (Global Branch): Sleek White/Sky Luxury Glass Floor + Royal Carpet
+            c = Math.abs(x) < 10 && Math.abs(z) < 9 ? (chk ? rgb(0x1e3a8a) : rgb(0x172554)) : (chk ? rgb(0x334155) : rgb(0x2b374b));
+          } else {
+            // 서울본사 타워 (Final Stage): 7-Zone Mega HQ
+            c = chk ? rgb(0x252e42) : rgb(0x20283a);
+            if (x < -10 && z < -4) c = chk ? rgb(0x3b4354) : rgb(0x2f3646);
+            else if (x >= -10 && x <= 10 && z < -10) c = chk ? rgb(0x112438) : rgb(0x0d1b2a);
+            else if (x > 10 && z < -4) c = chk ? rgb(0x52182b) : rgb(0x421222);
+            else if (x > 10 && z > 4) c = chk ? rgb(0x1b2b52) : rgb(0x152242);
+            else if (x >= -8 && x <= 10 && z > 12) c = chk ? rgb(0x154734) : rgb(0x113b2b);
+          }
           g.addBox(2.5, 0.12, 2.45, c, x, -0.06, z);
         }
       }
-      // Gold VIP Border & Turf Putting Hole Strip
-      g.addBox(26.0, 0.03, 0.24, rgb(0xfacc15), 24.0, 0.015, -4.2);
-      g.addBox(0.24, 0.03, 25.0, rgb(0xfacc15), 10.5, 0.015, -16.8);
 
-      // Back Panoramic Wall + Windows
-      g.addBox(75.5, 3.8, 0.5, rgb(0xdbe4f0), 0, 1.9, -29.2);
-      for (let wx = -32; wx <= 32; wx += 8.0) {
-        g.addBox(5.6, 2.1, 0.54, rgb(0x7dd3fc), wx, 2.15, -29.18);
+      // Outer Perimeter & Backdrop
+      const wallCol = stIdx <= 2 ? rgb(0x475569) : rgb(0xdbe4f0);
+      const winCol = stIdx === 1 ? rgb(0x34d399) : (stIdx === 2 ? rgb(0xfb923c) : rgb(0x7dd3fc));
+      g.addBox(75.5, 4.0, 0.5, wallCol, 0, 2.0, -29.2);
+      for (let wx = -32; wx <= 32; wx += 8.0) g.addBox(5.4, 2.1, 0.55, winCol, wx, 2.2, -29.18);
+      g.addBox(0.5, 2.9, 58.5, rgb(0x334155), -37.5, 1.45, 0);
+      g.addBox(0.5, 2.9, 58.5, rgb(0x334155),  37.5, 1.45, 0);
+
+      // Stage-specific landmark structures
+      if (stIdx === 0) {
+        // Ulsan Gantry Crane Beams & Conveyor Strips
+        for (const cx of [-20, 0, 20]) {
+          g.addBox(0.9, 4.6, 0.9, rgb(0xeab308), cx, 2.3, -18);
+          g.addBox(0.9, 4.6, 0.9, rgb(0xeab308), cx, 2.3,  18);
+          g.addBox(1.1, 0.5, 36.8, rgb(0xf59e0b), cx, 4.5, 0);
+        }
+      } else if (stIdx === 1) {
+        // Yeosu Chemical Silos & Overhead Yellow/Green Pipes
+        for (const sx of [-26, -16, 18, 28]) g.addLathe([[0,0],[2.2,0],[2.2,4.2],[1.6,4.8],[0,4.8]], 14, rgb(0x94a3b8), sx, 0, -23.5);
+        g.addBox(68, 0.45, 0.45, rgb(0x22c55e), 0, 3.8, -12);
+        g.addBox(68, 0.45, 0.45, rgb(0xfacc15), 0, 3.8,  10);
+      } else if (stIdx === 2) {
+        // Changwon Heavy Press Frames
+        for (const px of [-22, 0, 22]) {
+          g.addBox(4.2, 4.2, 1.2, rgb(0x0284c7), px, 2.1, -20);
+          g.addBox(3.0, 1.2, 1.4, rgb(0xf97316), px, 3.1, -20);
+        }
+      } else if (stIdx === 3) {
+        // Global Branch Glass Partitions & Gold Pillars
+        g.addBox(18.0, 1.4, 0.28, rgb(0x38bdf8), -26, 0.7, -5);
+        g.addBox(18.0, 1.4, 0.28, rgb(0x38bdf8),  26, 0.7, -5);
+        for (const gx of [-14, 14]) for (const gz of [-14, 14]) g.addLathe([[0.45,0],[0.45,4.0]], 12, rgb(0xfacc15), gx, 0, gz);
+      } else {
+        // Seoul HQ VIP Partitions & Gold Carpet Trim
+        g.addBox(26.0, 0.03, 0.24, rgb(0xfacc15), 24.0, 0.015, -4.2);
+        g.addBox(0.24, 0.03, 25.0, rgb(0xfacc15), 10.5, 0.015, -16.8);
+        g.addBox(18.0, 1.35, 0.30, rgb(0x64748b), -27.5, 0.68, -4.2);
+        g.addBox(0.30, 1.35, 14.0, rgb(0x0ea5e9), -10.2, 0.68, -21.5);
+        g.addBox(0.30, 1.35, 14.0, rgb(0x0ea5e9),  10.2, 0.68, -21.5);
+        g.addBox(17.5, 1.45, 0.32, rgb(0x78350f),  27.8, 0.72, -4.2);
       }
-      // Side Outer Walls
-      g.addBox(0.5, 2.8, 58.5, rgb(0x475569), -37.5, 1.4, 0);
-      g.addBox(0.5, 2.8, 58.5, rgb(0x475569),  37.5, 1.4, 0);
-
-      // Waist-High Sleek Zone Partitions (with generous open archways!)
-      g.addBox(18.0, 1.35, 0.30, rgb(0x64748b), -27.5, 0.68, -4.2); // Cafe wall
-      g.addBox(0.30, 1.35, 14.0, rgb(0x0ea5e9), -10.2, 0.68, -21.5); // Server room L
-      g.addBox(0.30, 1.35, 14.0, rgb(0x0ea5e9),  10.2, 0.68, -21.5); // Server room R
-      g.addBox(17.5, 1.45, 0.32, rgb(0x78350f),  27.8, 0.72, -4.2); // CEO suite wall
-      g.addBox(17.5, 1.30, 0.30, rgb(0x3b82f6),  27.8, 0.65,  4.5); // Boardroom wall
-
-      M.megaHQ = g.build();
+      return g.build();
     }
+    M.stageMaps = [0, 1, 2, 3, 4].map(buildStageMap);
 
     // --- SHARED HEAD & LIMBS ---
     M.sdHead = new Geo()
@@ -890,7 +961,6 @@
       .addEllipsoid(0.11, 0.075, 0.17, 8, 10, rgb(0x090d16), 0, -0.41, 0.05)
       .build();
 
-    // --- PLAYER / PEER / COWORKER COSTUME ---
     M.torsoWorker = new Geo()
       .addLathe([[0,0],[0.30,0.03],[0.34,0.36],[0.27,0.66],[0,0.70]], 16, rgb(0xffffff), 0, 0, 0, 1.05, 0.78)
       .addLathe([[0.02,0],[0.07,0.08],[0.04,0.34],[0,0.36]], 8, rgb(0x2563eb), 0, 0.24, 0.24, 1, 0.4)
@@ -900,8 +970,30 @@
       .addEllipsoid(0.32, 0.12, 0.24, 8, 10, rgb(0x1e293b), 0.12, 0.72, 0.18)
       .build();
 
-    // --- 4 VISUALLY UNMISTAKABLE EXECUTIVE COSTUMES & HEADGEAR! ---
-    // 1) 👔 김부장: Pot-belly Grey Suit + Red Tie + Shiny Bald Crown!
+    // --- DISTINCT BOSS & VILLAIN COSTUMES ACROSS PLANTS, OVERSEAS & SEOUL HQ ---
+    // Factory Boss: High-Vis Safety Vest + Industrial Hardhat!
+    M.torsoFactory = new Geo()
+      .addLathe([[0,0],[0.36,0.04],[0.43,0.36],[0.34,0.68],[0,0.72]], 16, rgb(0x1e3a8a), 0, 0, 0, 1.08, 0.92)
+      .addBox(0.56, 0.52, 0.62, rgb(0xf97316), 0, 0.38, 0.02)
+      .addBox(0.58, 0.08, 0.64, rgb(0xfef08a), 0, 0.28, 0.02)
+      .build();
+    M.hatHardhat = new Geo()
+      .addEllipsoid(0.48, 0.26, 0.48, 12, 16, rgb(0xfacc15), 0, 0.60, 0)
+      .addEllipsoid(0.54, 0.05, 0.58, 10, 14, rgb(0xeab308), 0, 0.49, 0.05)
+      .addBox(0.14, 0.16, 0.52, rgb(0xef4444), 0, 0.70, 0)
+      .build();
+
+    // Overseas Branch Director: Sky-Blue Wall-Street Double Suit + Slick Blonde Hair!
+    M.torsoGlobal = new Geo()
+      .addLathe([[0,0],[0.34,0.04],[0.40,0.42],[0.36,0.72],[0,0.76]], 16, rgb(0x0284c7), 0, 0, 0, 1.12, 0.86)
+      .addLathe([[0.02,0],[0.09,0.10],[0.05,0.40],[0,0.42]], 8, rgb(0xf43f5e), 0, 0.24, 0.34, 1, 0.4)
+      .build();
+    M.hatBlonde = new Geo()
+      .addEllipsoid(0.48, 0.24, 0.45, 12, 16, rgb(0xfacc15), 0, 0.60, -0.03)
+      .addEllipsoid(0.36, 0.18, 0.30, 10, 14, rgb(0xfde047), -0.08, 0.76, 0.20)
+      .build();
+
+    // 1) 👔 김부장
     M.torsoBujang = new Geo()
       .addLathe([[0,0],[0.38,0.04],[0.47,0.32],[0.35,0.68],[0,0.72]], 16, rgb(0x475569), 0, 0, 0, 1.06, 0.96)
       .addEllipsoid(0.26, 0.26, 0.13, 10, 12, rgb(0xf8fafc), 0, 0.38, 0.36)
@@ -912,84 +1004,130 @@
       .addEllipsoid(0.35, 0.14, 0.33, 10, 14, rgb(0xfdba8c), 0, 0.65, 0.04)
       .build();
 
-    // 2) ⛳ 박상무 (Golf Mania Executive): Bright Neon Lime V-Neck Vest + White Sun-Visor Cap + Pink Scarf!
+    // 2) ⛳ 박상무
     M.torsoSangmu = new Geo()
       .addLathe([[0,0],[0.33,0.04],[0.38,0.42],[0.32,0.70],[0,0.74]], 16, rgb(0x84cc16), 0, 0, 0, 1.08, 0.84)
-      // Preppy pink shoulder sweater/scarf!
       .addEllipsoid(0.36, 0.11, 0.28, 10, 12, rgb(0xec4899), 0, 0.68, -0.02)
       .addBox(0.12, 0.28, 0.08, rgb(0xec4899), -0.14, 0.55, 0.26)
       .addBox(0.12, 0.28, 0.08, rgb(0xec4899),  0.14, 0.55, 0.26)
       .build();
     M.hatSangmuVisor = new Geo()
-      .addEllipsoid(0.46, 0.20, 0.44, 10, 14, rgb(0x78350f), 0, 0.58, -0.04) // Styled brown hair
-      .addLathe([[0.46, 0.46], [0.46, 0.58]], 16, rgb(0xffffff)) // White golf visor band!
-      .addEllipsoid(0.38, 0.04, 0.28, 8, 12, rgb(0xffffff), 0, 0.48, 0.36) // Visor brim!
+      .addEllipsoid(0.46, 0.20, 0.44, 10, 14, rgb(0x78350f), 0, 0.58, -0.04)
+      .addLathe([[0.46, 0.46], [0.46, 0.58]], 16, rgb(0xffffff))
+      .addEllipsoid(0.38, 0.04, 0.28, 8, 12, rgb(0xffffff), 0, 0.48, 0.36)
       .build();
 
-    // 3) 🐗 최본부장 (Hulk Muscle Tank Division Head): Huge 1.48x Broad Purple Suit + Gold Chain + Silver Pompadour!
+    // 3) 🐗 최본부장
     M.torsoBonbujang = new Geo()
       .addLathe([[0,0],[0.30,0.04],[0.42,0.40],[0.54,0.68],[0,0.76]], 18, rgb(0x581c87), 0, 0, 0, 1.38, 0.92)
-      // Heavy Gold Chain Necklace!
       .addEllipsoid(0.28, 0.16, 0.12, 10, 12, rgb(0xfacc15), 0, 0.58, 0.34)
-      .addBox(0.14, 0.14, 0.08, rgb(0xfde047), 0, 0.40, 0.40) // Gold medallion!
+      .addBox(0.14, 0.14, 0.08, rgb(0xfde047), 0, 0.40, 0.40)
       .build();
     M.hatBonbujangPompadour = new Geo()
       .addEllipsoid(0.48, 0.26, 0.46, 12, 16, rgb(0xe2e8f0), 0, 0.62, -0.04)
-      .addEllipsoid(0.30, 0.22, 0.34, 10, 14, rgb(0xf8fafc), 0, 0.78, 0.22) // Giant silver pompadour!
+      .addEllipsoid(0.30, 0.22, 0.34, 10, 14, rgb(0xf8fafc), 0, 0.78, 0.22)
       .build();
 
-    // 4) 👑 왕대표 (CEO Final Boss): Pure White & Gold Emperor Suit + Crimson Royal Cape + 3D Golden Crown!
+    // 4) 👑 왕대표 (CEO)
     M.torsoCEO = new Geo()
       .addLathe([[0,0],[0.38,0.04],[0.44,0.40],[0.40,0.72],[0,0.78]], 18, rgb(0xf8fafc), 0, 0, 0, 1.16, 0.90)
-      // Gold Epaulettes on shoulders!
       .addBox(0.24, 0.10, 0.24, rgb(0xfacc15), -0.42, 0.70, 0)
       .addBox(0.24, 0.10, 0.24, rgb(0xfacc15),  0.42, 0.70, 0)
-      // Royal Red Velvet Cape flowing down back!
       .addBox(0.92, 0.88, 0.10, rgb(0xb91c1c), 0, 0.30, -0.36)
-      .addBox(0.96, 0.12, 0.14, rgb(0xfef08a), 0, 0.70, -0.35) // Fur collar trim!
+      .addBox(0.96, 0.12, 0.14, rgb(0xfef08a), 0, 0.70, -0.35)
       .addLathe([[0.02,0],[0.09,0.10],[0.06,0.42],[0,0.44]], 8, rgb(0xfacc15), 0, 0.24, 0.36, 1, 0.4)
       .build();
     M.hatCEOCrown = new Geo()
-      .addEllipsoid(0.47, 0.22, 0.45, 12, 16, rgb(0xf1f5f9), 0, 0.56, -0.04) // White hair
-      // Shiny 3D Golden Crown + Ruby Gems!
+      .addEllipsoid(0.47, 0.22, 0.45, 12, 16, rgb(0xf1f5f9), 0, 0.56, -0.04)
       .addLathe([[0.28, 0.70], [0.33, 0.94], [0.24, 0.94], [0.0, 0.78]], 8, rgb(0xfacc15))
       .addEllipsoid(0.07, 0.07, 0.07, 6, 8, rgb(0xef4444), 0, 0.82, 0.31)
       .build();
 
-    // --- ENVIRONMENTAL GIMMICKS & WEAPONS MESHES ---
+    // 5) 🐉 그룹 총수 천회장 (FINAL SUPREME BOSS: Golden Dragon Robe + Imperial Crown + Hover Throne!)
+    M.torsoChairman = new Geo()
+      .addLathe([[0,0],[0.44,0.04],[0.50,0.42],[0.46,0.76],[0,0.82]], 18, rgb(0xf59e0b), 0, 0, 0, 1.24, 0.96)
+      .addBox(0.32, 0.14, 0.30, rgb(0xfef08a), -0.48, 0.74, 0)
+      .addBox(0.32, 0.14, 0.30, rgb(0xfef08a),  0.48, 0.74, 0)
+      .addBox(1.12, 0.98, 0.12, rgb(0x7f1d1d), 0, 0.32, -0.40)
+      .addBox(0.28, 0.50, 0.10, rgb(0xef4444), 0, 0.42, 0.42)
+      .build();
+    M.hatChairman = new Geo()
+      .addEllipsoid(0.48, 0.22, 0.46, 12, 16, rgb(0xffffff), 0, 0.56, -0.04)
+      .addBox(0.76, 0.10, 0.66, rgb(0x18181b), 0, 0.88, 0.02)
+      .addLathe([[0.32, 0.68], [0.36, 0.88], [0, 0.88]], 10, rgb(0xfacc15))
+      .addEllipsoid(0.10, 0.10, 0.10, 8, 8, rgb(0x22d3ee), 0, 0.78, 0.35)
+      .build();
+    M.goldenThrone = new Geo()
+      .addBox(1.45, 0.36, 1.35, rgb(0xd97706), 0, 0.24, 0)
+      .addBox(1.35, 1.35, 0.24, rgb(0xfacc15), 0, 0.95, -0.55)
+      .addBox(0.22, 0.45, 1.25, rgb(0xfbbf24), -0.66, 0.55, 0)
+      .addBox(0.22, 0.45, 1.25, rgb(0xfbbf24),  0.66, 0.55, 0)
+      .addEllipsoid(0.65, 0.12, 0.65, 8, 12, rgb(0x38bdf8), 0, 0.08, 0)
+      .build();
+
+    // --- ENVIRONMENTAL GIMMICKS, FACTORY PROPS, QUEST ITEMS & PORTAL MESHES ---
     M.desk = new Geo().addBox(2.1,0.11,1.02,rgb(0xd4955e),0,0.75,0).addBox(0.10,0.74,0.94,rgb(0x475569),-0.95,0.37,0).addBox(0.10,0.74,0.94,rgb(0x475569),0.95,0.37,0).build();
     M.serverRack = new Geo()
       .addBox(1.15, 2.25, 0.95, rgb(0x0f172a), 0, 1.12, 0)
-      .addBox(0.95, 0.14, 0.98, rgb(0x06b6d4), 0, 1.85, 0) // Glowing high-voltage neon strips!
+      .addBox(0.95, 0.14, 0.98, rgb(0x06b6d4), 0, 1.85, 0)
       .addBox(0.95, 0.14, 0.98, rgb(0x38bdf8), 0, 1.35, 0)
-      .addBox(0.95, 0.14, 0.98, rgb(0x22d3ee), 0, 0.85, 0)
-      .build();
-    M.copier = new Geo()
-      .addBox(1.25, 1.05, 0.95, rgb(0xe2e8f0), 0, 0.52, 0)
-      .addBox(1.05, 0.08, 0.75, rgb(0x4ade80), 0, 1.06, 0) // Green scanner glass!
-      .build();
+      .addBox(0.95, 0.14, 0.98, rgb(0x22d3ee), 0, 0.85, 0).build();
+    M.copier = new Geo().addBox(1.25, 1.05, 0.95, rgb(0xe2e8f0), 0, 0.52, 0).addBox(1.05, 0.08, 0.75, rgb(0x4ade80), 0, 1.06, 0).build();
     M.goldenSafe = new Geo()
       .addBox(1.55, 1.65, 1.25, rgb(0xf59e0b), 0, 0.82, 0)
       .addBox(1.25, 1.35, 0.12, rgb(0xfde047), 0, 0.82, 0.62)
-      .addEllipsoid(0.24, 0.24, 0.08, 8, 12, rgb(0x1e293b), 0, 0.82, 0.70) // Vault wheel!
-      .build();
+      .addEllipsoid(0.24, 0.24, 0.08, 8, 12, rgb(0x1e293b), 0, 0.82, 0.70).build();
     M.vending = new Geo().addBox(1.3, 2.1, 0.9, rgb(0xdc2626), 0, 1.05, 0).addBox(1.0, 1.1, 0.93, rgb(0xfef08a), 0, 1.3, 0.02).build();
 
-    // Weapons & Rideable Chairs!
+    // Explosive Chemical/Oil Drum (Factory Hazard!)
+    M.explosiveDrum = new Geo()
+      .addLathe([[0,0],[0.46,0.02],[0.48,1.12],[0,1.14]], 14, rgb(0xdc2626))
+      .addLathe([[0.49,0.38],[0.49,0.74]], 14, rgb(0xfacc15))
+      .build();
+
+    // Rideable Chairs & Factory Mini-Forklift!
     M.chair = new Geo()
       .addBox(0.64,0.10,0.64,rgb(0x2563eb),0,0.45,0).addBox(0.60,0.56,0.10,rgb(0x1d4ed8),0,0.76,-0.26)
       .addLathe([[0.04,0.06],[0.04,0.44]],6,rgb(0x334155))
       .addBox(0.64,0.05,0.10,rgb(0x1e293b),0,0.05,0).addBox(0.10,0.05,0.64,rgb(0x1e293b),0,0.05,0).build();
+    M.forklift = new Geo()
+      .addBox(1.05, 0.48, 1.35, rgb(0xeab308), 0, 0.34, 0)
+      .addBox(0.95, 0.85, 0.10, rgb(0x1e293b), 0, 0.95, 0.62)
+      .addBox(0.16, 0.08, 0.75, rgb(0x64748b), -0.32, 0.14, 0.95)
+      .addBox(0.16, 0.08, 0.75, rgb(0x64748b),  0.32, 0.14, 0.95)
+      .addBox(0.90, 0.95, 0.95, rgb(0x334155), 0, 1.02, -0.10).build();
+
     M.monitor = new Geo().addBox(0.76,0.48,0.08,rgb(0x1e293b),0,0.35,0).addBox(0.68,0.40,0.09,rgb(0x38bdf8),0,0.35,0.01).addBox(0.32,0.05,0.22,rgb(0x334155),0,0.025,0).build();
     M.keyboard = new Geo().addBox(0.56,0.05,0.23,rgb(0xf1f5f9),0,0.025,0).addBox(0.50,0.06,0.17,rgb(0x38bdf8),0,0.035,0).build();
     M.extinguisher = new Geo().addLathe([[0,0],[0.15,0.02],[0.15,0.54],[0.06,0.64],[0,0.66]],12,rgb(0xdc2626)).addBox(0.16,0.07,0.06,rgb(0x111827),0.03,0.68,0).build();
+    M.wrench = new Geo().addBox(0.11, 1.05, 0.07, rgb(0xe11d48), 0, 0.52, 0).addBox(0.32, 0.24, 0.10, rgb(0x94a3b8), 0, 1.04, 0).build();
     M.golfClub = new Geo().addLathe([[0.024,0],[0.028,1.18]],8,rgb(0xfacc15)).addBox(0.24,0.11,0.09,rgb(0xfde047),0.10,0.05,0).build();
-    M.dumbbell = new Geo()
-      .addBox(0.64,0.07,0.07,rgb(0x94a3b8),0,0.20,0)
-      .addBox(0.14,0.36,0.36,rgb(0x1e293b),-0.26,0.20,0)
-      .addBox(0.14,0.36,0.36,rgb(0x1e293b), 0.26,0.20,0).build();
+    M.dumbbell = new Geo().addBox(0.64,0.07,0.07,rgb(0x94a3b8),0,0.20,0).addBox(0.14,0.36,0.36,rgb(0x1e293b),-0.26,0.20,0).addBox(0.14,0.36,0.36,rgb(0x1e293b), 0.26,0.20,0).build();
     M.waterJug = new Geo().addLathe([[0,0],[0.24,0.03],[0.25,0.52],[0.09,0.64],[0.09,0.74],[0,0.74]],12,rgb(0x60a5fa)).build();
     M.trophy = new Geo().addBox(0.28,0.12,0.28,rgb(0x451a03),0,0.06,0).addLathe([[0.05,0.12],[0.04,0.32],[0.22,0.58],[0.24,0.74],[0,0.74]],12,rgb(0xfacc15)).build();
+
+    // Quest Collectibles, C4 Bomb Pillars & 3D Warp Portal!
+    M.questKey = new Geo()
+      .addBox(0.55, 0.55, 0.16, rgb(0xfacc15), 0, 0.55, 0)
+      .addEllipsoid(0.24, 0.24, 0.24, 8, 10, rgb(0x38bdf8), 0, 0.55, 0)
+      .build();
+    M.c4Pillar = new Geo()
+      .addBox(1.25, 3.6, 1.25, rgb(0x475569), 0, 1.8, 0)
+      .addBox(1.32, 0.35, 1.32, rgb(0xfacc15), 0, 1.3, 0)
+      .build();
+    M.c4Bomb = new Geo()
+      .addBox(0.58, 0.38, 0.32, rgb(0xef4444), 0, 1.3, 0.62)
+      .addEllipsoid(0.12, 0.12, 0.12, 6, 8, rgb(0xfef08a), 0, 1.3, 0.80)
+      .build();
+    M.portalGate = new Geo()
+      .addLathe([[2.15, 0], [2.45, 0.18], [2.15, 0.36]], 22, rgb(0x9333ea))
+      .addBox(0.45, 3.6, 0.45, rgb(0xa855f7), -2.05, 1.8, 0)
+      .addBox(0.45, 3.6, 0.45, rgb(0xa855f7),  2.05, 1.8, 0)
+      .addBox(4.6, 0.48, 0.52, rgb(0xe879f9), 0, 3.6, 0)
+      .build();
+    M.portalCore = new Geo()
+      .addEllipsoid(1.75, 1.75, 0.18, 14, 18, rgb(0x38bdf8), 0, 1.85, 0)
+      .build();
 
     M.paper = new Geo().addBox(0.28, 0.018, 0.38, rgb(0xffffff)).build();
     M.cashBill = new Geo().addBox(0.32, 0.02, 0.16, rgb(0x4ade80)).build();
@@ -1031,7 +1169,7 @@
       const b = new TextEncoder().encode(str);
       return [(b.length >> 8) & 255, b.length & 255, ...b];
     }
-    function getTopic() { return `kairen/ob3d_v3/${roomCode}`; }
+    function getTopic() { return `kairen/ob3d_v4/${roomCode}`; }
 
     function connectMqtt() {
       if (mqttWs) { try { mqttWs.close(); } catch (_) {} }
@@ -1053,7 +1191,6 @@
           const u8 = new Uint8Array(ev.data);
           const type = u8[0] & 0xF0;
           if (type === 0x20) {
-            // CONNACK -> Subscribe to room topic!
             mqttConnected = true;
             document.getElementById("netStatusSub").textContent = `● 실시간 서버 연결됨 (방: ${roomCode})`;
             document.getElementById("multiDot").style.background = "#4ade80";
@@ -1063,7 +1200,6 @@
               if (ws.readyState === 1) ws.send(new Uint8Array([0xC0, 0x00]));
             }, 18000);
           } else if (type === 0x30) {
-            // PUBLISH received!
             let mult = 1, rem = 0, idx = 1, b;
             do { b = u8[idx++]; rem += (b & 127) * mult; mult *= 128; } while (b & 128);
             const tLen = (u8[idx] << 8) | u8[idx + 1];
@@ -1086,6 +1222,7 @@
 
     function sendNetPacket(obj) {
       obj.sid = myId;
+      obj.st = stageIdx;
       if (bcChannel) { try { bcChannel.postMessage(obj); } catch (_) {} }
       if (mqttWs && mqttConnected && mqttWs.readyState === 1) {
         const tBytes = mqttUtf8(getTopic());
@@ -1096,69 +1233,107 @@
 
     function onNetPacket(msg) {
       if (!msg || msg.sid === myId) return;
+      if (msg.t === "stage" && typeof msg.go === "number" && msg.go !== stageIdx) {
+        loadStage(msg.go, false);
+        return;
+      }
       if (msg.t === "state") {
         let rp = remotePlayers.get(msg.sid);
         if (!rp) {
           rp = {
             id: msg.sid, name: msg.n || "동료", suit: msg.c || [0.3, 0.7, 1.0],
             x: msg.x, y: msg.y || 0, z: msg.z, tx: msg.x, tz: msg.z,
-            yaw: msg.yw || 0, walk: 0, atkTimer: 0, riding: false, pwr: 1, emote: "", emoteT: 0, lastSeen: performance.now()
+            yaw: msg.yw || 0, walk: 0, atkTimer: 0, riding: false, pwr: 1, stage: msg.st ?? 0, emote: "", emoteT: 0, lastSeen: performance.now()
           };
           remotePlayers.set(msg.sid, rp);
-          popText(msg.x, 2.3, msg.z, `👥 [${rp.name}] 합류!`, "#a5f3fc", 20);
+          popText(player.x, 2.3, player.z, `👥 [${rp.name}] 합류!`, "#a5f3fc", 20);
         }
         rp.name = msg.n || rp.name;
+        rp.stage = msg.st ?? rp.stage;
         rp.tx = msg.x; rp.y = msg.y || 0; rp.tz = msg.z;
         rp.yaw = msg.yw; rp.riding = !!msg.rd; rp.pwr = msg.pw || 1;
         if (msg.atk) rp.atkTimer = 0.24;
         rp.lastSeen = performance.now();
-      } else if (msg.t === "hit" && bosses[msg.bi]) {
+      } else if (msg.st === stageIdx && msg.t === "hit" && bosses[msg.bi]) {
         const b = bosses[msg.bi];
         b.hp = Math.max(0, b.hp - msg.dmg);
         b.vx = msg.vx; b.vy = msg.vy; b.vz = msg.vz;
         b.ragdoll = Math.max(b.ragdoll, 0.9);
         b.flash = 0.14;
         if (b.hp <= 0 && !b.ko) triggerBossKO(b, msg.bi, false);
+      } else if (msg.st === stageIdx && msg.t === "quest" && questItems[msg.qi] && !questItems[msg.qi].done) {
+        completeQuestNode(msg.qi, false);
       } else if (msg.t === "emote") {
         const rp = remotePlayers.get(msg.sid);
         if (rp) { rp.emote = msg.txt; rp.emoteT = 3.0; }
       }
     }
 
-    connectMqtt();
-
     // =========================================================================
-    // 6. WORLD STATE: ALL 4 DISTINCT EXECUTIVES + HAZARDS + AI PARTY + SAFE!
+    // 6. 5-STAGE CAMPAIGN: ULSAN -> YEOSU -> CHANGWON -> OVERSEAS -> SEOUL HQ!
     // =========================================================================
-    const EXEC_DEFS = [
+    const STAGES = [
       {
-        idx: 0, rank: "부장", badgeBg: "#475569", name: "꼰대 김부장",
-        scale: 1.02, torso: "torsoBujang", hat: "hatBujangBald", face: 2,
-        hp: 150, bounty: 80000, homeX: -14, homeZ: 6, speed: 2.5,
-        taunts: ["금요일 5시50분 회의 시작하자!", "라떼는 주말도 반납했어!", "보고서 폰트 다시 맞춰와!"]
+        idx: 0, code: "ULSAN", badge: "🏭 STAGE 1/5 · 울산공장", short: "🏭 울산공장",
+        timeLimit: 115, questIcon: "🔑", questName: "포털 보안키", isBomb: false,
+        questSpots: [[-26, -19], [25, -18], [-22, 19]],
+        portalPos: [0, -24.0], portalLabel: "🌀 여수공장 이동 포털",
+        bosses: [
+          { idx:0, rank:"작업반장", badgeBg:"#d97706", name:"독사 강반장", scale:1.05, torso:"torsoFactory", hat:"hatHardhat", face:2, hp:130, bounty:70000, homeX:-15, homeZ:7, speed:2.6, taunts:["라인 멈추면 내일도 특근이다!", "화장실도 결재받고 가라!", "스패너 어딨어!!"] },
+          { idx:1, rank:"생산부장", badgeBg:"#475569", name:"철야 남부장", scale:1.14, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:175, bounty:110000, homeX:14, homeZ:10, speed:2.7, taunts:["울산공장 목표량 200% 채워!", "잔업 수당은 열정페이야!"] },
+          { idx:2, rank:"공장장", badgeBg:"#b91c1c", name:"울산 폭군 마공장장", scale:1.34, wideX:1.18, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:240, bounty:190000, homeX:0, homeZ:-12, speed:2.9, taunts:["보안키는 절대 못 가져간다!!", "내가 울산공장 왕이다!!"] }
+        ]
       },
       {
-        idx: 1, rank: "상무", badgeBg: "#65a30d", name: "골프광 박상무",
-        scale: 1.18, torso: "torsoSangmu", hat: "hatSangmuVisor", face: 5,
-        hp: 210, bounty: 150000, homeX: 2.0, homeZ: 17.5, speed: 3.1, clubInHand: true,
-        taunts: ["평일 낮엔 법인카드 골프지~!", "내 캐디백 트렁크에 실었나?", "어이 김사원, 커피 좀 타와!"]
+        idx: 1, code: "YEOSU", badge: "🧪 STAGE 2/5 · 여수공장", short: "🧪 여수공장",
+        timeLimit: 125, questIcon: "🧪", questName: "폐수 증거샘플", isBomb: false,
+        questSpots: [[-28, -16], [27, -19], [21, 18]],
+        portalPos: [0, -24.0], portalLabel: "🌀 창원공장 이동 포털",
+        bosses: [
+          { idx:0, rank:"안전팀장", badgeBg:"#0f766e", name:"은폐 구팀장", scale:1.06, torso:"torsoFactory", hat:"hatHardhat", face:2, hp:155, bounty:90000, homeX:-16, homeZ:6, speed:2.7, taunts:["폐수 샘플 숨겨!! 단속반 온다!", "방독면 없이 들어가!"] },
+          { idx:1, rank:"환경상무", badgeBg:"#65a30d", name:"골프광 정상무", scale:1.18, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:210, bounty:150000, homeX:15, homeZ:12, speed:3.1, taunts:["공장 돌아가든 말든 나이스샷~!", "법인카드로 여수 회식이나 가자!"] },
+          { idx:2, rank:"공장장", badgeBg:"#7e22ce", name:"여수 독가스 배공장장", scale:1.38, wideX:1.22, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:280, bounty:230000, homeX:2, homeZ:-13, speed:2.9, taunts:["증거 샘플 찾으면 가만 안 둔다!", "드럼통 옆엔 얼씬도 마라!"] }
+        ]
       },
       {
-        idx: 2, rank: "본부장", badgeBg: "#7e22ce", name: "어깨깡패 최본부장",
-        scale: 1.36, torso: "torsoBonbujang", hat: "hatBonbujangPompadour", face: 6,
-        hp: 290, bounty: 250000, homeX: 19.5, homeZ: 12.0, speed: 2.8,
-        taunts: ["실적 미달이면 전원 철야다!!", "내가 왕년에 맨손으로 책상 깼어!", "어디서 눈을 똑바로 뜨나?!"]
+        idx: 2, code: "CHANGWON", badge: "⚙️ STAGE 3/5 · 창원공장", short: "⚙️ 창원공장",
+        timeLimit: 135, questIcon: "💾", questName: "기밀 설계칩", isBomb: false,
+        questSpots: [[-27, -21], [0, 21], [28, -17]],
+        portalPos: [0, -24.0], portalLabel: "🌀 해외법인 워프 포털",
+        bosses: [
+          { idx:0, rank:"기계부장", badgeBg:"#0369a1", name:"프레스 오부장", scale:1.10, torso:"torsoFactory", hat:"hatBujangBald", face:2, hp:185, bounty:120000, homeX:-17, homeZ:8, speed:2.8, taunts:["기밀칩은 프레스 밑에 숨겼다!", "기름칠 다시 해와!"] },
+          { idx:1, rank:"방산상무", badgeBg:"#65a30d", name:"낙하산 차상무", scale:1.22, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:240, bounty:180000, homeX:17, homeZ:10, speed:3.1, taunts:["내가 회장님 조카야 임마!", "창원 출장비 내 계좌로 쏴!"] },
+          { idx:2, rank:"본부장", badgeBg:"#7e22ce", name:"창원 불도저 황본부장", scale:1.44, wideX:1.26, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, hp:330, bounty:290000, homeX:0, homeZ:-13, speed:3.0, taunts:["내 강철 주먹 맛 좀 볼래?!", "해외법인 포털은 절대 못 연다!"] }
+        ]
       },
       {
-        idx: 3, rank: "👑대표", badgeBg: "#d97706", name: "블랙기업 왕대표",
-        scale: 1.54, torso: "torsoCEO", hat: "hatCEOCrown", face: 7,
-        hp: 420, bounty: 500000, homeX: 22.5, homeZ: -15.5, speed: 2.3, dropsCashOnHit: true,
-        taunts: ["올해 성과급은 구내식당 식권이다!", "내 황금 금고엔 손대지 마라!", "주 100시간 근무가 애사심이다!"]
+        idx: 3, code: "OVERSEAS", badge: "🗽 STAGE 4/5 · 해외법인", short: "🗽 뉴욕 해외법인",
+        timeLimit: 145, questIcon: "📒", questName: "비자금 비밀장부", isBomb: false,
+        questSpots: [[-28, -20], [28, -20], [-24, 19]],
+        portalPos: [0, -24.0], portalLabel: "🌀 서울본사 결전 포털",
+        bosses: [
+          { idx:0, rank:"해외상무", badgeBg:"#65a30d", name:"브라이언 박상무", scale:1.20, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:240, bounty:200000, homeX:-15, homeZ:10, speed:3.2, taunts:["Hey~ 한국 노예들 여기까지 왔어?", "비자금 세탁은 완벽하다고!"] },
+          { idx:1, rank:"전략본부장", badgeBg:"#7e22ce", name:"월스트리트 잭본부장", scale:1.44, wideX:1.25, torso:"torsoBonbujang", hat:"hatBlonde", face:6, hp:340, bounty:300000, homeX:18, homeZ:9, speed:3.0, taunts:["You're FIRED!! 당장 꺼져!!", "회장님 비자금 장부는 내 거다!"] },
+          { idx:2, rank:"🗽법인장", badgeBg:"#0284c7", name:"글로벌 마이클 지사장", scale:1.50, torso:"torsoGlobal", hat:"hatBlonde", face:5, dropsCashOnHit:true, hp:410, bounty:450000, homeX:0, homeZ:-14, speed:2.9, taunts:["스위스 계좌 장부를 넘길 것 같나?!", "시큐리티!! 막아!!"] }
+        ]
+      },
+      {
+        idx: 4, code: "SEOUL_HQ", badge: "🏢 FINAL 5/5 · 서울본사", short: "🏢 서울본사 타워",
+        timeLimit: 185, questIcon: "💣", questName: "C4 폭약 설치", isBomb: true,
+        questSpots: [[-18, -12], [18, -12], [0, 13]],
+        portalPos: [0, 24.2], portalLabel: "🚁 비상 탈출 & 본사 폭파 스위치!!",
+        bosses: [
+          { idx:0, rank:"부장", badgeBg:"#475569", name:"꼰대 김부장", scale:1.04, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:170, bounty:100000, homeX:-16, homeZ:6, speed:2.6, taunts:["회장님 오셨다!! 전원 도열해!!", "어디 감히 본사에 폭탄을?!"] },
+          { idx:1, rank:"상무", badgeBg:"#65a30d", name:"골프광 박상무", scale:1.18, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:220, bounty:170000, homeX:15, homeZ:16, speed:3.1, taunts:["내 황금 퍼터로 막아주지!", "회장님 전용 헬기 대기시켜!"] },
+          { idx:2, rank:"본부장", badgeBg:"#7e22ce", name:"어깨깡패 최본부장", scale:1.38, wideX:1.24, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, hp:300, bounty:280000, homeX:20, homeZ:6, speed:2.9, taunts:["서울본사 기둥에 손대지 마라!!", "회장님 경호실장 최본부장이다!"] },
+          { idx:3, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.52, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:390, bounty:500000, homeX:-18, homeZ:-15, speed:2.5, taunts:["천회장님 살려주십시오!!", "내 비자금 금고만은 제발!!"] },
+          { idx:4, rank:"🐉총수회장", badgeBg:"#dc2626", name:"그룹 총수 천회장", scale:1.70, torso:"torsoChairman", hat:"hatChairman", face:7, onThrone:true, dropsCashOnHit:true, hp:580, bounty:1500000, homeX:20, homeZ:-16, speed:3.2, taunts:["감히 개미 따위가 내 제국을 폭파해?!", "황금 전동 옥좌 풀파워 돌진!!", "돈으로 다 매수해주마!!"] }
+        ]
       }
     ];
 
     const player = {
-      x: 0, y: 0, z: 4.5, vx: 0, vz: 0, yaw: Math.PI, walk: 0,
+      x: 0, y: 0, z: 16.0, vx: 0, vz: 0, yaw: Math.PI, walk: 0,
       atkTimer: 0, atkDur: 0.22, atkType: "jab", comboStep: 0, comboReset: 0,
       upperCd: 0, dashCd: 0, dashTimer: 0,
       heldProp: null, weaponUses: 0,
@@ -1167,33 +1342,27 @@
       myEmote: "", myEmoteT: 0, netJustAttacked: false
     };
 
+    let stageIdx = 0;
+    let freePlayMode = false;
+    let stageTimer = 115;
+    let questItems = []; // { x, z, done }
+    let portalOpen = false;
+    let escapeCountdown = false;
+    let detonateCutscene = 0;
+    let campaignOver = false;
+
     let bosses = [];
-    let aiAllies = []; // Co-op AI teammates when toggle is ON!
+    let aiAllies = [];
     let aiPartyEnabled = true;
     let props = [];
-    let hazards = []; // Electric Server Racks, Photocopiers, Breakable Golden Safe!
+    let hazards = [];
     let particles = [];
 
     let cash = 0, koTotal = 0, comboCount = 0, comboTimer = 0;
     let focusBossIdx = 0;
     let hitStop = 0, slowMo = 0, shakeT = 0, shakeMag = 0;
     let nearestProp = null, nearestChair = null;
-
-    // Random Sudden Corporate Event State!
-    let eventTimer = 14.0, activeEvent = null, eventRemain = 0;
-
-    function spawnAllBosses() {
-      bosses = EXEC_DEFS.map((d) => ({
-        def: d,
-        x: d.homeX, y: 2.5, z: d.homeZ,
-        vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
-        yaw: 0, walk: 0,
-        hp: d.hp, maxHp: d.hp,
-        ragdoll: 0, stun: 0, shockT: 0, flash: 0,
-        ko: false, respawn: 0,
-        speechT: 1.5 + d.idx * 1.1, speech: d.taunts[0], hurtSpeech: false
-      }));
-    }
+    let eventTimer = 16.0, activeEvent = null, eventRemain = 0;
 
     function addProp(cfg) {
       props.push({
@@ -1205,73 +1374,102 @@
       });
     }
 
-    function buildMegaWorld() {
-      props = [];
-      hazards = [];
-      particles = [];
+    function loadStage(idx, broadcast = true) {
+      stageIdx = Math.max(0, Math.min(STAGES.length - 1, idx));
+      const st = STAGES[stageIdx];
+      stageTimer = st.timeLimit;
+      portalOpen = false;
+      escapeCountdown = false;
+      detonateCutscene = 0;
+      campaignOver = false;
+      focusBossIdx = 0;
+      document.getElementById("finaleModal").classList.add("hidden");
 
-      // 1. SW Sales Cubicles (Desks, Rideable Chairs, Monitors, Keyboards)
-      const desks = [
-        [-28, 6], [-21, 6], [-14, 6],
-        [-28, 14], [-21, 14], [-14, 14],
-        [-28, 22], [-21, 22], [-14, 22]
-      ];
-      for (const [dx, dz] of desks) {
-        addProp({ type:"desk", mesh:M.desk, x:dx, y:0, z:dz, grabbable:false, mass:4.0, radius:1.05 });
-        addProp({ type:"chair", label:"회전의자", icon:"🪑", mesh:M.chair, x:dx, y:0, z:dz+1.05, ry:Math.PI, dmg:34, uses:3, rideable:true });
-        addProp({ type:"monitor", label:"모니터", icon:"🖥️", mesh:M.monitor, x:dx-0.25, y:0.80, z:dz-0.1, resting:true, dmg:38, uses:2 });
-        addProp({ type:"keyboard", label:"청축 키보드", icon:"⌨️", mesh:M.keyboard, x:dx-0.25, y:0.80, z:dz+0.28, resting:true, dmg:28, uses:4 });
+      player.x = 0; player.y = 0; player.z = st.isBomb ? 4.0 : 18.0;
+      player.vx = 0; player.vz = 0; player.yaw = Math.PI;
+      player.heldProp = null; player.ridingChair = null;
+
+      props = []; hazards = []; particles = [];
+      questItems = st.questSpots.map(([qx, qz], qi) => ({ idx: qi, x: qx, z: qz, done: false }));
+
+      // Populate stage-themed weapons, vehicles & interactive hazards!
+      if (stageIdx <= 2) {
+        // Industrial Plants (Ulsan, Yeosu, Changwon): Rideable Forklifts, Explosive Drums, Wrenches, Server/Control Racks!
+        addProp({ type:"forklift", label:"노란 지게차", icon:"🚜", mesh:M.forklift, x:-5.5, y:0, z:14.0, rideable:true, grabbable:false, radius:0.9 });
+        addProp({ type:"forklift", label:"노란 지게차", icon:"🚜", mesh:M.forklift, x: 5.5, y:0, z:14.0, rideable:true, grabbable:false, radius:0.9 });
+        for (const [dx, dz] of [[-18, 2], [18, 2], [-12, -10], [12, -10], [0, 4]]) {
+          hazards.push({ kind:"drum", label:"폭발 화학드럼통", mesh:M.explosiveDrum, x:dx, y:0, z:dz, radius:0.95, cd:0 });
+        }
+        for (const sx of [-6, 6]) {
+          hazards.push({ kind:"server", label:"고전압 배전반", mesh:M.serverRack, x:sx, y:0, z:-18.5, radius:1.25, cd:0 });
+        }
+        hazards.push({ kind:"vending", label:"공장 자판기", mesh:M.vending, x:-31, y:0, z:12, radius:1.2, cd:0 });
+        for (const [wx, wz] of [[-10, 12], [10, 12], [-22, -6], [22, -6], [0, 10]]) {
+          addProp({ type:"wrench", label:"특대 스패너", icon:"🔧", mesh:M.wrench, x:wx, y:0, z:wz, dmg:52, uses:5 });
+          addProp({ type:"extinguisher", label:"공업용 소화기", icon:"🧯", mesh:M.extinguisher, x:wx+2.2, y:0, z:wz, dmg:46, aoe:3.8 });
+        }
+        for (const gx of [-16, 16]) {
+          addProp({ type:"dumbbell", label:"강철 중량물", icon:"🏋️", mesh:M.dumbbell, x:gx, y:0, z:18, dmg:58, uses:4 });
+        }
+      } else {
+        // Stage 3 (Overseas Branch) & Stage 4 (Seoul HQ Tower): Full Corporate Furniture, Safe, Copiers, Server Racks!
+        for (const [dx, dz] of [[-26, 6], [-18, 6], [-26, 15], [-18, 15], [22, 8], [22, 16]]) {
+          addProp({ type:"desk", mesh:M.desk, x:dx, y:0, z:dz, grabbable:false, mass:4.0, radius:1.05 });
+          addProp({ type:"chair", label:"레이싱 회전의자", icon:"🪑", mesh:M.chair, x:dx, y:0, z:dz+1.1, ry:Math.PI, dmg:36, uses:3, rideable:true });
+          addProp({ type:"monitor", label:"울트라 모니터", icon:"🖥️", mesh:M.monitor, x:dx-0.25, y:0.80, z:dz-0.1, resting:true, dmg:42, uses:3 });
+          addProp({ type:"keyboard", label:"기계식 키보드", icon:"⌨️", mesh:M.keyboard, x:dx+0.25, y:0.80, z:dz+0.25, resting:true, dmg:32, uses:4 });
+        }
+        hazards.push(
+          { kind:"copier", label:"얼굴스캔 복합기", mesh:M.copier, x:-8.0, y:0, z:-1.5, radius:1.15, cd:0 },
+          { kind:"copier", label:"얼굴스캔 복합기", mesh:M.copier, x: 8.0, y:0, z:-1.5, radius:1.15, cd:0 },
+          { kind:"safe", label:"그룹 비자금 금고", mesh:M.goldenSafe, x:28.5, y:0, z:-23.5, radius:1.45, hp:180, maxHp:180, cd:0 },
+          { kind:"vending", label:"고카페인 자판기", mesh:M.vending, x:-31.0, y:0, z:-23.5, radius:1.2, cd:0 }
+        );
+        for (const sx of [-6.0, -1.8, 2.4, 6.6]) {
+          hazards.push({ kind:"server", label:"고전압 메인서버", mesh:M.serverRack, x:sx, y:0, z:-21.5, radius:1.25, cd:0 });
+        }
+        for (const gx of [-6, 0, 6]) {
+          addProp({ type:"golfClub", label:"황금 골프채", icon:"⛳", mesh:M.golfClub, x:gx, y:0, z:18.5, dmg:56, uses:5 });
+          addProp({ type:"trophy", label:"순금 트로피", icon:"🏆", mesh:M.trophy, x:gx+16, y:0, z:-16.5, dmg:66, uses:4 });
+        }
+        addProp({ type:"forklift", label:"실내 의전카트", icon:"🚜", mesh:M.forklift, x:0, y:0, z:8.5, rideable:true, grabbable:false, radius:0.9 });
       }
 
-      // 2. Central Lobby Photocopiers (Face-Scan Humiliation Hazard!) & Rideable Chairs
-      hazards.push(
-        { kind:"copier", label:"얼굴스캔 복합기", mesh:M.copier, x:-7.5, y:0, z:-1.5, radius:1.15, cd:0 },
-        { kind:"copier", label:"얼굴스캔 복합기", mesh:M.copier, x: 7.5, y:0, z:-1.5, radius:1.15, cd:0 }
-      );
-      addProp({ type:"chair", label:"로비 레이싱의자", icon:"🪑", mesh:M.chair, x:-2.5, y:0, z:3.5, dmg:34, uses:3, rideable:true });
-      addProp({ type:"chair", label:"로비 레이싱의자", icon:"🪑", mesh:M.chair, x: 2.5, y:0, z:3.5, dmg:34, uses:3, rideable:true });
-      addProp({ type:"extinguisher", label:"분말 소화기", icon:"🧯", mesh:M.extinguisher, x:-5.0, y:0, z:2.0, dmg:44, aoe:3.6 });
-      addProp({ type:"extinguisher", label:"분말 소화기", icon:"🧯", mesh:M.extinguisher, x: 5.0, y:0, z:2.0, dmg:44, aoe:3.6 });
-
-      // 3. North-Center Server Room: HIGH-VOLTAGE ELECTRIC SERVER RACKS!
-      for (const sx of [-6.5, -2.2, 2.2, 6.5]) {
-        hazards.push({ kind:"server", label:"고전압 서버랙", mesh:M.serverRack, x:sx, y:0, z:-21.0, radius:1.25, cd:0 });
-      }
-      addProp({ type:"extinguisher", label:"서버실 소화기", icon:"🧯", mesh:M.extinguisher, x:0, y:0, z:-14.5, dmg:44, aoe:3.6 });
-
-      // 4. NW Cafeteria: Vending Machines & Giant Water Jugs
-      hazards.push({ kind:"vending", label:"음료 자판기", mesh:M.vending, x:-31.0, y:0, z:-24.0, radius:1.2, cd:0 });
-      for (const wx of [-24, -20, -16]) {
-        addProp({ type:"waterJug", label:"20L 생수통", icon:"💧", mesh:M.waterJug, x:wx, y:0, z:-18.0, dmg:42, uses:3 });
+      // Spawn Stage Bosses!
+      bosses = st.bosses.map((d, i) => ({
+        def: { ...d, idx: i },
+        x: d.homeX, y: 2.2, z: d.homeZ,
+        vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
+        yaw: 0, walk: 0,
+        hp: d.hp, maxHp: d.hp,
+        ragdoll: 0, stun: 0, shockT: 0, flash: 0,
+        ko: false, respawn: 0,
+        speechT: 1.2 + i * 0.9, speech: d.taunts[0], hurtSpeech: false
+      }));
+      for (let i = 0; i < 5; i++) {
+        const el = document.getElementById(`bossTag${i}`);
+        if (el) el.style.opacity = "0";
       }
 
-      // 5. South-Center Gym & Putting Green: Heavy Dumbbells & Golf Drivers!
-      for (const gx of [-5, -1, 3, 7]) {
-        addProp({ type:"dumbbell", label:"20kg 아령", icon:"🏋️", mesh:M.dumbbell, x:gx, y:0, z:19.5, dmg:54, uses:4, mass:1.6 });
-        addProp({ type:"golfClub", label:"드라이버 골프채", icon:"⛳", mesh:M.golfClub, x:gx+1.5, y:0, z:23.5, dmg:50, uses:5 });
-      }
-
-      // 6. SE Grand Boardroom: Chairs & Extinguishers
-      for (let bz = 9; bz <= 19; bz += 3.2) {
-        addProp({ type:"chair", label:"임원 회전의자", icon:"🪑", mesh:M.chair, x:17.5, y:0, z:bz, rideable:true, dmg:34 });
-        addProp({ type:"chair", label:"임원 회전의자", icon:"🪑", mesh:M.chair, x:23.5, y:0, z:bz, rideable:true, dmg:34 });
-      }
-
-      // 7. NE Royal CEO Penthouse: BREAKABLE SECRET GOLDEN SAFE + Trophies + Golf Clubs!
-      hazards.push({ kind:"safe", label:"왕대표 비자금 금고", mesh:M.goldenSafe, x:28.5, y:0, z:-23.5, radius:1.45, hp:180, maxHp:180, cd:0 });
-      addProp({ type:"trophy", label:"순금 트로피", icon:"🏆", mesh:M.trophy, x:20.0, y:0, z:-19.5, dmg:64, uses:4 });
-      addProp({ type:"trophy", label:"순금 트로피", icon:"🏆", mesh:M.trophy, x:25.5, y:0, z:-13.5, dmg:64, uses:4 });
-      addProp({ type:"golfClub", label:"황금 골프채", icon:"⛳", mesh:M.golfClub, x:15.5, y:0, z:-16.5, dmg:56, uses:5 });
-
-      // Spawn 2 Helpful AI Co-op Raid Teammates ("동기 박대리", "막내 이인턴")
       aiAllies = [
-        { name:"🤖 박대리(우군)", suit:[0.20,0.82,0.65], x:-3.5, y:0, z:6.0, yaw:0, walk:0, atkT:0, cd:0.8 },
-        { name:"🤖 이인턴(우군)", suit:[0.38,0.68,0.98], x: 3.5, y:0, z:6.0, yaw:0, walk:0, atkT:0, cd:1.1 }
+        { name:"🤖 박대리(우군)", suit:[0.20,0.82,0.65], x:-3.5, y:0, z:player.z+1.5, yaw:Math.PI, walk:0, atkT:0, cd:0.7 },
+        { name:"🤖 이인턴(우군)", suit:[0.38,0.68,0.98], x: 3.5, y:0, z:player.z+1.5, yaw:Math.PI, walk:0, atkT:0, cd:1.0 }
       ];
+
+      const tk = document.getElementById("eventTicker");
+      tk.textContent = st.isBomb
+        ? "🚨 최종 작전: 천회장 일당 전원 처치 + 내력기둥 3곳에 💣C4 폭약을 설치하세요!!"
+        : `📢 ${st.short} 미션: 제한시간 내 빌런 전원 처치 + ${st.questIcon}${st.questName} 3개를 찾아 포털을 여세요!`;
+      tk.classList.remove("hidden");
+      activeEvent = "briefing"; eventRemain = 7.5;
+
+      if (broadcast) sendNetPacket({ t: "stage", go: stageIdx });
+      playSfx("ko");
+      updateHud();
     }
 
     // =========================================================================
-    // 7. COMBAT, ENVIRONMENTAL HAZARDS, CHAIR DRIFTING & PROGRESSION
+    // 7. COMBAT, QUEST ITEMS, C4 DETONATION & PORTAL PROGRESSION
     // =========================================================================
     const overlayLayer = document.getElementById("overlayLayer");
     let lastVP = mId();
@@ -1286,19 +1484,20 @@
       el.style.color = col; el.style.fontSize = `${sz}px`;
       el.style.setProperty("--r", `${(Math.random() * 16 - 8).toFixed(1)}deg`);
       overlayLayer.appendChild(el);
-      setTimeout(() => el.remove(), 730);
+      setTimeout(() => el.remove(), 750);
     }
 
     function spawnParticles(x, y, z, cnt, kind = "paper") {
       const mesh = kind === "cash" ? M.cashBill : (kind === "paper" ? M.paper : M.spark);
-      const tint = kind === "shock" ? [0.25, 0.90, 1.0] : (kind === "spark" ? [1.0, 0.85, 0.2] : [1, 1, 1]);
+      const tint = kind === "shock" ? [0.25, 0.90, 1.0] : (kind === "fire" ? [1.0, 0.38, 0.12] : (kind === "spark" ? [1.0, 0.85, 0.2] : [1, 1, 1]));
       for (let i = 0; i < cnt; i++) {
-        const a = Math.random() * Math.PI * 2, spd = 2.5 + Math.random() * 7.5;
+        const a = Math.random() * Math.PI * 2, spd = (kind === "fire" ? 5.0 : 2.5) + Math.random() * (kind === "fire" ? 13.0 : 7.5);
         particles.push({
           mesh, tint, x, y: y + 0.4, z,
-          vx: Math.cos(a) * spd, vy: 3.2 + Math.random() * 6.0, vz: Math.sin(a) * spd,
+          vx: Math.cos(a) * spd, vy: 3.5 + Math.random() * (kind === "fire" ? 11.0 : 6.0), vz: Math.sin(a) * spd,
           rx: Math.random() * 3, ry: Math.random() * 3, vrx: 11, vry: 13,
-          scale: kind === "cash" ? 1.25 : 0.95, life: kind === "paper" || kind === "cash" ? 2.4 : 0.55,
+          scale: kind === "fire" ? 2.4 : (kind === "cash" ? 1.25 : 0.95),
+          life: kind === "paper" || kind === "cash" ? 2.4 : (kind === "fire" ? 1.15 : 0.55),
           flutter: kind === "paper" || kind === "cash"
         });
       }
@@ -1310,17 +1509,63 @@
       updateHud();
     }
 
+    function checkStageObjectives() {
+      if (portalOpen) return;
+      const allBossDead = bosses.every((b) => b.ko);
+      const allQuestDone = questItems.every((q) => q.done);
+      if (allBossDead && allQuestDone) {
+        portalOpen = true;
+        playSfx("ko"); haptic(90);
+        const st = STAGES[stageIdx];
+        if (st.isBomb) {
+          escapeCountdown = true;
+          stageTimer = Math.max(stageTimer, 25);
+          stageTimer = Math.min(stageTimer, 25); // 25s intense escape countdown!
+          const tk = document.getElementById("eventTicker");
+          tk.textContent = "🚨 기폭 카운트다운 시작!! 남쪽 [🚁 비상 탈출 포털]로 즉시 뛰세요!!";
+          tk.classList.remove("hidden");
+          activeEvent = "escape"; eventRemain = 30;
+          popText(player.x, 2.8, player.z, "🚨 C4 기폭 가동!! 남쪽 포털로 탈출!!", "#fb7185", 30);
+        } else {
+          const tk = document.getElementById("eventTicker");
+          tk.textContent = `🌀 포털 개방 완료!! 북쪽 [${st.portalLabel}]로 들어가 다음 공장으로 이동하세요!`;
+          tk.classList.remove("hidden");
+          activeEvent = "portal"; eventRemain = 30;
+          popText(player.x, 2.8, player.z, `🌀 ${st.portalLabel} OPEN!!`, "#e879f9", 30);
+        }
+        spawnParticles(st.portalPos[0], 1.5, st.portalPos[1], 28, "shock");
+        updateHud();
+      }
+    }
+
+    function completeQuestNode(qi, broadcast = true) {
+      const q = questItems[qi];
+      if (!q || q.done) return;
+      q.done = true;
+      const st = STAGES[stageIdx];
+      playSfx("ko"); haptic(45);
+      addCash(75000);
+      spawnParticles(q.x, 1.2, q.z, 16, st.isBomb ? "fire" : "spark");
+      const doneCnt = questItems.filter((x) => x.done).length;
+      popText(q.x, 2.4, q.z, st.isBomb ? `💣 C4 폭약 설치 완료! (${doneCnt}/3)` : `${st.questIcon} ${st.questName} 획득! (${doneCnt}/3)`, "#fde047", 25);
+      if (broadcast) sendNetPacket({ t: "quest", qi });
+      checkStageObjectives();
+      updateHud();
+    }
+
     function triggerBossKO(b, idx, broadcast = true) {
       b.ko = true;
-      b.respawn = 4.5;
-      b.vy = 11.0;
-      slowMo = 0.65;
+      b.respawn = freePlayMode ? 5.0 : 999999; // Stay defeated in campaign mode!
+      b.vy = 11.5;
+      slowMo = 0.55;
       koTotal++;
       addCash(b.def.bounty);
       playSfx("ko");
       haptic(65);
-      spawnParticles(b.x, b.y + 1.0, b.z, 22, idx === 3 ? "cash" : "paper");
-      popText(b.x, b.y + 2.6, b.z, `🎉 ${b.def.name} 참교육!! +₩${b.def.bounty.toLocaleString()}`, "#4ade80", 30);
+      spawnParticles(b.x, b.y + 1.0, b.z, 24, b.def.dropsCashOnHit ? "cash" : "paper");
+      popText(b.x, b.y + 2.6, b.z, `🎉 ${b.def.name} 제압!! +₩${b.def.bounty.toLocaleString()}`, "#4ade80", 28);
+      checkStageObjectives();
+      updateHud();
     }
 
     function hitBoss(b, idx, baseDmg, dx, dz, force, liftY, label, heavy, fromLocal = true) {
@@ -1418,11 +1663,14 @@
         }
       });
 
-      // Hit Golden Safe or Vending Machine!
-      for (const hz of hazards) {
+      // Hit Golden Safe, Vending Machine, or Explosive Factory Drum!
+      for (let hi = hazards.length - 1; hi >= 0; hi--) {
+        const hz = hazards[hi];
         if (Math.hypot(hz.x - player.x, hz.z - player.z) < reach + hz.radius) {
           hitAny = true;
-          if (hz.kind === "safe") {
+          if (hz.kind === "drum") {
+            explodeDrum(hz, hi);
+          } else if (hz.kind === "safe") {
             hz.hp -= wielding ? 45 : 25;
             playSfx("coin");
             spawnParticles(hz.x, 1.2, hz.z, 10, "cash");
@@ -1453,6 +1701,20 @@
       }
       if (!hitAny) playSfx("swing");
       updateHud();
+    }
+
+    function explodeDrum(hz, hi) {
+      hazards.splice(hi, 1);
+      playSfx("heavy"); haptic(70);
+      shakeMag = 0.65; shakeT = 0.35;
+      spawnParticles(hz.x, 1.0, hz.z, 28, "fire");
+      popText(hz.x, 2.5, hz.z, "🛢️💥 화학 드럼통 대폭발!!", "#fb923c", 28);
+      bosses.forEach((b, bi) => {
+        const dx = b.x - hz.x, dz = b.z - hz.z, d = Math.hypot(dx, dz) || 1;
+        if (!b.ko && d < 7.5) {
+          hitBoss(b, bi, 75, dx / d, dz / d, 18.0, 10.5, "🔥 폭발 화염 직격!!", true);
+        }
+      });
     }
 
     function doUppercut() {
@@ -1506,14 +1768,14 @@
         playSfx("swing");
         updateHud();
       } else {
-        popText(player.x, 2.0, player.z, "주변 무기·집기 가까이!", "#cbd5e1", 17);
+        popText(player.x, 2.0, player.z, "주변 무기·스패너·집기 가까이!", "#cbd5e1", 17);
       }
     }
 
     function toggleRideChair() {
       if (player.ridingChair) {
         player.ridingChair = null;
-        popText(player.x, 2.0, player.z, "의자 하차!", "#e2e8f0", 17);
+        popText(player.x, 2.0, player.z, "하차 완료!", "#e2e8f0", 17);
         updateHud();
         return;
       }
@@ -1521,10 +1783,11 @@
         player.heldProp = null;
         player.ridingChair = nearestChair;
         playSfx("dash");
-        popText(player.x, 2.3, player.z, "🪑 회전의자 폭주 탑승!! (공격키=부스터)", "#fde047", 21);
+        const isFork = nearestChair.type === "forklift";
+        popText(player.x, 2.3, player.z, isFork ? "🚜 노란 지게차 폭주 탑승!! (공격=부스터)" : "🪑 회전의자 폭주 탑승!! (공격=부스터)", "#fde047", 21);
         updateHud();
       } else {
-        popText(player.x, 2.0, player.z, "주변 파란 회전의자 가까이 가세요!", "#fde68a", 17);
+        popText(player.x, 2.0, player.z, stageIdx <= 2 ? "🚜 노란 지게차 가까이 가세요!" : "🪑 의자·카트 가까이 가세요!", "#fde68a", 17);
       }
     }
 
@@ -1536,7 +1799,7 @@
       popText(player.x, 2.8, player.z, "📄 전사원 사표 폭격!!", "#34d399", 34);
       bosses.forEach((b, idx) => {
         const dx = b.x - player.x, dz = b.z - player.z, d = Math.hypot(dx, dz) || 1;
-        if (!b.ko && d < 14.5) hitBoss(b, idx, 95, dx / d, dz / d, 17.5, 11.0, "📄 사표 직격!!", true);
+        if (!b.ko && d < 15.5) hitBoss(b, idx, 105, dx / d, dz / d, 17.5, 11.0, "📄 사표 직격!!", true);
       });
       updateHud();
     }
@@ -1544,7 +1807,7 @@
     function upgradePower() {
       const cost = player.powerLv * 120000;
       if (cash < cost) {
-        popText(player.x, 2.2, player.z, `₩${cost.toLocaleString()} 필요! (임원·금고 타격)`, "#fca5a5", 18);
+        popText(player.x, 2.2, player.z, `₩${cost.toLocaleString()} 필요! (빌런·보안키·금고 획득)`, "#fca5a5", 18);
         return;
       }
       cash -= cost;
@@ -1556,24 +1819,50 @@
     }
 
     // =========================================================================
-    // 8. HUD, MINIMAP RADAR & INPUT WIRING
+    // 8. HUD, MINIMAP RADAR & STAGE SELECT / INPUT WIRING
     // =========================================================================
     function updateHud() {
-      const fb = bosses[focusBossIdx] || bosses[0];
-      if (fb) {
+      const st = STAGES[stageIdx];
+      document.getElementById("stageBadge").textContent = freePlayMode ? `${st.short} (자유난투)` : st.badge;
+      document.getElementById("zoneLabel").textContent = st.short;
+
+      const sec = Math.max(0, Math.ceil(stageTimer));
+      const mm = String(Math.floor(sec / 60)).padStart(2, "0");
+      const ss = String(sec % 60).padStart(2, "0");
+      const tEl = document.getElementById("timerHud");
+      tEl.textContent = freePlayMode ? "♾ FREE" : (escapeCountdown ? `🚨폭파 ${ss}초` : `⏱ ${mm}:${ss}`);
+      tEl.style.background = (sec <= 25 && !freePlayMode) ? "rgba(225,29,72,0.75)" : "rgba(225,29,72,0.26)";
+
+      const deadCnt = bosses.filter((b) => b.ko).length;
+      const doneQ = questItems.filter((q) => q.done).length;
+      document.getElementById("objBossText").textContent = `🥊 빌런 ${deadCnt}/${bosses.length}`;
+      document.getElementById("objBossText").style.color = deadCnt === bosses.length ? "#4ade80" : "#bae6fd";
+      document.getElementById("objItemText").textContent = `${st.questIcon} ${st.questName} ${doneQ}/${questItems.length}`;
+      document.getElementById("objItemText").style.color = doneQ === questItems.length ? "#4ade80" : "#fde68a";
+
+      const pEl = document.getElementById("objPortalText");
+      if (portalOpen) {
+        pEl.textContent = st.isBomb ? "🚁 남쪽탈출!!" : "🌀 포털OPEN!";
+        pEl.style.color = "#f0abfc";
+      } else {
+        pEl.textContent = "🔒 포털잠김";
+        pEl.style.color = "#94a3b8";
+      }
+
+      const aliveBoss = bosses[focusBossIdx] && !bosses[focusBossIdx].ko ? bosses[focusBossIdx] : (bosses.find((b) => !b.ko) || bosses[bosses.length - 1]);
+      if (aliveBoss) {
         const badge = document.getElementById("focusRankBadge");
-        badge.textContent = fb.def.rank;
-        badge.style.background = fb.def.badgeBg;
-        document.getElementById("focusBossName").textContent = fb.def.name;
-        const pct = Math.max(0, (fb.hp / fb.maxHp) * 100);
+        badge.textContent = aliveBoss.def.rank;
+        badge.style.background = aliveBoss.def.badgeBg;
+        document.getElementById("focusBossName").textContent = aliveBoss.def.name;
+        const pct = Math.max(0, (aliveBoss.hp / aliveBoss.maxHp) * 100);
         document.getElementById("hpFill").style.width = `${pct}%`;
         setTimeout(() => { document.getElementById("hpTrail").style.width = `${pct}%`; }, 180);
       }
 
       document.getElementById("koHud").textContent = `참교육 ${koTotal}`;
       document.getElementById("cashHud").textContent = `₩${cash.toLocaleString()}`;
-      const nextCost = (player.powerLv * 12);
-      document.getElementById("upgradeLabel").textContent = `강화 LV.${player.powerLv} (${nextCost}만)`;
+      document.getElementById("upgradeLabel").textContent = `LV.${player.powerLv} (${player.powerLv * 12}만)`;
 
       const onlineTotal = 1 + remotePlayers.size + (aiPartyEnabled ? aiAllies.length : 0);
       document.getElementById("multiCountText").textContent = `참교육단 ${onlineTotal}명`;
@@ -1595,16 +1884,6 @@
       document.getElementById("ultArc").style.strokeDashoffset = `${(163.36 * (1 - f / 100)).toFixed(1)}`;
       document.getElementById("ultPct").textContent = f >= 100 ? "MAX!" : `${f}%`;
       document.getElementById("btnUlt").classList.toggle("ult-ready", f >= 100);
-
-      // Zone Indicator
-      let zn = "🏛️ 중앙 로비";
-      if (player.x < -10 && player.z < -4) zn = "☕ 카페테리아";
-      else if (Math.abs(player.x) <= 10 && player.z < -10) zn = "⚡ 고전압 서버실";
-      else if (player.x > 10 && player.z < -4) zn = "👑 왕대표 펜트하우스";
-      else if (player.x > 10 && player.z > 4) zn = "📊 대회의실";
-      else if (player.x < -10 && player.z > 2) zn = "💼 제3영업부";
-      else if (player.z > 12) zn = "⛳ 사내 헬스·퍼팅존";
-      document.getElementById("zoneLabel").textContent = zn;
     }
 
     const rCvs = document.getElementById("radarCanvas");
@@ -1612,33 +1891,38 @@
     function drawRadar() {
       const w = rCvs.width, h = rCvs.height;
       rctx.clearRect(0, 0, w, h);
-      rctx.fillStyle = "rgba(7, 11, 20, 0.85)";
+      rctx.fillStyle = "rgba(7, 11, 20, 0.88)";
       rctx.fillRect(0, 0, w, h);
       const mx = (x) => ((x + MAP_X) / (MAP_X * 2)) * w;
       const mz = (z) => ((z + MAP_Z) / (MAP_Z * 2)) * h;
+      const st = STAGES[stageIdx];
 
-      // Zone color blocks
-      rctx.fillStyle = "rgba(14, 165, 233, 0.18)"; rctx.fillRect(mx(-10), 0, mx(10)-mx(-10), mz(-10)); // Server
-      rctx.fillStyle = "rgba(245, 158, 11, 0.22)"; rctx.fillRect(mx(10.5), 0, w-mx(10.5), mz(-4.2)); // CEO
-      rctx.fillStyle = "rgba(34, 197, 94, 0.16)"; rctx.fillRect(mx(-8), mz(12), mx(10)-mx(-8), h-mz(12)); // Gym
+      // Warp Portal Marker (Purple/Magenta Ring)
+      const [px, pz] = st.portalPos;
+      rctx.strokeStyle = portalOpen ? "#e879f9" : "#64748b";
+      rctx.lineWidth = 2;
+      rctx.beginPath(); rctx.arc(mx(px), mz(pz), 4.8, 0, 6.28); rctx.stroke();
 
-      // Golden Safe dot
-      rctx.fillStyle = "#fde047"; rctx.fillRect(mx(28.5)-2, mz(-23.5)-2, 5, 5);
+      // Quest Items / C4 Pillars (Bright Blinking Gold/Cyan Squares!)
+      questItems.forEach((q) => {
+        rctx.fillStyle = q.done ? "#22c55e" : "#fde047";
+        rctx.fillRect(mx(q.x) - 2.5, mz(q.z) - 2.5, 5, 5);
+      });
 
-      // Allies & Remote Players (Green/Cyan dots)
+      // Allies & Remote Players
       rctx.fillStyle = "#38bdf8";
-      remotePlayers.forEach((rp) => { rctx.beginPath(); rctx.arc(mx(rp.x), mz(rp.z), 2.8, 0, 6.28); rctx.fill(); });
+      remotePlayers.forEach((rp) => { if (rp.stage === stageIdx) { rctx.beginPath(); rctx.arc(mx(rp.x), mz(rp.z), 2.8, 0, 6.28); rctx.fill(); } });
       if (aiPartyEnabled) {
         rctx.fillStyle = "#34d399";
-        aiAllies.forEach((a) => { rctx.beginPath(); rctx.arc(mx(a.x), mz(a.z), 2.3, 0, 6.28); rctx.fill(); });
+        aiAllies.forEach((a) => { rctx.beginPath(); rctx.arc(mx(a.x), mz(a.z), 2.2, 0, 6.28); rctx.fill(); });
       }
 
-      // All 4 Distinct Boss Dots!
-      const bCols = ["#94a3b8", "#84cc16", "#c084fc", "#facc15"];
+      // Stage Boss Dots
+      const bCols = ["#f97316", "#84cc16", "#c084fc", "#facc15", "#ef4444"];
       bosses.forEach((b, i) => {
         if (b.ko) return;
-        rctx.fillStyle = bCols[i];
-        rctx.beginPath(); rctx.arc(mx(b.x), mz(b.z), i === 3 ? 4.4 : 3.4, 0, 6.28); rctx.fill();
+        rctx.fillStyle = bCols[i % bCols.length];
+        rctx.beginPath(); rctx.arc(mx(b.x), mz(b.z), i >= 3 ? 4.4 : 3.4, 0, 6.28); rctx.fill();
       });
 
       // Local Player (White dot)
@@ -1700,19 +1984,50 @@
 
     document.getElementById("btnAiParty").addEventListener("click", (e) => {
       aiPartyEnabled = !aiPartyEnabled;
-      e.currentTarget.textContent = aiPartyEnabled ? "🤖 동료지원 ON" : "🤖 동료지원 OFF";
+      e.currentTarget.textContent = aiPartyEnabled ? "🤖 동료 ON" : "🤖 동료 OFF";
       updateHud();
     });
     document.getElementById("btnSound").addEventListener("click", (e) => {
       soundOn = !soundOn; e.currentTarget.textContent = soundOn ? "🔊" : "🔇";
     });
     document.getElementById("btnReset").addEventListener("click", () => {
-      player.heldProp = null; player.ridingChair = null;
-      buildMegaWorld(); spawnAllBosses();
-      popText(player.x, 2.2, player.z, "7구역 사옥 복구 완료!", "#93c5fd", 22);
+      loadStage(stageIdx, true);
+      popText(player.x, 2.2, player.z, `${STAGES[stageIdx].short} 재시작!`, "#93c5fd", 22);
     });
 
-    // Quick Emotes (Local + Multiplayer Broadcast!)
+    // Stage Select Modal & Finale Modal Wiring
+    const stageModal = document.getElementById("stageModal");
+    document.getElementById("btnStageSelect").addEventListener("click", () => {
+      const box = document.getElementById("stageListBtns");
+      box.innerHTML = STAGES.map((s, idx) => `
+        <button data-st="${idx}" class="glass pill-btn" style="height:40px; width:100%; justify-content:space-between; padding:0 14px; border-color:${idx === stageIdx ? '#fde047' : 'rgba(255,255,255,0.14)'};">
+          <span>${s.badge}</span>
+          <span style="color:#a5f3fc; font-size:10.5px;">${s.questIcon} ${s.questName}</span>
+        </button>
+      `).join("");
+      box.querySelectorAll("button[data-st]").forEach((b) => {
+        b.addEventListener("click", () => {
+          freePlayMode = false;
+          stageModal.classList.add("hidden");
+          loadStage(Number(b.getAttribute("data-st")), true);
+        });
+      });
+      stageModal.classList.remove("hidden");
+    });
+    document.getElementById("btnCloseStage").addEventListener("click", () => stageModal.classList.add("hidden"));
+
+    document.getElementById("btnNextOrRetry").addEventListener("click", () => {
+      freePlayMode = false;
+      if (campaignOver && stageTimer <= 0) loadStage(stageIdx, true);
+      else loadStage(0, true);
+    });
+    document.getElementById("btnStayFree").addEventListener("click", () => {
+      freePlayMode = true;
+      loadStage(4, false);
+      popText(player.x, 2.4, player.z, "♾ 서울본사 무한 자유난투 모드!", "#4ade80", 24);
+    });
+
+    // Quick Emotes
     document.querySelectorAll(".emote-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const txt = btn.getAttribute("data-emote");
@@ -1725,8 +2040,8 @@
     // Multiplayer Modal Controls
     const multiModal = document.getElementById("multiModal");
     document.getElementById("btnMulti").addEventListener("click", () => {
-      const lines = [`🟢 ${myNick} (나)`];
-      remotePlayers.forEach((rp) => lines.push(`🟢 ${rp.name} (실시간 접속중)`));
+      const lines = [`🟢 ${myNick} (나 · ${STAGES[stageIdx].short})`];
+      remotePlayers.forEach((rp) => lines.push(`🟢 ${rp.name} (${STAGES[rp.stage || 0].short})`));
       if (aiPartyEnabled) aiAllies.forEach((a) => lines.push(`🤖 ${a.name}`));
       document.getElementById("peerListBox").innerHTML = lines.join("<br/>");
       multiModal.classList.remove("hidden");
@@ -1755,14 +2070,69 @@
     });
 
     // =========================================================================
-    // 9. SIMULATION STEP (4 Bosses, Hazard Combos, Sudden Events, Net Sync!)
+    // 9. SIMULATION STEP (Timer, Quest Hunt, C4 Detonation, Portal Warp, Bosses!)
     // =========================================================================
-    let netSyncAcc = 0;
+    let netSyncAcc = 0, boomTick = 0;
+
+    function showFinaleModal(victory) {
+      campaignOver = true;
+      const modal = document.getElementById("finaleModal");
+      document.getElementById("finaleIcon").textContent = victory ? "💥🏢🔥🎊" : "⏰🚨";
+      document.getElementById("finaleTitle").textContent = victory ? "서울본사 완전 폭파 & 참교육 달성!!" : `${STAGES[stageIdx].short} 시간 초과!`;
+      document.getElementById("finaleTitle").style.color = victory ? "#fde047" : "#fb7185";
+      document.getElementById("finaleDesc").innerHTML = victory
+        ? "울산공장 → 여수공장 → 창원공장 → 뉴욕 해외법인 → 서울본사 천회장까지 모두 물리치고 블랙기업 본사를 시원하게 날려버렸습니다!!"
+        : "제한시간 내에 모든 빌런 처치와 미션 아이템 확보를 완료하지 못했습니다. 주먹 강화는 그대로 유지됩니다!";
+      document.getElementById("finaleStats").textContent = `누적 참교육: ${koTotal}회  |  확보 비자금: ₩${cash.toLocaleString()}  |  주먹 LV.${player.powerLv}`;
+      document.getElementById("btnNextOrRetry").textContent = victory ? "🚀 1스테이지부터 다시 투어" : "🔥 현재 공장 재도전!";
+      modal.classList.remove("hidden");
+    }
 
     function stepSimulation(rawDt) {
+      if (campaignOver) return;
+
+      // Epic Seoul HQ Tower Demolition Cutscene!
+      if (detonateCutscene > 0) {
+        detonateCutscene -= rawDt;
+        boomTick -= rawDt;
+        shakeMag = 1.15; shakeT = 0.25;
+        if (boomTick <= 0) {
+          boomTick = 0.13;
+          const bx = (Math.random() - 0.5) * 44, bz = (Math.random() - 0.5) * 36;
+          spawnParticles(bx, 1.0 + Math.random() * 4, bz, 22, "fire");
+          spawnParticles(bx, 2.0, bz, 10, "cash");
+          playSfx("heavy"); haptic(55);
+        }
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const pt = particles[i]; pt.life -= rawDt;
+          if (pt.life <= 0) { particles.splice(i, 1); continue; }
+          pt.vy -= 9.5 * rawDt; pt.x += pt.vx * rawDt; pt.y += pt.vy * rawDt; pt.z += pt.vz * rawDt;
+        }
+        if (detonateCutscene <= 0) {
+          const wf = document.getElementById("whiteFlash");
+          wf.style.opacity = "0.95";
+          setTimeout(() => { wf.style.opacity = "0"; }, 420);
+          playSfx("ko"); haptic(120);
+          showFinaleModal(true);
+        }
+        return;
+      }
+
       if (hitStop > 0) { hitStop -= rawDt; return; }
       const dt = slowMo > 0 ? rawDt * 0.30 : rawDt;
       if (slowMo > 0) slowMo -= rawDt;
+
+      // Stage Countdown Timer!
+      if (!freePlayMode) {
+        stageTimer -= rawDt;
+        if (stageTimer <= 0) {
+          stageTimer = 0;
+          playSfx("shock"); haptic(90);
+          showFinaleModal(false);
+          updateHud();
+          return;
+        }
+      }
 
       if (player.atkTimer > 0) player.atkTimer = Math.max(0, player.atkTimer - rawDt);
       if (player.comboReset > 0 && (player.comboReset -= rawDt) <= 0) { player.comboStep = 0; updateHud(); }
@@ -1777,7 +2147,7 @@
         cb.textContent = `${comboCount} COMBO!`; cb.style.opacity = "1";
       }
 
-      // Sudden Corporate Events every ~22s!
+      // Sudden Corporate Events
       if (activeEvent) {
         eventRemain -= rawDt;
         if (eventRemain <= 0) {
@@ -1787,10 +2157,10 @@
       } else {
         eventTimer -= rawDt;
         if (eventTimer <= 0) {
-          eventTimer = 22.0;
+          eventTimer = 24.0;
           const evs = [
-            { id: "payday", dur: 12, txt: "📢 월급날 보너스 타임! 모든 임원 타격 시 비자금 2.5배 드랍!!" },
-            { id: "caffeine", dur: 11, txt: "📢 점심 아메리카노 폭주! 이동속도·공격속도·파워 대폭 상승!!" }
+            { id: "payday", dur: 11, txt: "📢 비자금 보너스 타임! 타격 보상 2.5배 드랍!!" },
+            { id: "caffeine", dur: 11, txt: "📢 고카페인 아드레날린 폭주! 이동·공격속도 대폭 상승!!" }
           ];
           const pick = evs[(Math.random() * evs.length) | 0];
           activeEvent = pick.id; eventRemain = pick.dur;
@@ -1813,8 +2183,8 @@
         const ch = player.ridingChair;
         if (ilen > 0.05) {
           const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
-          ch.vx += nx * 24.0 * dt * spdBoost;
-          ch.vz += nz * 24.0 * dt * spdBoost;
+          ch.vx += nx * 25.0 * dt * spdBoost;
+          ch.vz += nz * 25.0 * dt * spdBoost;
           player.yaw = Math.atan2(ch.vx, ch.vz);
         }
         ch.vx *= Math.pow(0.18, dt); ch.vz *= Math.pow(0.18, dt);
@@ -1824,10 +2194,11 @@
         player.x = ch.x; player.z = ch.z;
 
         const cSpd = Math.hypot(ch.vx, ch.vz);
-        if (cSpd > 6.5) {
+        if (cSpd > 6.2) {
           bosses.forEach((b, idx) => {
-            if (!b.ko && b.ragdoll <= 0.1 && Math.hypot(b.x - ch.x, b.z - ch.z) < 1.55) {
-              hitBoss(b, idx, 32, ch.vx / cSpd, ch.vz / cSpd, 14.5, 6.8, "🪑 바퀴의자 뺑소니!!", true);
+            if (!b.ko && b.ragdoll <= 0.1 && Math.hypot(b.x - ch.x, b.z - ch.z) < 1.75) {
+              const vName = ch.type === "forklift" ? "🚜 지게차 불도저 돌진!!" : "🪑 바퀴의자 뺑소니!!";
+              hitBoss(b, idx, ch.type === "forklift" ? 42 : 32, ch.vx / cSpd, ch.vz / cSpd, 15.5, 7.2, vName, true);
             }
           });
         }
@@ -1839,7 +2210,7 @@
       } else {
         if (ilen > 0.05) {
           const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
-          player.vx = nx * 8.2 * spdBoost; player.vz = nz * 8.2 * spdBoost;
+          player.vx = nx * 8.4 * spdBoost; player.vz = nz * 8.4 * spdBoost;
           if (player.atkTimer <= 0.04) player.yaw = Math.atan2(nx, nz);
           player.walk += dt * 14.0 * spdBoost;
         } else { player.vx *= 0.74; player.vz *= 0.74; }
@@ -1847,9 +2218,38 @@
         player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + player.vz * dt));
       }
 
-      // Detect nearest grabbable weapon & nearest rideable swivel chair
+      // Check Quest Item Pickup / C4 Pillar Bomb Planting!
+      questItems.forEach((q, qi) => {
+        if (!q.done && Math.hypot(player.x - q.x, player.z - q.z) < 2.35) {
+          completeQuestNode(qi, true);
+        }
+      });
+
+      // Check 3D Warp Portal Entry!
+      const st = STAGES[stageIdx];
+      if (portalOpen && Math.hypot(player.x - st.portalPos[0], player.z - st.portalPos[1]) < 2.85) {
+        if (st.isBomb) {
+          // TRIGGER SEOUL HQ TOWER DEMOLITION FINALE!!
+          portalOpen = false;
+          detonateCutscene = 2.8;
+          boomTick = 0.01;
+          const wf = document.getElementById("whiteFlash");
+          wf.style.opacity = "0.75";
+          setTimeout(() => { wf.style.opacity = "0"; }, 220);
+          popText(0, 3.5, 0, "💥🏢 서울본사 기폭 스위치 ON!! 대폭파!!", "#fde047", 34);
+          return;
+        } else if (stageIdx < STAGES.length - 1) {
+          const wf = document.getElementById("whiteFlash");
+          wf.style.opacity = "0.85";
+          setTimeout(() => { wf.style.opacity = "0"; }, 260);
+          loadStage(stageIdx + 1, true);
+          return;
+        }
+      }
+
+      // Detect nearest grabbable weapon & nearest rideable vehicle/chair
       nearestProp = null; nearestChair = null;
-      let bestPD = 2.6, bestCD = 2.6;
+      let bestPD = 2.6, bestCD = 2.8;
       for (const p of props) {
         if (p === player.heldProp || p === player.ridingChair) continue;
         const d = Math.hypot(p.x - player.x, p.z - player.z);
@@ -1870,12 +2270,11 @@
 
       const btnRide = document.getElementById("btnRide");
       btnRide.classList.toggle("chair-ring", !!(player.ridingChair || nearestChair));
-      document.getElementById("rideText").textContent = player.ridingChair ? "하차" : "의자탑승";
+      document.getElementById("rideText").textContent = player.ridingChair ? "하차" : (stageIdx <= 2 ? "지게차" : "의자탑승");
 
-      // Hazard cooldowns
       for (const hz of hazards) if (hz.cd > 0) hz.cd -= dt;
 
-      // Update All 4 Simultaneous Bosses + Environmental Hazard Combos!
+      // Update Bosses + Hazard Collisions
       bosses.forEach((b, idx) => {
         if (b.flash > 0) b.flash -= rawDt;
         if (b.shockT > 0) {
@@ -1883,11 +2282,13 @@
           if (Math.random() < 0.35) spawnParticles(b.x, b.y + 1.0, b.z, 1, "shock");
         }
         if (b.ko) {
-          b.respawn -= rawDt;
-          if (b.respawn <= 0) {
-            b.ko = false; b.hp = b.maxHp;
-            b.x = b.def.homeX; b.y = 3.0; b.z = b.def.homeZ;
-            b.vx = b.vy = b.vz = 0;
+          if (freePlayMode) {
+            b.respawn -= rawDt;
+            if (b.respawn <= 0) {
+              b.ko = false; b.hp = b.maxHp;
+              b.x = b.def.homeX; b.y = 3.0; b.z = b.def.homeZ;
+              b.vx = b.vy = b.vz = 0;
+            }
           }
         }
 
@@ -1900,25 +2301,30 @@
           if (Math.abs(b.z) > MAP_Z) { b.z = Math.sign(b.z) * MAP_Z; b.vz *= -0.65; }
           if (b.y <= 0) {
             b.y = 0;
-            if (Math.abs(b.vy) > 2.8) b.vy = -b.vy * 0.4; else b.vy = 0;
-            b.vx *= 0.82; b.vz *= 0.82;
+            if (Math.abs(b.vy) > 2.8 && !b.ko) b.vy = -b.vy * 0.4; else b.vy = 0;
+            b.vx *= 0.80; b.vz *= 0.80;
           }
 
-          // Check Environmental Hazard Collisions while Boss is flying!!
           if (!b.ko && Math.hypot(b.vx, b.vz) > 2.5) {
-            for (const hz of hazards) {
-              if (hz.cd <= 0 && Math.hypot(b.x - hz.x, b.z - hz.z) < hz.radius + 0.9) {
-                hz.cd = 1.6;
-                if (hz.kind === "server") {
-                  b.shockT = 2.6; b.hp = Math.max(1, b.hp - 45);
+            for (let hi = hazards.length - 1; hi >= 0; hi--) {
+              const hz = hazards[hi];
+              if (hz.cd <= 0 && Math.hypot(b.x - hz.x, b.z - hz.z) < hz.radius + 0.95) {
+                if (hz.kind === "drum") {
+                  explodeDrum(hz, hi);
+                } else if (hz.kind === "server") {
+                  hz.cd = 1.6;
+                  b.shockT = 2.6; b.hp = Math.max(0, b.hp - 48);
                   playSfx("shock"); addCash(65000);
                   spawnParticles(b.x, 1.2, b.z, 16, "shock");
-                  popText(b.x, 2.5, b.z, "⚡ 고전압 서버 감전!! +₩65,000", "#38bdf8", 27);
+                  popText(b.x, 2.5, b.z, "⚡ 고전압 감전!! +₩65,000", "#38bdf8", 26);
+                  if (b.hp <= 0) triggerBossKO(b, idx, true);
                 } else if (hz.kind === "copier") {
-                  b.hp = Math.max(1, b.hp - 38);
+                  hz.cd = 1.6;
+                  b.hp = Math.max(0, b.hp - 40);
                   playSfx("heavy"); addCash(50000);
                   spawnParticles(hz.x, 1.3, hz.z, 24, "paper");
                   popText(hz.x, 2.4, hz.z, "🖨️ 굴욕 얼굴스캔 20장 출력!!", "#4ade80", 25);
+                  if (b.hp <= 0) triggerBossKO(b, idx, true);
                 }
               }
             }
@@ -1928,7 +2334,7 @@
           if (b.stun > 0) b.stun -= dt;
           else {
             const dx = player.x - b.x, dz = player.z - b.z, d = Math.hypot(dx, dz) || 1;
-            if (d < 17.5) {
+            if (d < 20.0) {
               b.yaw = Math.atan2(dx, dz);
               if (d > 1.9) { b.x += (dx / d) * b.def.speed * dt; b.z += (dz / d) * b.def.speed * dt; b.walk += dt * 8.0; }
             }
@@ -1942,7 +2348,7 @@
         }
       });
 
-      // Co-op AI Raid Teammates helping jump the nearest Boss!
+      // Co-op AI Raid Teammates
       if (aiPartyEnabled) {
         const target = bosses[focusBossIdx] && !bosses[focusBossIdx].ko ? bosses[focusBossIdx] : bosses.find((x) => !x.ko);
         for (const a of aiAllies) {
@@ -1952,16 +2358,21 @@
             const dx = target.x - a.x, dz = target.z - a.z, d = Math.hypot(dx, dz) || 1;
             a.yaw = Math.atan2(dx, dz);
             if (d > 1.85) {
-              a.x += (dx / d) * 6.2 * dt; a.z += (dz / d) * 6.2 * dt; a.walk += dt * 12;
+              a.x += (dx / d) * 6.5 * dt; a.z += (dz / d) * 6.5 * dt; a.walk += dt * 12;
             } else if (a.cd <= 0) {
-              a.cd = 1.35 + Math.random() * 0.6; a.atkT = 0.24;
-              hitBoss(target, target.def.idx, 9, dx / d, dz / d, 4.2, 1.8, "🤝 다굴!", false, false);
+              a.cd = 1.3 + Math.random() * 0.5; a.atkT = 0.24;
+              hitBoss(target, target.def.idx, 10, dx / d, dz / d, 4.2, 1.8, "🤝 협동타격!", false, false);
             }
+          } else if (portalOpen) {
+            // Run toward open portal with the player!
+            const [px, pz] = st.portalPos;
+            const dx = px - a.x, dz = pz - a.z, d = Math.hypot(dx, dz) || 1;
+            if (d > 2.5) { a.yaw = Math.atan2(dx, dz); a.x += (dx / d) * 7.0 * dt; a.z += (dz / d) * 7.0 * dt; a.walk += dt * 13; }
           }
         }
       }
 
-      // Interpolate Real Online Players & prune disconnected peers
+      // Online Remote Players
       const nowMs = performance.now();
       remotePlayers.forEach((rp, key) => {
         if (nowMs - rp.lastSeen > 12000) { remotePlayers.delete(key); return; }
@@ -1972,7 +2383,7 @@
         if (rp.emoteT > 0) rp.emoteT -= rawDt;
       });
 
-      // Props & Thrown Missile Hits
+      // Props & Thrown Missiles
       for (const p of props) {
         if (p === player.heldProp || p === player.ridingChair) continue;
         if (!p.resting) {
@@ -1983,13 +2394,20 @@
         if (p.hot && p.hot > 0) {
           p.hot -= dt;
           bosses.forEach((b, idx) => {
-            if (!b.ko && p.hot > 0 && Math.hypot(p.x - b.x, p.z - b.z) < p.radius + 1.1) {
+            if (!b.ko && p.hot > 0 && Math.hypot(p.x - b.x, p.z - b.z) < p.radius + 1.15) {
               p.hot = 0;
               const sl = Math.hypot(p.vx, p.vz) || 1;
-              hitBoss(b, idx, p.dmg * 1.25, p.vx / sl, p.vz / sl, 14.5, 8.0, `${p.icon} ${p.label} 직격!!`, true);
+              hitBoss(b, idx, p.dmg * 1.28, p.vx / sl, p.vz / sl, 14.5, 8.0, `${p.icon} ${p.label} 직격!!`, true);
               p.vx *= -0.3; p.vz *= -0.3; p.vy = 4.5;
             }
           });
+          for (let hi = hazards.length - 1; hi >= 0; hi--) {
+            const hz = hazards[hi];
+            if (hz.kind === "drum" && Math.hypot(p.x - hz.x, p.z - hz.z) < hz.radius + 0.9) {
+              p.hot = 0;
+              explodeDrum(hz, hi);
+            }
+          }
         }
       }
 
@@ -2004,7 +2422,7 @@
         if (pt.y < 0.03) { pt.y = 0.03; pt.vy = 0; pt.vx *= 0.75; pt.vz *= 0.75; pt.rx = 0; }
       }
 
-      // Broadcast Multiplayer State at 12Hz!
+      // Broadcast Multiplayer State
       netSyncAcc += rawDt;
       if (netSyncAcc >= 0.085) {
         netSyncAcc = 0;
@@ -2023,7 +2441,7 @@
     // =========================================================================
     const projM = mId(), viewM = mId(), vpM = mId(), rootM = mId(), partM = mId(), worldM = mId(), wepM = mId();
     const norm3 = new Float32Array(9);
-    let camX = 0, camZ = 4.5;
+    let camX = 0, camZ = 16.0;
 
     function drawMesh(mesh, mat, opts = {}) {
       gl.bindBuffer(gl.ARRAY_BUFFER, mesh.vbo);
@@ -2060,7 +2478,6 @@
       mTRS(rootM, o.x, o.y + 0.44 * sc, o.z, o.rx || 0, o.yaw || 0, o.rz || 0, sc * (o.wideX || 1), sc, sc);
       drawMesh(o.torso, rootM, { tint: o.tint, flash: o.flash });
 
-      // Head (keep head un-widened even on Hulk Bonbujang!)
       mTRS(partM, 0, 0.69, 0, 0, 0, 0, 1 / (o.wideX || 1), 1, 1);
       mMul(worldM, rootM, partM);
       drawMesh(M.sdHead, worldM, { face: o.face, flash: o.flash });
@@ -2088,9 +2505,8 @@
     // =========================================================================
     // 11. MAIN GAME LOOP
     // =========================================================================
-    buildMegaWorld();
-    spawnAllBosses();
-    updateHud();
+    connectMqtt();
+    loadStage(0, false);
 
     let prev = performance.now(), rAcc = 0;
 
@@ -2100,7 +2516,7 @@
       const tSec = now * 0.001;
 
       rAcc += rawDt;
-      if (rAcc >= 0.35) { rAcc = 0; drawRadar(); updateHud(); }
+      if (rAcc >= 0.25) { rAcc = 0; drawRadar(); updateHud(); }
 
       stepSimulation(rawDt);
 
@@ -2109,20 +2525,23 @@
       if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
       gl.viewport(0, 0, cw, ch);
 
-      camX += (player.x - camX) * 0.12;
-      camZ += (player.z - camZ) * 0.12;
+      const targetCamX = detonateCutscene > 0 ? 0 : player.x;
+      const targetCamZ = detonateCutscene > 0 ? 0 : player.z;
+      camX += (targetCamX - camX) * 0.12;
+      camZ += (targetCamZ - camZ) * 0.12;
       const portrait = window.innerHeight > window.innerWidth;
-      const zoom = (portrait ? 3.8 : 0.8) + (player.ridingChair ? 1.8 : 0) + (slowMo > 0 ? -2.0 : 0);
+      const zoom = (detonateCutscene > 0 ? 11.5 : 0) + (portrait ? 3.8 : 0.8) + (player.ridingChair ? 1.8 : 0) + (slowMo > 0 ? -2.0 : 0);
       let sx = 0, sy = 0;
       if (shakeT > 0) { shakeT = Math.max(0, shakeT - rawDt); sx = (Math.random() - 0.5) * 2 * shakeMag; sy = (Math.random() - 0.5) * 2 * shakeMag; if (shakeT <= 0) shakeMag = 0; }
 
-      const camPos = [camX + sx, 11.4 + zoom * 0.78 + sy, camZ + 11.6 + zoom];
-      mPersp(projM, portrait ? 0.90 : 0.75, cw / ch, 0.4, 95.0);
+      const camPos = [camX + sx, 11.6 + zoom * 0.80 + sy, camZ + 11.8 + zoom];
+      mPersp(projM, portrait ? 0.90 : 0.75, cw / ch, 0.4, 110.0);
       mLook(viewM, camPos, [camX, 0.9, camZ], [0, 1, 0]);
       mMul(vpM, projM, viewM);
       lastVP.set(vpM);
 
-      gl.clearColor(0.05, 0.07, 0.13, 1.0);
+      const bgRed = escapeCountdown ? 0.08 + Math.sin(tSec * 10) * 0.05 : 0.05;
+      gl.clearColor(bgRed, 0.07, 0.13, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
 
@@ -2133,20 +2552,78 @@
       gl.bindTexture(gl.TEXTURE_2D, atlasTex);
       gl.uniform1i(loc.uTex, 0);
 
-      // 1. 7-Zone Mega HQ
-      mTRS(rootM, 0, 0, 0, 0, 0, 0);
-      drawMesh(M.megaHQ, rootM, { outline: 0 });
+      const st = STAGES[stageIdx];
 
-      // 2. Ground Shadows & Contextual Rings
+      // 1. Current Stage Factory / Branch / Seoul HQ Architecture
+      mTRS(rootM, 0, 0, 0, 0, 0, 0);
+      drawMesh(M.stageMaps[stageIdx], rootM, { outline: 0 });
+
+      // 2. 3D Warp Portal & Quest Nodes / C4 Structural Pillars!
+      const [pPosX, pPosZ] = st.portalPos;
+      mTRS(rootM, pPosX, 0, pPosZ, 0, 0, 0);
+      drawMesh(M.portalGate, rootM, { tint: portalOpen ? [1.0, 0.85, 1.0] : [0.45, 0.45, 0.55] });
+      if (portalOpen) {
+        const pPulse = 1.0 + Math.sin(tSec * 7.0) * 0.12;
+        mTRS(rootM, pPosX, 0, pPosZ, 0, 0, tSec * 3.5, pPulse, pPulse, 1);
+        drawMesh(M.portalCore, rootM, { unlit: true, tint: st.isBomb ? [1.0, 0.35, 0.55] : [0.35, 0.92, 1.0] });
+      }
+
+      const pTag = document.getElementById("portalTag");
+      const pSc = project2D(pPosX, 4.1, pPosZ, vpM, window.innerWidth, window.innerHeight);
+      if (pSc && pSc.x > 10 && pSc.x < window.innerWidth - 10 && pSc.y > 40 && pSc.y < window.innerHeight - 20) {
+        pTag.style.left = `${pSc.x.toFixed(0)}px`;
+        pTag.style.top = `${pSc.y.toFixed(0)}px`;
+        pTag.style.opacity = "1";
+        pTag.textContent = portalOpen ? `✨ ${st.portalLabel} (진입하세요!)` : `🔒 ${st.portalLabel} (빌런+${st.questName} 완료시 개방)`;
+      } else {
+        pTag.style.opacity = "0";
+      }
+
+      const remoteHtml = [];
+      const pushTag = (wx, wy, wz, text, cls = "player-tag") => {
+        const sc = project2D(wx, wy, wz, vpM, window.innerWidth, window.innerHeight);
+        if (sc && sc.x > 16 && sc.x < window.innerWidth - 16 && sc.y > 40 && sc.y < window.innerHeight - 25) {
+          remoteHtml.push(`<div class="${cls}" style="left:${sc.x.toFixed(0)}px;top:${sc.y.toFixed(0)}px;">${text}</div>`);
+        }
+      };
+
+      questItems.forEach((q, qi) => {
+        if (st.isBomb) {
+          mTRS(rootM, q.x, 0, q.z, 0, 0, 0);
+          drawMesh(M.c4Pillar, rootM);
+          if (q.done) {
+            const blink = Math.sin(tSec * 16) > 0 ? [1.0, 0.2, 0.2] : [1.0, 0.9, 0.2];
+            drawMesh(M.c4Bomb, rootM, { tint: blink, flash: Math.sin(tSec * 16) > 0 ? 0.5 : 0 });
+            pushTag(q.x, 3.85, q.z, "💣 C4 장착완료!", "player-tag");
+          } else {
+            pushTag(q.x, 3.85, q.z, `💣 폭파기둥 #${qi + 1} (접근시 설치)`, "speech-pill hurt");
+          }
+        } else if (!q.done) {
+          const bob = Math.sin(tSec * 4.5 + qi) * 0.22;
+          mTRS(rootM, q.x, 0.35 + bob, q.z, 0, tSec * 2.8, 0, 1.35, 1.35, 1.35);
+          drawMesh(M.questKey, rootM, { flash: 0.25 + Math.sin(tSec * 6) * 0.2 });
+          pushTag(q.x, 2.05 + bob, q.z, `${st.questIcon} ${st.questName} #${qi + 1}`, "speech-pill hurt");
+        }
+      });
+
+      // 3. Ground Shadows & Highlight Rings
       gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
       const shd = (x, z, r) => {
         mTRS(rootM, x, 0.02, z, 0, 0, 0, r * 2, 1, r * 2);
         drawMesh(M.shadow, rootM, { outline: 0, unlit: true, tint: [0.03, 0.05, 0.09], alpha: 0.45 });
       };
       shd(player.x, player.z, 0.52);
-      bosses.forEach((b) => shd(b.x, b.z, 0.58 * b.def.scale));
-      remotePlayers.forEach((rp) => shd(rp.x, rp.z, 0.50));
+      bosses.forEach((b) => { if (!b.ko) shd(b.x, b.z, 0.58 * b.def.scale); });
+      remotePlayers.forEach((rp) => { if (rp.stage === stageIdx) shd(rp.x, rp.z, 0.50); });
       if (aiPartyEnabled) aiAllies.forEach((a) => shd(a.x, a.z, 0.48));
+
+      questItems.forEach((q) => {
+        if (!q.done) {
+          const rScale = 1.25 + Math.sin(tSec * 6) * 0.15;
+          mTRS(rootM, q.x, 0.03, q.z, 0, tSec * 2, 0, rScale, 1, rScale);
+          drawMesh(M.ring, rootM, { outline: 0, unlit: true, tint: [0.99, 0.85, 0.18], alpha: 0.9 });
+        }
+      });
 
       if (nearestProp && !player.heldProp && !player.ridingChair) {
         mTRS(rootM, nearestProp.x, 0.03, nearestProp.z, 0, tSec * 2.5, 0, 1.1, 1, 1.1);
@@ -2159,7 +2636,7 @@
       }
       gl.depthMask(true); gl.disable(gl.BLEND);
 
-      // 3. Environmental Hazards & Props
+      // 4. Hazards & Props
       for (const hz of hazards) {
         mTRS(rootM, hz.x, hz.y, hz.z, 0, 0, 0);
         drawMesh(hz.mesh, rootM, { outline: 0.022 });
@@ -2170,7 +2647,7 @@
         drawMesh(p.mesh, rootM, { outline: 0.020 });
       }
 
-      // 4. Local Player
+      // 5. Local Player
       {
         const mv = Math.min(1, Math.hypot(player.vx, player.vz) / 6.5);
         let py = player.yaw, swL = 0, swR = 0, fs = 1 + (player.powerLv - 1) * 0.22;
@@ -2181,7 +2658,7 @@
           else { swR = -2.1 * arc; fs += 0.6 * arc; }
         }
         drawCharacter({
-          x: player.x, y: player.ridingChair ? 0.36 : player.y, z: player.z, yaw: py,
+          x: player.x, y: player.ridingChair ? 0.42 : player.y, z: player.z, yaw: py,
           scale: 1.0 + (player.powerLv - 1) * 0.04,
           torso: M.torsoWorker, tint: [1, 1, 1], hat: M.hairHero,
           face: player.atkTimer > 0 ? 1 : 0, walk: player.walk, moveAmt: player.ridingChair ? 0 : mv,
@@ -2189,25 +2666,19 @@
         });
       }
 
-      // 5. Real Online Remote Players & AI Co-op Teammates!
-      const remoteHtml = [];
-      const pushTag = (wx, wy, wz, text, isEmote = false) => {
-        const sc = project2D(wx, wy, wz, vpM, window.innerWidth, window.innerHeight);
-        if (sc && sc.x > 20 && sc.x < window.innerWidth - 20 && sc.y > 40 && sc.y < window.innerHeight - 30) {
-          remoteHtml.push(`<div class="${isEmote ? 'speech-pill emote' : 'player-tag'}" style="left:${sc.x.toFixed(0)}px;top:${sc.y.toFixed(0)}px;">${text}</div>`);
-        }
-      };
-      if (player.myEmoteT > 0) pushTag(player.x, 2.35, player.z, player.myEmote, true);
+      // 6. Online Remote Players & AI Teammates
+      if (player.myEmoteT > 0) pushTag(player.x, 2.35, player.z, player.myEmote, "speech-pill emote");
 
       remotePlayers.forEach((rp) => {
-        if (rp.riding) { mTRS(rootM, rp.x, 0, rp.z, 0, rp.yaw, 0); drawMesh(M.chair, rootM); }
+        if (rp.stage !== stageIdx) return;
+        if (rp.riding) { mTRS(rootM, rp.x, 0, rp.z, 0, rp.yaw, 0); drawMesh(stageIdx <= 2 ? M.forklift : M.chair, rootM); }
         drawCharacter({
-          x: rp.x, y: rp.riding ? 0.36 : rp.y, z: rp.z, yaw: rp.yaw, scale: 1.0,
+          x: rp.x, y: rp.riding ? 0.42 : rp.y, z: rp.z, yaw: rp.yaw, scale: 1.0,
           torso: M.torsoWorker, tint: rp.suit, hat: M.hairHero, face: rp.atkTimer > 0 ? 1 : 0,
           walk: rp.walk, moveAmt: 0.7, swR: rp.atkTimer > 0 ? -1.7 : 0, fistScale: 1 + (rp.pwr - 1) * 0.2
         });
         pushTag(rp.x, 2.05, rp.z, `🟢 ${rp.name}`);
-        if (rp.emoteT > 0) pushTag(rp.x, 2.48, rp.z, rp.emote, true);
+        if (rp.emoteT > 0) pushTag(rp.x, 2.48, rp.z, rp.emote, "speech-pill emote");
       });
 
       if (aiPartyEnabled) {
@@ -2222,30 +2693,35 @@
       }
       document.getElementById("remoteLabels").innerHTML = remoteHtml.join("");
 
-      // 6. ALL 4 VISUALLY DISTINCT EXECUTIVES + FLOATING NAMEPLATES!
+      // 7. Stage Bosses & Supreme Chairman's Golden Hover Throne!
       const spBub = document.getElementById("speechBubble");
       let shownBubble = false;
 
       bosses.forEach((b, idx) => {
         const tagEl = document.getElementById(`bossTag${idx}`);
-        if (b.ko) { tagEl.style.opacity = "0"; return; }
+        if (b.ko) { if (tagEl) tagEl.style.opacity = "0"; return; }
 
         const rag = b.ragdoll > 0 || b.y > 0.05;
         const face = b.shockT > 0 ? 4 : (rag || b.flash > 0 ? 3 : b.def.face);
         const jitterX = b.shockT > 0 ? (Math.random() - 0.5) * 0.22 : 0;
         const flail = (rag || b.shockT > 0) ? Math.sin(tSec * 26) * 1.4 : 0;
 
+        if (b.def.onThrone) {
+          mTRS(rootM, b.x, b.y, b.z, b.rx * 0.3, b.yaw, b.rz * 0.3, 1.35, 1.35, 1.35);
+          drawMesh(M.goldenThrone, rootM, { flash: b.flash });
+        }
+
         drawCharacter({
-          x: b.x + jitterX, y: b.y, z: b.z, rx: b.rx, yaw: b.yaw, rz: b.rz,
-          scale: b.def.scale, wideX: idx === 2 ? 1.24 : 1.0,
+          x: b.x + jitterX, y: b.y + (b.def.onThrone ? 0.36 : 0), z: b.z, rx: b.rx, yaw: b.yaw, rz: b.rz,
+          scale: b.def.scale, wideX: b.def.wideX || 1.0,
           torso: M[b.def.torso], tint: [1, 1, 1], hat: M[b.def.hat], face,
-          walk: b.walk, moveAmt: rag ? 0 : 0.65, swL: flail, swR: -flail,
+          walk: b.walk, moveAmt: (rag || b.def.onThrone) ? 0 : 0.65, swL: flail, swR: -flail,
           heldMesh: b.def.clubInHand ? M.golfClub : null,
           flash: (b.flash > 0 || b.shockT > 0) ? 0.75 : 0
         });
 
-        const sc = project2D(b.x, b.y + 2.15 * b.def.scale, b.z, vpM, window.innerWidth, window.innerHeight);
-        if (sc && sc.x > 20 && sc.x < window.innerWidth - 20 && sc.y > 50 && sc.y < window.innerHeight - 30) {
+        const sc = project2D(b.x, b.y + 2.2 * b.def.scale + (b.def.onThrone ? 0.4 : 0), b.z, vpM, window.innerWidth, window.innerHeight);
+        if (tagEl && sc && sc.x > 20 && sc.x < window.innerWidth - 20 && sc.y > 50 && sc.y < window.innerHeight - 30) {
           const hpP = Math.max(0, (b.hp / b.maxHp) * 100);
           tagEl.style.left = `${sc.x.toFixed(0)}px`;
           tagEl.style.top = `${sc.y.toFixed(0)}px`;
@@ -2254,7 +2730,7 @@
             <div style="font-size:10px;font-weight:900;color:#fff;"><span style="background:${b.def.badgeBg};padding:1px 4px;border-radius:4px;margin-right:3px;">${b.def.rank}</span>${b.def.name}</div>
             <div style="width:100%;height:4px;background:rgba(255,255,255,0.18);border-radius:99px;margin-top:2px;overflow:hidden;"><div style="width:${hpP.toFixed(0)}%;height:100%;background:#f43f5e;"></div></div>
           `;
-          if (!shownBubble && Math.hypot(b.x - player.x, b.z - player.z) < 12.0 && b.speechT > 0.3) {
+          if (!shownBubble && Math.hypot(b.x - player.x, b.z - player.z) < 13.0 && b.speechT > 0.3) {
             shownBubble = true;
             spBub.textContent = b.speech;
             spBub.className = b.hurtSpeech ? "speech-pill hurt" : "speech-pill";
@@ -2262,13 +2738,13 @@
             spBub.style.top = `${(sc.y - 34).toFixed(0)}px`;
             spBub.style.opacity = "1";
           }
-        } else {
+        } else if (tagEl) {
           tagEl.style.opacity = "0";
         }
       });
       if (!shownBubble) spBub.style.opacity = "0";
 
-      // 7. Particles
+      // 8. Particles
       for (const pt of particles) {
         mTRS(rootM, pt.x, pt.y, pt.z, pt.rx, pt.ry, 0, pt.scale, pt.scale, pt.scale);
         drawMesh(pt.mesh, rootM, { outline: 0.012, tint: pt.tint });
