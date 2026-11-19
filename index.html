@@ -110,62 +110,87 @@
       box-shadow: 0 4px 16px rgba(245, 158, 11, 0.38);
     }
 
-    /* Radial Action Controls */
-    .ctrl-sat {
+    /* Simplified 2-Button Tekken Action Controls */
+    .ctrl-grab {
       position: absolute;
-      width: 56px;
-      height: 56px;
+      right: 110px;
+      bottom: 8px;
+      width: 70px;
+      height: 70px;
       border-radius: 9999px;
-      background: radial-gradient(circle at 30% 25%, rgba(42, 55, 84, 0.90), rgba(12, 17, 29, 0.94));
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1.5px solid rgba(255, 255, 255, 0.19);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.22);
+      background: radial-gradient(circle at 30% 25%, rgba(56, 189, 248, 0.92), rgba(29, 78, 216, 0.95) 68%, rgba(15, 23, 42, 0.96));
+      border: 2px solid rgba(186, 230, 253, 0.55);
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.42), 0 0 0 4px rgba(12, 17, 29, 0.55), inset 0 2px 3px rgba(255, 255, 255, 0.35);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #f8fafc;
-      transition: transform 0.07s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: transform 0.07s ease, filter 0.1s ease, box-shadow 0.15s ease;
     }
-    .ctrl-sat:active, .ctrl-sat.pressed { transform: scale(0.89); }
-    .ctrl-sat.active-ring {
-      border-color: #38bdf8;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.42), inset 0 1px 2px rgba(255, 255, 255, 0.35);
-    }
-    .ctrl-sat.chair-ring {
-      border-color: #fbbf24;
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.42);
+    .ctrl-grab:active, .ctrl-grab.pressed { transform: scale(0.89); filter: brightness(1.14); }
+    .ctrl-grab.grapple-swing {
+      background: radial-gradient(circle at 30% 25%, #e879f9, #9333ea 65%, #4c1d95) !important;
+      border-color: #f5d0fe !important;
+      box-shadow: 0 0 24px rgba(217, 70, 239, 0.75), 0 0 0 4px rgba(12, 17, 29, 0.6) !important;
+      animation: feverPulse 0.55s infinite ease-in-out;
     }
 
     .ctrl-main {
       position: absolute;
       right: 4px;
       bottom: 4px;
-      width: 90px;
-      height: 90px;
+      width: 96px;
+      height: 96px;
       border-radius: 9999px;
       background: radial-gradient(circle at 32% 24%, #fb7185 0%, #e11d48 58%, #9f1239 100%);
-      border: 2px solid rgba(255, 255, 255, 0.38);
-      box-shadow: 0 10px 28px rgba(225, 29, 72, 0.48), 0 0 0 5px rgba(12, 17, 29, 0.55), inset 0 2px 4px rgba(255, 255, 255, 0.45);
+      border: 2.5px solid rgba(255, 255, 255, 0.42);
+      box-shadow: 0 10px 28px rgba(225, 29, 72, 0.52), 0 0 0 5px rgba(12, 17, 29, 0.58), inset 0 2px 4px rgba(255, 255, 255, 0.45);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      transition: transform 0.07s ease, filter 0.08s ease;
+      transition: transform 0.07s ease, filter 0.08s ease, background 0.15s ease;
     }
-    .ctrl-main:active, .ctrl-main.pressed { transform: scale(0.90); filter: brightness(1.12); }
+    .ctrl-main:active, .ctrl-main.pressed { transform: scale(0.90); filter: brightness(1.14); }
+    .ctrl-main.suplex-mode {
+      background: radial-gradient(circle at 32% 24%, #fde047 0%, #f97316 55%, #dc2626 100%) !important;
+      border-color: #fef9c3 !important;
+      box-shadow: 0 0 28px rgba(249, 115, 22, 0.85), 0 0 0 5px rgba(12, 17, 29, 0.6) !important;
+      animation: feverPulse 0.5s infinite ease-in-out;
+    }
+    .ctrl-main.ewgf-mode {
+      background: radial-gradient(circle at 32% 24%, #67e8f9 0%, #2563eb 60%, #1e1b4b 100%) !important;
+      border-color: #bae6fd !important;
+      box-shadow: 0 0 26px rgba(56, 189, 248, 0.78), 0 0 0 5px rgba(12, 17, 29, 0.6) !important;
+    }
+
+    .ctx-chip {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      transition: transform 0.08s ease;
+    }
+    .ctx-chip:active, .ctx-chip.pressed { transform: scale(0.92); }
 
     @keyframes feverPulse {
-      0%, 100% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.55); transform: scale(1); }
-      50% { box-shadow: 0 0 26px rgba(250, 204, 21, 0.9); transform: scale(1.07); }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
     }
     .ult-ready {
-      background: radial-gradient(circle at 30% 25%, #fde047, #10b981 75%) !important;
-      color: #051611 !important;
-      border-color: #fef08a !important;
-      animation: feverPulse 0.85s infinite ease-in-out;
+      background: linear-gradient(135deg, #fde047, #f43f5e, #ec4899) !important;
+      color: #ffffff !important;
+      border: 1.5px solid #fef08a !important;
+      box-shadow: 0 0 22px rgba(244, 63, 94, 0.8) !important;
+      animation: feverPulse 0.75s infinite ease-in-out;
     }
 
     /* Floating 3D->2D Tags, Boss Nameplates & Damage Popups */
@@ -482,15 +507,14 @@
 
   <!-- Desktop Key Guide -->
   <div class="hide-mobile fixed glass pointer-events-none" style="bottom:10px; left:50%; transform:translateX(-50%); border-radius:999px; padding:5px 15px; font-size:11px; color:#cbd5e1; display:flex; gap:12px; z-index:30;">
-    <span><b style="color:#fff;">WASD</b> 이동</span>
-    <span><b style="color:#fb7185;">J/Space</b> 죽방·스윙</span>
-    <span><b style="color:#67e8f9;">L/우클릭</b> 무기집기·투척</span>
-    <span><b style="color:#fcd34d;">F</b> 바퀴의자 폭주탑승</span>
-    <span><b style="color:#fbbf24;">K</b> 어퍼컷</span>
-    <span><b style="color:#34d399;">E</b> 사표폭격</span>
+    <span><b style="color:#fff;">WASD</b> 이동 (+공격=붕권)</span>
+    <span><b style="color:#fb7185;">J/Space/좌클릭</b> 철권 5연타·초풍·수플렉스</span>
+    <span><b style="color:#67e8f9;">K/L/우클릭</b> 멱살잡기·자이언트스윙</span>
+    <span><b style="color:#fcd34d;">F</b> 무기·탑승</span>
+    <span><b style="color:#34d399;">E</b> 레이지 필살기</span>
   </div>
 
-  <!-- ==================== SLEEK MOBILE CONTROL DECK ==================== -->
+  <!-- ==================== ULTRA-CLEAN 2-BUTTON TEKKEN CONTROL DECK ==================== -->
   <div class="fixed bottom-0 inset-x-0 flex items-end justify-between pointer-events-none" style="padding: 12px 16px max(16px, env(safe-area-inset-bottom)); z-index:30;">
     <!-- Left Floating Glass Thumbstick -->
     <div id="joyArea" class="relative pointer-events-auto flex items-center justify-center" style="width:142px; height:142px;">
@@ -504,54 +528,41 @@
       </div>
     </div>
 
-    <!-- Right Ergonomic 5-Action Radial Arc Cluster -->
-    <div class="relative pointer-events-auto" style="width:196px; height:196px;">
-      <!-- Ultimate Fever Orb -->
-      <button id="btnUlt" class="ctrl-sat" style="right:6px; bottom:114px; width:54px; height:54px;">
-        <svg style="position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none;" viewBox="0 0 60 60">
-          <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3.5" />
-          <circle id="ultArc" cx="30" cy="30" r="26" fill="none" stroke="#10b981" stroke-width="3.5" stroke-dasharray="163.36" stroke-dashoffset="163.36" stroke-linecap="round" />
-        </svg>
-        <span style="font-size:16px; line-height:1;">📄</span>
-        <span id="ultPct" style="font-size:9px; font-weight:900; color:#6ee7b7; margin-top:2px;">0%</span>
+    <!-- Right Clean 2-Button Tekken Deck (Grab/Throw + Big Combo Hub) -->
+    <div class="relative pointer-events-auto" style="width:192px; height:152px;">
+      <!-- Contextual Chips (Hidden unless Fever=100% or standing right next to Weapon/Forklift!) -->
+      <div class="flex flex-col items-end" style="position:absolute; right:4px; bottom:108px; gap:6px;">
+        <button id="btnUlt" class="ctx-chip ult-ready hidden">
+          <span>🔥</span>
+          <span>레이지 필살기!</span>
+        </button>
+        <button id="btnInteract" class="glass ctx-chip hidden" style="border-color:rgba(103,232,249,0.65); color:#e0f2fe;">
+          <span id="interactIcon">🔧</span>
+          <span id="interactText">무기 집기</span>
+        </button>
+      </div>
+
+      <!-- Button 1: Grapple / Giant Swing / Throw -->
+      <button id="btnGrab" class="ctrl-grab">
+        <span id="grabIcon" style="font-size:21px; line-height:1;">🤼</span>
+        <span id="grabText" style="font-size:10px; font-weight:900; color:#e0f2fe; margin-top:3px;">잡기·메치기</span>
       </button>
 
-      <!-- Ride Swivel Chair / Rocket Drift Button (NEW FUN GIMMICK!) -->
-      <button id="btnRide" class="ctrl-sat" style="right:68px; bottom:126px; width:50px; height:50px;">
-        <span style="font-size:15px; line-height:1;">🪑</span>
-        <span id="rideText" style="font-size:8.5px; font-weight:800; color:#fde68a; margin-top:2px;">의자탑승</span>
-      </button>
-
-      <!-- Grab / Throw Weapon -->
-      <button id="btnGrab" class="ctrl-sat" style="right:82px; bottom:74px;">
-        <span id="grabIcon" style="font-size:17px; line-height:1;">🖐️</span>
-        <span id="grabText" style="font-size:9.5px; font-weight:800; color:#a5f3fc; margin-top:2px;">집기</span>
-      </button>
-
-      <!-- Uppercut -->
-      <button id="btnUpper" class="ctrl-sat" style="right:114px; bottom:24px;">
-        <svg style="position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none;" viewBox="0 0 60 60">
-          <circle id="upperArc" cx="30" cy="30" r="27" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="169.6" stroke-dashoffset="0" stroke-linecap="round" />
-        </svg>
-        <span style="font-size:15px; line-height:1;">💥</span>
-        <span style="font-size:9px; font-weight:800; color:#fde68a; margin-top:2px;">어퍼컷</span>
-      </button>
-
-      <!-- Dash / Tackle -->
-      <button id="btnDash" class="ctrl-sat" style="right:156px; bottom:-2px; width:46px; height:46px;">
-        <span style="font-size:13px; line-height:1;">⚡</span>
-        <span style="font-size:8.5px; font-weight:800; color:#bae6fd; margin-top:1px;">대시</span>
-      </button>
-
-      <!-- Primary Attack Hub -->
+      <!-- Button 2: Big Center Tekken Combo / EWGF / Suplex Hub -->
       <button id="btnAttack" class="ctrl-main">
         <svg style="position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none;" viewBox="0 0 100 100">
-          <circle id="pip1" cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="0" stroke-linecap="round" opacity="0.25" />
-          <circle id="pip2" cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-96" stroke-linecap="round" opacity="0.25" />
-          <circle id="pip3" cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="84 205" stroke-dashoffset="-192" stroke-linecap="round" opacity="0.25" />
+          <!-- Subtle outer Rage gauge ring -->
+          <circle cx="50" cy="50" r="47" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="2.5" />
+          <circle id="ultArc" cx="50" cy="50" r="47" fill="none" stroke="#fde047" stroke-width="3" stroke-dasharray="295.3" stroke-dashoffset="295.3" stroke-linecap="round" />
+          <!-- 5 Tekken Combo Pips -->
+          <circle id="pip1" cx="50" cy="50" r="42" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="44 220" stroke-dashoffset="0" stroke-linecap="round" opacity="0.22" />
+          <circle id="pip2" cx="50" cy="50" r="42" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="44 220" stroke-dashoffset="-53" stroke-linecap="round" opacity="0.22" />
+          <circle id="pip3" cx="50" cy="50" r="42" fill="none" stroke="#67e8f9" stroke-width="3.5" stroke-dasharray="44 220" stroke-dashoffset="-106" stroke-linecap="round" opacity="0.22" />
+          <circle id="pip4" cx="50" cy="50" r="42" fill="none" stroke="#fde047" stroke-width="3.5" stroke-dasharray="44 220" stroke-dashoffset="-159" stroke-linecap="round" opacity="0.22" />
+          <circle id="pip5" cx="50" cy="50" r="42" fill="none" stroke="#f43f5e" stroke-width="4" stroke-dasharray="44 220" stroke-dashoffset="-212" stroke-linecap="round" opacity="0.22" />
         </svg>
-        <span id="atkIcon" style="font-size:25px; line-height:1;">🥊</span>
-        <span id="atkText" style="font-size:11px; font-weight:900; margin-top:3px;">죽방</span>
+        <span id="atkIcon" style="font-size:27px; line-height:1;">🥊</span>
+        <span id="atkText" style="font-size:11.5px; font-weight:900; margin-top:3px;">철권콤보</span>
       </button>
     </div>
   </div>
@@ -596,6 +607,35 @@
         for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
         const s = ctx.createBufferSource(); s.buffer = buf;
         const ng = ctx.createGain(); ng.gain.setValueAtTime(hv ? 0.35 : 0.22, t); ng.gain.exponentialRampToValueAtTime(0.005, t + 0.10);
+        s.connect(ng).connect(ctx.destination); s.start(t);
+      } else if (kind === "grab") {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "square"; o.frequency.setValueAtTime(160, t);
+        o.frequency.exponentialRampToValueAtTime(340, t + 0.08);
+        g.gain.setValueAtTime(0.22, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.10);
+      } else if (kind === "ewgf") {
+        // Electric Wind God Fist (초풍신권 번개 파열음!)
+        [680, 920, 460].forEach((fq, i) => {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = "sawtooth"; const st = t + i * 0.025;
+          o.frequency.setValueAtTime(fq, st); o.frequency.exponentialRampToValueAtTime(140, st + 0.16);
+          g.gain.setValueAtTime(0.22, st); g.gain.exponentialRampToValueAtTime(0.001, st + 0.17);
+          o.connect(g).connect(ctx.destination); o.start(st); o.stop(st + 0.18);
+        });
+      } else if (kind === "slam") {
+        // Thunderous Suplex / Powerbomb Floor Impact!
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.setValueAtTime(135, t);
+        o.frequency.exponentialRampToValueAtTime(26, t + 0.36);
+        g.gain.setValueAtTime(0.62, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.39);
+        const len = Math.floor(ctx.sampleRate * 0.18);
+        const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.4);
+        const s = ctx.createBufferSource(); s.buffer = buf;
+        const ng = ctx.createGain(); ng.gain.setValueAtTime(0.45, t); ng.gain.exponentialRampToValueAtTime(0.005, t + 0.18);
         s.connect(ng).connect(ctx.destination); s.start(t);
       } else if (kind === "coin" || kind === "ko") {
         const notes = kind === "ko" ? [523, 659, 784, 1046] : [784, 1174];
@@ -1354,9 +1394,11 @@
     ];
 
     const player = {
-      x: 0, y: 0, z: 12.5, vx: 0, vz: 0, yaw: Math.PI, walk: 0,
+      x: 0, y: 0, z: 12.5, vx: 0, vz: 0, yaw: Math.PI, rx: 0, walk: 0,
       atkTimer: 0, atkDur: 0.20, atkType: "jab", comboStep: 0, comboReset: 0,
-      upperCd: 0, dashCd: 0, dashTimer: 0,
+      deathfistCd: 0,
+      grapple: null,     // { target, isBoss, bossIdx, phase: "hold"|"suplex"|"swing"|"powerbomb", timer, dur, origX, origZ }
+      chainThrow: null,  // { target, isBoss, bossIdx, timer }
       heldProp: null, weaponUses: 0,
       ridingChair: null,
       powerLv: 1, fever: 0,
@@ -1371,12 +1413,13 @@
     let campaignOver = false;
 
     let bosses = [];
-    let mobs = []; // 22~27 swarming punchable villains on screen!
+    let mobs = [];
     let aiAllies = [];
     let aiPartyEnabled = true;
     let props = [];
     let hazards = [];
     let particles = [];
+    let shockRings = [];
 
     let cash = 0, koTotal = 0, comboCount = 0, comboTimer = 0;
     let focusBossIdx = 0;
@@ -1398,12 +1441,10 @@
       const tpl = st.mobPool[(Math.random() * st.mobPool.length) | 0];
       let mx, mz;
       if (initial) {
-        // Pack densely across the arena right in front of the player!
         mx = (Math.random() - 0.5) * 34;
         mz = -12 + Math.random() * 21;
         if (Math.hypot(mx, mz - 12.5) < 3.2) mz -= 5.0;
       } else {
-        // Reinforcements rush in from side/north entrances
         const side = (Math.random() * 3) | 0;
         mx = side === 0 ? -MAP_X + 1 : (side === 1 ? MAP_X - 1 : (Math.random() - 0.5) * 28);
         mz = side === 2 ? -MAP_Z + 1.5 : (Math.random() - 0.5) * 26;
@@ -1416,6 +1457,7 @@
         scale: 0.92 + Math.random() * 0.12,
         hp: tpl.hp, maxHp: tpl.hp,
         ragdoll: 0, stun: 0, shockT: 0, flash: 0,
+        boundPending: false, bowlingT: 0,
         ko: false, koCleanup: 0,
         atkCd: 0.6 + Math.random() * 1.2
       };
@@ -1432,13 +1474,13 @@
       document.getElementById("finaleModal").classList.add("hidden");
 
       player.x = 0; player.y = 0; player.z = 12.5;
-      player.vx = 0; player.vz = 0; player.yaw = Math.PI;
+      player.vx = 0; player.vz = 0; player.yaw = Math.PI; player.rx = 0;
       player.heldProp = null; player.ridingChair = null;
+      player.grapple = null; player.chainThrow = null;
 
-      props = []; hazards = []; particles = [];
+      props = []; hazards = []; particles = []; shockRings = [];
 
       if (stageIdx === 0) {
-        // 울산공장: Rideable Forklifts, Explosive Drums, Wrenches, Extinguishers, High-Voltage Panels
         addProp({ type:"forklift", label:"노란 지게차", icon:"🚜", mesh:M.forklift, x:-4.5, y:0, z:11.0, rideable:true, grabbable:false, radius:0.95 });
         addProp({ type:"forklift", label:"노란 지게차", icon:"🚜", mesh:M.forklift, x: 4.5, y:0, z:11.0, rideable:true, grabbable:false, radius:0.95 });
         for (const [dx, dz] of [[-12, 3], [12, 3], [-9, -6], [9, -6], [0, 1], [-16, -2], [16, -2]]) {
@@ -1453,7 +1495,6 @@
           addProp({ type:"extinguisher", label:"공업용 소화기", icon:"🧯", mesh:M.extinguisher, x:wx+1.8, y:0, z:wz, dmg:48, uses:5 });
         }
       } else {
-        // 서울본사 & 그룹본사: Desks, Racing Swivel Chairs, VIP Cart, Monitors, Golden Safe, Copiers, Golf Clubs, Trophies!
         for (const [dx, dz] of [[-14, 5], [-7, 5], [7, 5], [14, 5], [-13, -2], [13, -2]]) {
           addProp({ type:"desk", mesh:M.desk, x:dx, y:0, z:dz, grabbable:false, mass:4.0, radius:1.05 });
           addProp({ type:"chair", label:"레이싱 회전의자", icon:"🪑", mesh:M.chair, x:dx, y:0, z:dz+1.1, ry:Math.PI, dmg:42, uses:5, rideable:true });
@@ -1479,7 +1520,6 @@
         }
       }
 
-      // Spawn Stage Bosses
       bosses = st.bosses.map((d, i) => ({
         def: { ...d, idx: i },
         x: d.homeX, y: 1.8, z: d.homeZ,
@@ -1487,6 +1527,7 @@
         yaw: 0, walk: 0,
         hp: d.hp, maxHp: d.hp,
         ragdoll: 0, stun: 0, shockT: 0, flash: 0,
+        boundPending: false, bowlingT: 0,
         ko: false, respawn: 0,
         speechT: 1.2 + i * 0.9, speech: d.taunts[0], hurtSpeech: false
       }));
@@ -1495,7 +1536,6 @@
         if (el) el.style.opacity = "0";
       }
 
-      // Spawn Dense Crowd of 22~27 Punchable Villains Immediately!
       mobs = [];
       for (let m = 0; m < st.activeMobs; m++) mobs.push(createMob(st, true));
 
@@ -1506,8 +1546,8 @@
 
       const tk = document.getElementById("eventTicker");
       tk.textContent = st.isFinal
-        ? `🔥 그룹본사 최종결전! 경호원 군단(${st.targetKills}명)과 천회장을 싹 다 쓸어버리고 본사를 폭파하세요!`
-        : `🔥 ${st.short} 돌입! 몰려오는 꼰대 ${st.targetKills}명과 임원진을 신나게 참교육하세요!`;
+        ? `🔥 그룹본사 최종결전! [🤼잡기] 수플렉스·자이언트스윙과 [🥊철권콤보]로 천회장을 날려버리세요!`
+        : `🔥 ${st.short}! [🥊콤보] 초풍·공중콤보 & [🤼잡기] 수플렉스·자이언트스윙으로 참교육하세요!`;
       tk.classList.remove("hidden");
       activeEvent = "briefing"; eventRemain = 5.5;
 
@@ -1517,7 +1557,7 @@
     }
 
     // =========================================================================
-    // 7. MUSOU CROWD COMBAT, BOWLING DOMINO PHYSICS & HQ DEMOLITION
+    // 7. TEKKEN COMBOS, KING GRAPPLE THROWS & MUSOU BOWLING PHYSICS
     // =========================================================================
     const overlayLayer = document.getElementById("overlayLayer");
     let lastVP = mId();
@@ -1535,17 +1575,26 @@
       setTimeout(() => el.remove(), 720);
     }
 
+    function spawnShockRing(x, z, maxR = 4.2, tint = [1.0, 0.25, 0.55]) {
+      shockRings.push({ x, z, r: 0.5, maxR, life: 0.34, maxLife: 0.34, tint });
+    }
+
     function spawnParticles(x, y, z, cnt, kind = "paper") {
       const mesh = kind === "cash" ? M.cashBill : (kind === "paper" ? M.paper : M.spark);
-      const tint = kind === "shock" ? [0.25, 0.90, 1.0] : (kind === "fire" ? [1.0, 0.38, 0.12] : (kind === "spark" ? [1.0, 0.85, 0.2] : [1, 1, 1]));
+      const tint = kind === "shock"
+        ? [0.22, 0.92, 1.0]
+        : (kind === "tekken"
+          ? [1.0, 0.16, 0.48]
+          : (kind === "fire" ? [1.0, 0.38, 0.12] : (kind === "spark" ? [1.0, 0.85, 0.2] : [1, 1, 1])));
       for (let i = 0; i < cnt; i++) {
-        const a = Math.random() * Math.PI * 2, spd = (kind === "fire" ? 5.0 : 2.5) + Math.random() * (kind === "fire" ? 13.0 : 7.5);
+        const a = Math.random() * Math.PI * 2;
+        const spd = (kind === "fire" || kind === "tekken" ? 5.5 : 2.5) + Math.random() * (kind === "fire" ? 13.0 : 8.5);
         particles.push({
           mesh, tint, x, y: y + 0.4, z,
-          vx: Math.cos(a) * spd, vy: 3.5 + Math.random() * (kind === "fire" ? 11.0 : 6.0), vz: Math.sin(a) * spd,
-          rx: Math.random() * 3, ry: Math.random() * 3, vrx: 11, vry: 13,
-          scale: kind === "fire" ? 2.4 : (kind === "cash" ? 1.25 : 0.95),
-          life: kind === "paper" || kind === "cash" ? 2.2 : (kind === "fire" ? 1.1 : 0.5),
+          vx: Math.cos(a) * spd, vy: 3.5 + Math.random() * (kind === "fire" ? 11.0 : 6.5), vz: Math.sin(a) * spd,
+          rx: Math.random() * 3, ry: Math.random() * 3, vrx: 12, vry: 14,
+          scale: kind === "fire" ? 2.4 : (kind === "tekken" ? 1.55 : (kind === "cash" ? 1.25 : 0.95)),
+          life: kind === "paper" || kind === "cash" ? 2.2 : (kind === "fire" ? 1.1 : 0.45),
           flutter: kind === "paper" || kind === "cash"
         });
       }
@@ -1685,105 +1734,261 @@
       updateHud();
     }
 
-    function nearestEnemy(range) {
-      let best = null, bd = range;
-      for (const b of bosses) {
+    function nearestEnemy(range, preferBoss = false) {
+      let best = null, isBoss = false, bossIdx = -1, bd = range;
+      for (let i = 0; i < bosses.length; i++) {
+        const b = bosses[i];
         if (b.ko) continue;
         const d = Math.hypot(b.x - player.x, b.z - player.z);
-        if (d < bd) { bd = d; best = b; }
+        if (d < bd) { bd = d; best = b; isBoss = true; bossIdx = i; }
       }
+      if (preferBoss && best && bd < range * 0.92) return { e: best, isBoss: true, bossIdx, d: bd };
       for (const m of mobs) {
         if (m.ko) continue;
         const d = Math.hypot(m.x - player.x, m.z - player.z);
-        if (d < bd) { bd = d; best = m; }
+        if (d < bd) { bd = d; best = m; isBoss = false; bossIdx = -1; }
       }
-      return { e: best, d: bd };
+      return { e: best, isBoss, bossIdx, d: bd };
+    }
+
+    function startGermanSuplex() {
+      const g = player.grapple;
+      if (!g) return;
+      g.phase = "suplex";
+      g.dur = 0.50;
+      g.timer = 0.50;
+      g.origX = player.x;
+      g.origZ = player.z;
+      playSfx("swing"); haptic(28);
+      popText(player.x, 2.45, player.z, "🤼 저먼 수플렉스!!", "#fde047", 25);
+      updateHud();
+    }
+
+    function startGiantSwing() {
+      const g = player.grapple;
+      if (!g) return;
+      g.phase = "swing";
+      g.dur = 0.68;
+      g.timer = 0.68;
+      playSfx("dash"); haptic(30);
+      popText(player.x, 2.45, player.z, "🌪️ 자이언트 스윙!!", "#e879f9", 25);
+      updateHud();
+    }
+
+    function startChainPowerbomb(ct) {
+      player.chainThrow = null;
+      if (!ct || !ct.target || ct.target.ko) return;
+      ct.target.boundPending = false;
+      ct.target.vx = ct.target.vy = ct.target.vz = 0;
+      player.grapple = {
+        target: ct.target, isBoss: ct.isBoss, bossIdx: ct.bossIdx,
+        phase: "powerbomb", timer: 0.52, dur: 0.52, origX: player.x, origZ: player.z
+      };
+      playSfx("grab"); haptic(38);
+      spawnParticles(player.x, 1.4, player.z, 12, "tekken");
+      popText(player.x, 2.65, player.z, "🔥 2단 체인 파워밤!!", "#fb7185", 28);
+      updateHud();
+    }
+
+    function hitArenaHazards(reach, wielding) {
+      let hc = 0;
+      for (let hi = hazards.length - 1; hi >= 0; hi--) {
+        const hz = hazards[hi];
+        if (Math.hypot(hz.x - player.x, hz.z - player.z) < reach + hz.radius) {
+          hc++;
+          if (hz.kind === "drum") {
+            explodeDrum(hz, hi);
+          } else if (hz.kind === "safe") {
+            hz.hp -= wielding ? 45 : 28;
+            playSfx("coin"); spawnParticles(hz.x, 1.2, hz.z, 10, "cash"); addCash(50000);
+            popText(hz.x, 2.3, hz.z, hz.hp <= 0 ? "💰 비자금 금고 대폭발!!" : "💵 비자금 털기! +₩50,000", "#4ade80", 23);
+            if (hz.hp <= 0) { hz.hp = hz.maxHp; addCash(350000); spawnParticles(hz.x, 1.4, hz.z, 30, "cash"); playSfx("ko"); }
+          } else if (hz.kind === "vending" && hz.cd <= 0) {
+            hz.cd = 3.5; player.fever = Math.min(100, player.fever + 45);
+            playSfx("coin"); popText(hz.x, 2.3, hz.z, "🥤 고카페인! 레이지 +45%", "#38bdf8", 21);
+          }
+        }
+      }
+      return hc;
     }
 
     function doAttack() {
+      // 1. Grapple Hold -> Execute German Suplex!
+      if (player.grapple) {
+        if (player.grapple.phase === "hold") startGermanSuplex();
+        return;
+      }
+      // 2. Chain Throw Window -> Execute 2-Stage Sky Powerbomb!
+      if (player.chainThrow && player.chainThrow.timer > 0 && !player.chainThrow.target.ko) {
+        startChainPowerbomb(player.chainThrow);
+        return;
+      }
+      // 3. Riding Forklift / Chair -> Rocket Boost!
       if (player.ridingChair) {
         if (player.atkTimer > 0) return;
-        player.atkTimer = 0.30; player.atkDur = 0.30;
-        player.ridingChair.vx += Math.sin(player.yaw) * 21.0;
-        player.ridingChair.vz += Math.cos(player.yaw) * 21.0;
+        player.atkTimer = 0.28; player.atkDur = 0.28;
+        player.ridingChair.vx += Math.sin(player.yaw) * 22.0;
+        player.ridingChair.vz += Math.cos(player.yaw) * 22.0;
         playSfx("dash");
         spawnParticles(player.x, 0.4, player.z, 8, "paper");
         popText(player.x, 2.0, player.z, player.ridingChair.type === "forklift" ? "🚜💨 지게차 풀부스터 돌진!!" : "🪑💨 회전의자 로켓 부스터!!", "#38bdf8", 21);
         return;
       }
 
-      if (player.atkTimer > 0.04) return;
-      const ne = nearestEnemy(4.2);
+      if (player.atkTimer > 0.035) return;
+
+      // Check directional input for Paul Phoenix Deathfist (붕권!)
+      let mx = joyVec.x, mz = joyVec.y;
+      if (keys["KeyW"] || keys["ArrowUp"]) mz -= 1;
+      if (keys["KeyS"] || keys["ArrowDown"]) mz += 1;
+      if (keys["KeyA"] || keys["ArrowLeft"]) mx -= 1;
+      if (keys["KeyD"] || keys["ArrowRight"]) mx += 1;
+      const moveMag = Math.hypot(mx, mz);
+
+      const ne = nearestEnemy(4.5);
       if (ne.e) {
         const dx = ne.e.x - player.x, dz = ne.e.z - player.z, d = ne.d || 1;
         player.yaw = Math.atan2(dx, dz);
-        if (d > 1.15) { player.x += (dx / d) * Math.min(0.85, d - 1.05); player.z += (dz / d) * Math.min(0.85, d - 1.05); }
+        if (d > 1.15) { player.x += (dx / d) * Math.min(0.95, d - 1.05); player.z += (dz / d) * Math.min(0.95, d - 1.05); }
+      } else if (moveMag > 0.2) {
+        player.yaw = Math.atan2(mx, mz);
       }
 
       const wielding = !!player.heldProp;
-      const seq = ["jab", "cross", "spin"];
-      player.atkType = wielding ? "weaponSwing" : seq[player.comboStep];
-      player.comboStep = (player.comboStep + 1) % 3;
-      player.comboReset = 1.3;
-      player.atkDur = activeEvent === "caffeine" ? 0.14 : 0.20;
+      const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
+
+      // 4. Tekken Dash Deathfist (붕권! When pushing joystick + starting combo)
+      if (!wielding && moveMag > 0.72 && player.comboStep === 0 && player.deathfistCd <= 0) {
+        player.deathfistCd = 2.0;
+        player.atkType = "deathfist";
+        player.atkDur = 0.28; player.atkTimer = 0.28;
+        player.comboStep = 1; player.comboReset = 1.4;
+        player.netJustAttacked = true;
+        player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + dirX * 1.65));
+        player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + dirZ * 1.65));
+        const fx = player.x + dirX * 1.1, fz = player.z + dirZ * 1.1;
+        spawnShockRing(fx, fz, 3.8, [1.0, 0.20, 0.38]);
+        spawnParticles(fx, 1.1, fz, 16, "tekken");
+        playSfx("slam"); haptic(42);
+        shakeMag = 0.62; shakeT = 0.25; hitStop = 0.045;
+        let dfHits = 0;
+        for (const m of mobs) {
+          if (!m.ko && Math.hypot(m.x - player.x, m.z - player.z) < 3.8) {
+            dfHits++;
+            hitMob(m, 64, dirX, dirZ, 18.5, 6.5, true, false);
+          }
+        }
+        bosses.forEach((b, idx) => {
+          if (!b.ko && Math.hypot(b.x - player.x, b.z - player.z) < 3.9) {
+            dfHits++;
+            hitBoss(b, idx, 46, dirX, dirZ, 17.5, 6.5, "👊 우오오!! 붕권!!", true);
+          }
+        });
+        hitArenaHazards(3.6, false);
+        popText(player.x, 2.55, player.z, dfHits >= 2 ? `👊💥 붕권 ${dfHits}명 관통!!` : "👊💥 우오오!! 붕권!!", "#fb7185", 27);
+        updateHud();
+        return;
+      }
+
+      // 5. Tekken 5-Hit String: 1(Jab) -> 2(Hook) -> 3(⚡EWGF Launcher) -> 4(🌪️Air Juggle) -> 5(💥Tornado Bound!)
+      const seq = ["jab", "cross", "ewgf", "airJuggle", "tornadoBound"];
+      const step = player.comboStep;
+      player.atkType = wielding ? "weaponSwing" : seq[step];
+      player.comboStep = wielding ? (step + 1) % 3 : (step + 1) % 5;
+      player.comboReset = 1.45;
+      player.atkDur = activeEvent === "caffeine" ? 0.14 : (player.atkType === "tornadoBound" ? 0.25 : 0.18);
       player.atkTimer = player.atkDur;
       player.netJustAttacked = true;
 
-      const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
-      const reach = (wielding ? 3.55 : 2.95) + (player.powerLv - 1) * 0.20;
-      const fin = wielding || player.atkType === "spin";
-      let hitCount = 0;
+      const reach = (wielding ? 3.65 : 3.15) + (player.powerLv - 1) * 0.20;
+      const isEwgf = player.atkType === "ewgf";
+      const isAir = player.atkType === "airJuggle";
+      const isBound = player.atkType === "tornadoBound";
+      const fin = wielding || isEwgf || isBound;
+      let hitCount = 0, juggledCount = 0;
 
-      // 1. Cleave through Crowd Villains (Musou Multi-Hit!)
+      if (isEwgf) {
+        playSfx("ewgf");
+        spawnParticles(player.x + dirX * 1.1, 1.1, player.z + dirZ * 1.1, 16, "shock");
+        spawnShockRing(player.x + dirX * 0.9, player.z + dirZ * 0.9, 3.2, [0.22, 0.92, 1.0]);
+      } else if (isBound) {
+        spawnShockRing(player.x + dirX * 1.0, player.z + dirZ * 1.0, 4.3, [1.0, 0.22, 0.55]);
+      }
+
+      // Cleave Mobs with Tekken Launcher / Air Juggle / Bound Physics!
       for (const m of mobs) {
         if (m.ko) continue;
         const dx = m.x - player.x, dz = m.z - player.z, d = Math.hypot(dx, dz) || 1;
         if (d < reach) {
           hitCount++;
-          const dmg = wielding ? player.heldProp.dmg : (fin ? 34 : 22);
-          hitMob(m, dmg, dx / d * 0.55 + dirX * 0.45, dz / d * 0.55 + dirZ * 0.45, fin ? 14.5 : 8.5, fin ? 7.2 : 3.2, fin, hitCount <= 2);
+          const airborne = m.y > 0.24;
+          if (wielding) {
+            hitMob(m, player.heldProp.dmg, dx / d * 0.5 + dirX * 0.5, dz / d * 0.5 + dirZ * 0.5, 14.5, 7.2, true, hitCount <= 2);
+          } else if (isEwgf) {
+            // ⚡ EWGF Sky Launcher: High vertical pop, tight horizontal keep-close!
+            hitMob(m, 34, dirX, dirZ, 3.2, 11.8, true, false);
+          } else if (isAir || (airborne && !isBound)) {
+            // 🌪️ Tekken Air Juggle: Keep airborne enemies floating right in front!
+            juggledCount++;
+            m.vy = 0;
+            hitMob(m, 30, dirX, dirZ, 2.8, 8.8, false, false);
+            spawnParticles(m.x, m.y + 0.9, m.z, 4, "tekken");
+          } else if (isBound) {
+            // 💥 Tornado Bound Slam: Spike downward -> floor bounce!
+            hitMob(m, 52, dirX, dirZ, 6.5, 1.5, true, false);
+            if (airborne || m.y > 0.05) { m.vy = -17.5; m.boundPending = true; }
+            else { m.vy = 9.5; }
+            spawnParticles(m.x, m.y + 0.9, m.z, 6, "tekken");
+          } else {
+            hitMob(m, step === 1 ? 25 : 20, dirX, dirZ, 4.2, airborne ? 7.8 : 2.6, false, hitCount === 1 && step === 0);
+            if (step === 1) spawnParticles(m.x, m.y + 1.0, m.z, 4, "tekken");
+          }
         }
       }
 
-      // 2. Hit Stage Bosses
+      // Hit Stage Bosses with Tekken Launcher / Air Juggle / Bound Physics!
       bosses.forEach((b, idx) => {
-        if (!b.ko && Math.hypot(b.x - player.x, b.z - player.z) < reach + b.def.scale * 0.35) {
+        if (!b.ko && Math.hypot(b.x - player.x, b.z - player.z) < reach + b.def.scale * 0.38) {
           hitCount++;
+          const airborne = b.y > 0.24;
           if (wielding) {
             hitBoss(b, idx, player.heldProp.dmg, dirX, dirZ, 13.0, 6.2, `${player.heldProp.icon} 풀스윙!!`, true);
+          } else if (isEwgf) {
+            hitBoss(b, idx, 32, dirX, dirZ, 3.0, 11.4, "⚡ 도랴!! 초풍신권!!", true);
+            spawnParticles(b.x, b.y + 1.1, b.z, 10, "shock");
+          } else if (isAir || (airborne && !isBound)) {
+            juggledCount++;
+            b.vy = 0;
+            hitBoss(b, idx, 24, dirX, dirZ, 2.6, 8.6, "⚡ AIR COMBO!!", false);
+            spawnParticles(b.x, b.y + 1.1, b.z, 6, "tekken");
+          } else if (isBound) {
+            slowMo = 0.18;
+            hitBoss(b, idx, 42, dirX, dirZ, 6.0, 2.0, "💥 토네이도 바운드!!", true);
+            b.vy = -17.0; b.boundPending = true;
+            spawnParticles(b.x, b.y + 1.1, b.z, 10, "tekken");
           } else {
-            hitBoss(b, idx, fin ? 28 : 17, dirX, dirZ, fin ? 12.5 : 6.0, fin ? 6.0 : 2.5, fin ? "풀스윙 죽방!!" : "죽방!", fin);
+            hitBoss(b, idx, step === 1 ? 20 : 16, dirX, dirZ, 3.8, airborne ? 7.8 : 2.2, step === 1 ? "원투 훅!!" : "잽!", false);
           }
         }
       });
 
-      if (hitCount >= 3) {
+      if (isEwgf && hitCount > 0) {
+        popText(player.x, 2.65, player.z, `⚡ 도랴!! 초풍신권 (${hitCount}명 공중띄우기!)`, "#67e8f9", 25);
+        haptic(30);
+      } else if (isBound && hitCount > 0) {
+        playSfx("slam");
+        shakeMag = Math.max(shakeMag, 0.58); shakeT = 0.24; haptic(36);
+        popText(player.x, 2.65, player.z, `💥 토네이도 바운드 스매시!!`, "#fb7185", 26);
+      } else if (juggledCount > 0) {
         playSfx("heavy");
-        shakeMag = Math.max(shakeMag, 0.48); shakeT = 0.22; haptic(32);
-        popText(player.x, 2.55, player.z, `🔥 ${hitCount}명 동시 참교육!!`, "#fb7185", 26);
-      } else if (hitCount > 0) {
+        popText(player.x, 2.55, player.z, `⚡ 공중 콤보 ${juggledCount}명 저글링!!`, "#fde047", 23);
+        haptic(20);
+      } else if (hitCount > 0 && !isEwgf) {
         playSfx(fin ? "heavy" : "hit");
         haptic(fin ? 22 : 12);
       }
 
-      // 3. Hit Drums, Golden Safe, Vending Machine
-      for (let hi = hazards.length - 1; hi >= 0; hi--) {
-        const hz = hazards[hi];
-        if (Math.hypot(hz.x - player.x, hz.z - player.z) < reach + hz.radius) {
-          hitCount++;
-          if (hz.kind === "drum") {
-            explodeDrum(hz, hi);
-          } else if (hz.kind === "safe") {
-            hz.hp -= wielding ? 45 : 25;
-            playSfx("coin"); spawnParticles(hz.x, 1.2, hz.z, 10, "cash"); addCash(50000);
-            popText(hz.x, 2.3, hz.z, hz.hp <= 0 ? "💰 비자금 금고 대폭발!!" : "💵 비자금 털기! +₩50,000", "#4ade80", 23);
-            if (hz.hp <= 0) { hz.hp = hz.maxHp; addCash(350000); spawnParticles(hz.x, 1.4, hz.z, 30, "cash"); playSfx("ko"); }
-          } else if (hz.kind === "vending" && hz.cd <= 0) {
-            hz.cd = 3.5; player.fever = Math.min(100, player.fever + 40);
-            playSfx("coin"); popText(hz.x, 2.3, hz.z, "🥤 고카페인! 필살기 +40%", "#38bdf8", 21);
-          }
-        }
-      }
+      hitCount += hitArenaHazards(reach, wielding);
 
       if (wielding && hitCount > 0) {
         player.weaponUses--;
@@ -1793,15 +1998,16 @@
           player.heldProp = null;
         }
       }
-      if (hitCount === 0) playSfx("swing");
+      if (hitCount === 0 && !isEwgf) playSfx("swing");
       updateHud();
     }
 
     function explodeDrum(hz, hi) {
       hazards.splice(hi, 1);
-      playSfx("heavy"); haptic(75);
+      playSfx("slam"); haptic(75);
       shakeMag = 0.72; shakeT = 0.36;
       spawnParticles(hz.x, 1.0, hz.z, 30, "fire");
+      spawnShockRing(hz.x, hz.z, 7.5, [1.0, 0.45, 0.12]);
       let blastCnt = 0;
       for (const m of mobs) {
         const dx = m.x - hz.x, dz = m.z - hz.z, d = Math.hypot(dx, dz) || 1;
@@ -1815,45 +2021,26 @@
       updateHud();
     }
 
-    function doUppercut() {
-      if (player.upperCd > 0) return;
-      player.upperCd = 1.4;
-      if (player.ridingChair) player.ridingChair = null;
-      const ne = nearestEnemy(4.4);
-      if (ne.e) {
-        const dx = ne.e.x - player.x, dz = ne.e.z - player.z, d = ne.d || 1;
-        player.yaw = Math.atan2(dx, dz);
-        if (d > 1.15) { player.x += (dx / d) * 0.85; player.z += (dz / d) * 0.85; }
-      }
-      player.atkType = "upper"; player.atkDur = 0.30; player.atkTimer = 0.30;
-      const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
-      let cnt = 0;
-      for (const m of mobs) {
-        if (!m.ko && Math.hypot(m.x - player.x, m.z - player.z) < 3.6) {
-          cnt++; hitMob(m, 60, dirX, dirZ, 13.0, 12.0, true, cnt === 1);
-        }
-      }
-      bosses.forEach((b, idx) => {
-        if (!b.ko && Math.hypot(b.x - player.x, b.z - player.z) < 3.5) {
-          cnt++; slowMo = 0.22;
-          hitBoss(b, idx, 42, dirX, dirZ, 11.5, 10.8, "💥 승룡 어퍼컷!!", true);
-        }
-      });
-      if (cnt > 0) {
-        playSfx("heavy"); shakeMag = 0.45; shakeT = 0.22;
-        if (cnt >= 3) popText(player.x, 2.6, player.z, `🌪️ 승룡권 ${cnt}연타!!`, "#fde047", 27);
-        updateHud();
-      } else playSfx("swing");
-    }
-
-    function doDash() {
-      if (player.dashCd > 0) return;
-      player.dashCd = 0.9; player.dashTimer = 0.24;
-      playSfx("dash");
-    }
-
+    // Button 1 (#btnGrab): Tekken Collar Grapple -> Giant Swing / Weapon Throw / Dismount
     function doGrabOrThrow() {
-      if (player.ridingChair) player.ridingChair = null;
+      // 1. Already holding enemy collar -> Execute King's GIANT SWING!
+      if (player.grapple) {
+        if (player.grapple.phase === "hold") startGiantSwing();
+        return;
+      }
+      // 2. Chain Throw Window -> 2-Stage Sky Powerbomb!
+      if (player.chainThrow && player.chainThrow.timer > 0 && !player.chainThrow.target.ko) {
+        startChainPowerbomb(player.chainThrow);
+        return;
+      }
+      // 3. Riding Forklift/Chair -> Dismount
+      if (player.ridingChair) {
+        player.ridingChair = null;
+        popText(player.x, 2.0, player.z, "하차 완료!", "#e2e8f0", 17);
+        updateHud();
+        return;
+      }
+      // 4. Holding Weapon -> Piercing Throw!
       if (player.heldProp) {
         const p = player.heldProp;
         player.heldProp = null;
@@ -1861,9 +2048,60 @@
         if (ne.e) player.yaw = Math.atan2(ne.e.x - player.x, ne.e.z - player.z);
         const dx = Math.sin(player.yaw), dz = Math.cos(player.yaw);
         p.x = player.x + dx * 0.9; p.y = 1.35; p.z = player.z + dz * 0.9;
-        p.vx = dx * 21.0; p.vy = 2.6; p.vz = dz * 21.0;
+        p.vx = dx * 22.0; p.vy = 2.6; p.vz = dz * 22.0;
         p.vrx = 13; p.vrz = 10; p.hot = 1.3; p.pierce = 6;
         playSfx("swing");
+        updateHud();
+        return;
+      }
+      // 5. Bare-handed -> Tekken Dash Collar Grapple! (Works on Mobs AND Bosses incl. Chairman!)
+      const ne = nearestEnemy(5.2, true);
+      if (ne.e) {
+        const dx = ne.e.x - player.x, dz = ne.e.z - player.z, d = ne.d || 1;
+        player.yaw = Math.atan2(dx, dz);
+        if (d > 1.0) {
+          player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + (dx / d) * Math.min(3.8, d - 0.85)));
+          player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + (dz / d) * Math.min(3.8, d - 0.85)));
+        }
+        ne.e.vx = 0; ne.e.vy = 0; ne.e.vz = 0;
+        ne.e.ragdoll = 0; ne.e.boundPending = false;
+        if (ne.isBoss) {
+          focusBossIdx = ne.bossIdx;
+          ne.e.speech = "헉!! 감히 내 멱살을 잡다니?!";
+          ne.e.hurtSpeech = true; ne.e.speechT = 2.2;
+        }
+        player.grapple = {
+          target: ne.e, isBoss: ne.isBoss, bossIdx: ne.bossIdx,
+          phase: "hold", timer: 1.15, dur: 1.15, origX: player.x, origZ: player.z
+        };
+        playSfx("grab"); haptic(26);
+        spawnParticles(ne.e.x, ne.e.y + 1.1, ne.e.z, 8, "tekken");
+        popText(ne.e.x, 2.35, ne.e.z, "🤼 멱살 잡기! [콤보=수플렉스 / 잡기=자이언트스윙]", "#67e8f9", 19);
+        updateHud();
+        return;
+      }
+      // 6. No enemy within 5.2m -> quick grapple lunge step forward!
+      player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + Math.sin(player.yaw) * 1.4));
+      player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + Math.cos(player.yaw) * 1.4));
+      playSfx("swing");
+      popText(player.x, 2.0, player.z, "🤼 대시 잡기! (적 근처에서 수플렉스·자이언트스윙)", "#bae6fd", 17);
+    }
+
+    // Contextual Pickup / Vehicle Ride (#btnInteract or KeyF)
+    function doInteract() {
+      if (player.grapple) return;
+      if (player.ridingChair) {
+        player.ridingChair = null;
+        popText(player.x, 2.0, player.z, "하차 완료!", "#e2e8f0", 17);
+        updateHud();
+        return;
+      }
+      if (nearestChair && (!nearestProp || Math.hypot(nearestChair.x - player.x, nearestChair.z - player.z) <= Math.hypot(nearestProp.x - player.x, nearestProp.z - player.z) + 0.4)) {
+        player.heldProp = null;
+        player.ridingChair = nearestChair;
+        playSfx("dash");
+        const isFork = nearestChair.type === "forklift";
+        popText(player.x, 2.3, player.z, isFork ? "🚜 지게차 탑승!! 꼰대 무리를 밀어버리세요!" : "🪑 회전의자 탑승!! 볼링 스트라이크!", "#fde047", 20);
         updateHud();
         return;
       }
@@ -1874,45 +2112,27 @@
         popText(player.x, 2.2, player.z, `${nearestProp.icon} ${nearestProp.label} 장착!`, "#67e8f9", 20);
         playSfx("swing");
         updateHud();
-      } else {
-        popText(player.x, 2.0, player.z, "주변 스패너·골프채·집기 가까이!", "#cbd5e1", 17);
-      }
-    }
-
-    function toggleRideChair() {
-      if (player.ridingChair) {
-        player.ridingChair = null;
-        popText(player.x, 2.0, player.z, "하차 완료!", "#e2e8f0", 17);
-        updateHud();
-        return;
-      }
-      if (nearestChair) {
-        player.heldProp = null;
-        player.ridingChair = nearestChair;
-        playSfx("dash");
-        const isFork = nearestChair.type === "forklift";
-        popText(player.x, 2.3, player.z, isFork ? "🚜 지게차 탑승!! 꼰대 무리를 밀어버리세요!" : "🪑 회전의자 탑승!! 볼링 스트라이크!", "#fde047", 20);
-        updateHud();
-      } else {
-        popText(player.x, 2.0, player.z, stageIdx === 0 ? "🚜 노란 지게차 가까이 가세요!" : "🪑 의자·전동카트 가까이 가세요!", "#fde68a", 17);
       }
     }
 
     function doUltimate() {
       if (player.fever < 100) return;
-      player.fever = 0; slowMo = 0.55; shakeMag = 0.72; shakeT = 0.45;
-      playSfx("ko"); haptic(85);
-      spawnParticles(player.x, 1.3, player.z, 40, "paper");
+      if (player.grapple) player.grapple = null;
+      player.fever = 0; slowMo = 0.58; shakeMag = 0.82; shakeT = 0.48;
+      playSfx("slam"); playSfx("ko"); haptic(95);
+      spawnParticles(player.x, 1.3, player.z, 42, "paper");
+      spawnParticles(player.x, 1.3, player.z, 24, "tekken");
+      spawnShockRing(player.x, player.z, 12.0, [1.0, 0.25, 0.55]);
       let swept = 0;
       for (const m of mobs) {
         const dx = m.x - player.x, dz = m.z - player.z, d = Math.hypot(dx, dz) || 1;
-        if (!m.ko && d < 18.0) { swept++; hitMob(m, 150, dx / d, dz / d, 20.0, 12.5, true, false); }
+        if (!m.ko && d < 18.5) { swept++; hitMob(m, 165, dx / d, dz / d, 20.0, 12.8, true, false); }
       }
       bosses.forEach((b, idx) => {
         const dx = b.x - player.x, dz = b.z - player.z, d = Math.hypot(dx, dz) || 1;
-        if (!b.ko && d < 18.0) { swept++; hitBoss(b, idx, 115, dx / d, dz / d, 18.0, 11.5, "📄 사표 폭격!!", true); }
+        if (!b.ko && d < 18.5) { swept++; hitBoss(b, idx, 125, dx / d, dz / d, 18.5, 11.8, "🔥 레이지 아츠: 사표 폭격!!", true); }
       });
-      popText(player.x, 2.8, player.z, `📄 전사원 사표 폭격!! (${swept}명 초토화!)`, "#34d399", 30);
+      popText(player.x, 2.8, player.z, `🔥 레이지 아츠: 사표 대폭격!! (${swept}명 초토화!)`, "#fde047", 30);
       updateHud();
     }
 
@@ -1926,12 +2146,12 @@
       player.powerLv++;
       playSfx("ko"); haptic(40);
       spawnParticles(player.x, 1.2, player.z, 16, "spark");
-      popText(player.x, 2.5, player.z, `💪 주먹 강화 LV.${player.powerLv}! 범위·파워 대폭 UP!`, "#fde047", 24);
+      popText(player.x, 2.5, player.z, `💪 주먹 강화 LV.${player.powerLv}! 범위·메치기 파워 UP!`, "#fde047", 24);
       updateHud();
     }
 
     // =========================================================================
-    // 8. CLEAN 2-TIER HUD, RADAR & INPUT WIRING
+    // 8. CLEAN 2-TIER HUD, RADAR & 2-BUTTON TEKKEN WIRING
     // =========================================================================
     function formatCompactWon(n) {
       if (n >= 100000000) return `₩${(n / 100000000).toFixed(1)}억`;
@@ -1979,23 +2199,61 @@
       const onlineTotal = 1 + remotePlayers.size + (aiPartyEnabled ? aiAllies.length : 0);
       document.getElementById("multiCountText").textContent = `${onlineTotal}`;
 
-      for (let i = 1; i <= 3; i++) document.getElementById(`pip${i}`).style.opacity = i <= player.comboStep ? "0.95" : "0.22";
+      // 5 Tekken Combo Pips
+      for (let i = 1; i <= 5; i++) {
+        const pEl = document.getElementById(`pip${i}`);
+        if (pEl) pEl.style.opacity = i <= player.comboStep ? "0.98" : "0.18";
+      }
 
-      if (player.ridingChair) {
+      // Dynamic 2-Button Tekken Prompts (#btnAttack & #btnGrab)
+      const btnAtk = document.getElementById("btnAttack");
+      const btnGrab = document.getElementById("btnGrab");
+      const holdingCollar = player.grapple && player.grapple.phase === "hold";
+      const canChain = !player.grapple && player.chainThrow && player.chainThrow.timer > 0 && !player.chainThrow.target.ko;
+
+      btnAtk.classList.toggle("suplex-mode", !!(holdingCollar || canChain));
+      btnAtk.classList.toggle("ewgf-mode", !holdingCollar && !canChain && !player.heldProp && !player.ridingChair && player.comboStep === 2);
+      btnGrab.classList.toggle("grapple-swing", !!holdingCollar);
+
+      if (holdingCollar) {
+        document.getElementById("atkIcon").textContent = "💥";
+        document.getElementById("atkText").textContent = "수플렉스!";
+        document.getElementById("grabIcon").textContent = "🌪️";
+        document.getElementById("grabText").textContent = "자이언트스윙!";
+      } else if (canChain) {
+        document.getElementById("atkIcon").textContent = "🔥";
+        document.getElementById("atkText").textContent = "체인찍기!";
+        document.getElementById("grabIcon").textContent = "🔥";
+        document.getElementById("grabText").textContent = "체인찍기!";
+      } else if (player.ridingChair) {
         document.getElementById("atkIcon").textContent = "💨";
         document.getElementById("atkText").textContent = "부스터!";
+        document.getElementById("grabIcon").textContent = "⬇️";
+        document.getElementById("grabText").textContent = "하차";
       } else if (player.heldProp) {
         document.getElementById("atkIcon").textContent = player.heldProp.icon;
         document.getElementById("atkText").textContent = `스윙(${player.weaponUses})`;
+        document.getElementById("grabIcon").textContent = "🎯";
+        document.getElementById("grabText").textContent = "무기투척!";
       } else {
-        document.getElementById("atkIcon").textContent = "🥊";
-        document.getElementById("atkText").textContent = "죽방";
+        const nextLabels = [
+          ["🥊", "철권콤보"],
+          ["🥊", "2타 훅!"],
+          ["⚡", "초풍신권!"],
+          ["🌪️", "공중콤보!"],
+          ["💥", "바운드!"]
+        ];
+        const [ic, tx] = nextLabels[player.comboStep] || nextLabels[0];
+        document.getElementById("atkIcon").textContent = ic;
+        document.getElementById("atkText").textContent = tx;
+        document.getElementById("grabIcon").textContent = "🤼";
+        document.getElementById("grabText").textContent = "잡기·메치기";
       }
 
+      // Rage Gauge Ring on #btnAttack + Contextual Rage Pill (ONLY shown when 100%!)
       const f = Math.round(player.fever);
-      document.getElementById("ultArc").style.strokeDashoffset = `${(163.36 * (1 - f / 100)).toFixed(1)}`;
-      document.getElementById("ultPct").textContent = f >= 100 ? "MAX!" : `${f}%`;
-      document.getElementById("btnUlt").classList.toggle("ult-ready", f >= 100);
+      document.getElementById("ultArc").style.strokeDashoffset = `${(295.3 * (1 - f / 100)).toFixed(1)}`;
+      document.getElementById("btnUlt").classList.toggle("hidden", f < 100);
     }
 
     const rCvs = document.getElementById("radarCanvas");
@@ -2009,19 +2267,16 @@
       const mz = (z) => ((z + MAP_Z) / (MAP_Z * 2)) * h;
       const st = STAGES[stageIdx];
 
-      // Warp / Detonate Portal Ring
       const [px, pz] = st.portalPos;
       rctx.strokeStyle = portalOpen ? "#e879f9" : "#64748b";
       rctx.lineWidth = 2;
       rctx.beginPath(); rctx.arc(mx(px), mz(pz), 4.2, 0, 6.28); rctx.stroke();
 
-      // Swarming Crowd Mobs (Red dots!)
       rctx.fillStyle = "rgba(248, 113, 113, 0.85)";
       for (const m of mobs) {
         if (!m.ko) rctx.fillRect(mx(m.x) - 1.2, mz(m.z) - 1.2, 2.4, 2.4);
       }
 
-      // Allies & Remote Players
       rctx.fillStyle = "#38bdf8";
       remotePlayers.forEach((rp) => { if (rp.stage === stageIdx) { rctx.beginPath(); rctx.arc(mx(rp.x), mz(rp.z), 2.4, 0, 6.28); rctx.fill(); } });
       if (aiPartyEnabled) {
@@ -2029,7 +2284,6 @@
         aiAllies.forEach((a) => { rctx.beginPath(); rctx.arc(mx(a.x), mz(a.z), 2.0, 0, 6.28); rctx.fill(); });
       }
 
-      // Stage Boss Dots
       const bCols = ["#fb923c", "#a3e635", "#c084fc", "#facc15"];
       bosses.forEach((b, i) => {
         if (b.ko) return;
@@ -2037,7 +2291,6 @@
         rctx.beginPath(); rctx.arc(mx(b.x), mz(b.z), 3.3, 0, 6.28); rctx.fill();
       });
 
-      // Local Player
       rctx.fillStyle = "#ffffff";
       rctx.beginPath(); rctx.arc(mx(player.x), mz(player.z), 3.0, 0, 6.28); rctx.fill();
     }
@@ -2049,10 +2302,8 @@
       if (e.repeat) return;
       keys[e.code] = true;
       if (e.code === "Space" || e.code === "KeyJ") { e.preventDefault(); doAttack(); }
-      if (e.code === "KeyK") { e.preventDefault(); doUppercut(); }
-      if (e.code === "KeyL") { e.preventDefault(); doGrabOrThrow(); }
-      if (e.code === "KeyF") { e.preventDefault(); toggleRideChair(); }
-      if (e.code === "ShiftLeft" || e.code === "ShiftRight") { e.preventDefault(); doDash(); }
+      if (e.code === "KeyK" || e.code === "KeyL") { e.preventDefault(); doGrabOrThrow(); }
+      if (e.code === "KeyF") { e.preventDefault(); doInteract(); }
       if (e.code === "KeyE") { e.preventDefault(); doUltimate(); }
     });
     window.addEventListener("keyup", (e) => { keys[e.code] = false; });
@@ -2088,9 +2339,7 @@
     }
     bindBtn("btnAttack", doAttack);
     bindBtn("btnGrab", doGrabOrThrow);
-    bindBtn("btnRide", toggleRideChair);
-    bindBtn("btnUpper", doUppercut);
-    bindBtn("btnDash", doDash);
+    bindBtn("btnInteract", doInteract);
     bindBtn("btnUlt", doUltimate);
     document.getElementById("btnUpgrade").addEventListener("click", upgradePower);
     document.getElementById("btnPortalQuick").addEventListener("click", triggerPortalAction);
@@ -2234,10 +2483,15 @@
 
       if (player.atkTimer > 0) player.atkTimer = Math.max(0, player.atkTimer - rawDt);
       if (player.comboReset > 0 && (player.comboReset -= rawDt) <= 0) { player.comboStep = 0; updateHud(); }
-      if (player.upperCd > 0) player.upperCd = Math.max(0, player.upperCd - rawDt);
-      if (player.dashCd > 0) player.dashCd = Math.max(0, player.dashCd - rawDt);
+      if (player.deathfistCd > 0) player.deathfistCd = Math.max(0, player.deathfistCd - rawDt);
       if (player.myEmoteT > 0) player.myEmoteT -= rawDt;
-      document.getElementById("upperArc").style.strokeDashoffset = `${(169.6 * (player.upperCd / 1.4)).toFixed(1)}`;
+      if (player.chainThrow) {
+        player.chainThrow.timer -= rawDt;
+        if (player.chainThrow.timer <= 0 || !player.chainThrow.target || player.chainThrow.target.ko) {
+          player.chainThrow = null;
+          updateHud();
+        }
+      }
 
       if (comboTimer > 0 && (comboTimer -= rawDt) <= 0) { comboCount = 0; document.getElementById("comboBadge").style.opacity = "0"; }
       else if (comboCount >= 2) {
@@ -2268,7 +2522,7 @@
         }
       }
 
-      // Movement Input & Crowd Bowling
+      // Movement Input, King Grapple Throws & Crowd Bowling
       let ix = joyVec.x, iz = joyVec.y;
       if (keys["KeyW"] || keys["ArrowUp"]) iz -= 1;
       if (keys["KeyS"] || keys["ArrowDown"]) iz += 1;
@@ -2277,7 +2531,157 @@
       const ilen = Math.hypot(ix, iz);
       const spdBoost = activeEvent === "caffeine" ? 1.32 : 1.0;
 
-      if (player.ridingChair) {
+      if (player.grapple) {
+        const g = player.grapple;
+        const t = g.target;
+        if (!t || t.ko) {
+          player.grapple = null; player.rx = 0; player.y = 0;
+          updateHud();
+        } else if (g.phase === "hold") {
+          g.timer -= rawDt;
+          if (ilen > 0.18) player.yaw = Math.atan2(ix, iz);
+          const dx = Math.sin(player.yaw), dz = Math.cos(player.yaw);
+          player.rx = -0.10; player.vx = 0; player.vz = 0;
+          t.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + dx * 0.88));
+          t.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + dz * 0.88));
+          t.y = 0.36; t.yaw = player.yaw + Math.PI;
+          t.rx = 0; t.rz = 0; t.vx = 0; t.vy = 0; t.vz = 0; t.stun = 0.6;
+          // Auto-finish with German Suplex if player holds without pressing a 2nd button!
+          if (g.timer <= 0) startGermanSuplex();
+        } else if (g.phase === "suplex") {
+          g.timer -= dt;
+          const p = Math.min(1, 1 - Math.max(0, g.timer / g.dur));
+          const dx = Math.sin(player.yaw), dz = Math.cos(player.yaw);
+          player.rx = -Math.sin(p * Math.PI * 0.88) * 1.65;
+          player.y = Math.sin(p * Math.PI) * 0.52;
+          const ang = p * Math.PI;
+          const fwd = Math.cos(ang) * 1.12 - 0.26;
+          t.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + dx * fwd));
+          t.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + dz * fwd));
+          t.y = Math.max(0.04, Math.sin(ang) * 2.45);
+          t.yaw = player.yaw + Math.PI; t.rx = ang; t.rz = 0;
+          if (g.timer <= 0) {
+            const sx = t.x, sz = t.z;
+            player.rx = 0; player.y = 0; player.grapple = null;
+            playSfx("slam"); hitStop = 0.055; slowMo = 0.26; shakeMag = 0.80; shakeT = 0.30; haptic(60);
+            spawnShockRing(sx, sz, 4.9, [1.0, 0.35, 0.15]);
+            spawnParticles(sx, 0.5, sz, 22, "tekken");
+            if (g.isBoss) {
+              hitBoss(t, g.bossIdx, 96, -dx, -dz, 4.2, 6.2, "🤼💥 저먼 수플렉스!!", true);
+            } else {
+              hitMob(t, 155, -dx, -dz, 4.5, 6.2, true, false);
+              popText(sx, 2.35, sz, "🤼💥 저먼 수플렉스!!", "#fde047", 27);
+            }
+            for (const o of mobs) {
+              if (o !== t && !o.ko && Math.hypot(o.x - sx, o.z - sz) < 4.6) {
+                const ox = o.x - sx, oz = o.z - sz, od = Math.hypot(ox, oz) || 1;
+                hitMob(o, 48, ox / od, oz / od, 8.5, 9.5, true, false);
+              }
+            }
+            bosses.forEach((ob, obi) => {
+              if (ob !== t && !ob.ko && Math.hypot(ob.x - sx, ob.z - sz) < 4.6) {
+                const ox = ob.x - sx, oz = ob.z - sz, od = Math.hypot(ox, oz) || 1;
+                hitBoss(ob, obi, 34, ox / od, oz / od, 8.0, 8.8, "💥 수플렉스 충격파!!", true);
+              }
+            });
+            if (!t.ko) {
+              player.chainThrow = { target: t, isBoss: g.isBoss, bossIdx: g.bossIdx, timer: 1.05 };
+            }
+            updateHud();
+          }
+        } else if (g.phase === "powerbomb") {
+          g.timer -= dt;
+          const p = Math.min(1, 1 - Math.max(0, g.timer / g.dur));
+          const dx = Math.sin(player.yaw), dz = Math.cos(player.yaw);
+          if (p < 0.52) {
+            const lp = p / 0.52;
+            player.y = lp * 1.15; player.rx = -0.25 * lp;
+            t.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + dx * 0.55));
+            t.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + dz * 0.55));
+            t.y = 0.6 + lp * 2.55; t.rx = Math.PI * 0.85; t.rz = 0;
+          } else {
+            const sp = (p - 0.52) / 0.48;
+            player.y = 1.15 * (1 - sp); player.rx = 0.52 * sp;
+            t.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + dx * 1.15));
+            t.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + dz * 1.15));
+            t.y = Math.max(0.04, 3.15 * (1 - sp)); t.rx = Math.PI; t.rz = 0;
+          }
+          if (g.timer <= 0) {
+            const sx = t.x, sz = t.z;
+            player.rx = 0; player.y = 0; player.grapple = null;
+            playSfx("slam"); playSfx("ko"); hitStop = 0.065; slowMo = 0.34; shakeMag = 0.94; shakeT = 0.36; haptic(85);
+            spawnShockRing(sx, sz, 6.5, [1.0, 0.16, 0.48]);
+            spawnParticles(sx, 0.6, sz, 28, "fire");
+            spawnParticles(sx, 0.8, sz, 16, "cash");
+            if (g.isBoss) {
+              hitBoss(t, g.bossIdx, 135, dx, dz, 7.0, 8.5, "🔥💥 2단 체인 파워밤!!", true);
+            } else {
+              hitMob(t, 230, dx, dz, 8.0, 9.0, true, false);
+              popText(sx, 2.6, sz, "🔥💥 2단 체인 파워밤!!", "#fb7185", 30);
+            }
+            for (const o of mobs) {
+              if (o !== t && !o.ko && Math.hypot(o.x - sx, o.z - sz) < 5.6) {
+                const ox = o.x - sx, oz = o.z - sz, od = Math.hypot(ox, oz) || 1;
+                hitMob(o, 72, ox / od, oz / od, 13.0, 10.8, true, false);
+              }
+            }
+            bosses.forEach((ob, obi) => {
+              if (ob !== t && !ob.ko && Math.hypot(ob.x - sx, ob.z - sz) < 5.6) {
+                const ox = ob.x - sx, oz = ob.z - sz, od = Math.hypot(ox, oz) || 1;
+                hitBoss(ob, obi, 50, ox / od, oz / od, 12.0, 9.8, "🔥 파워밤 지진파!!", true);
+              }
+            });
+            updateHud();
+          }
+        } else if (g.phase === "swing") {
+          g.timer -= dt;
+          player.yaw += dt * 31.5; player.rx = -0.30; player.y = 0;
+          const sx = Math.sin(player.yaw), sz = Math.cos(player.yaw);
+          t.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + sx * 1.72));
+          t.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + sz * 1.72));
+          t.y = 1.05; t.yaw = player.yaw; t.rx = 1.48; t.rz = 0;
+          for (const o of mobs) {
+            if (o !== t && !o.ko && o.ragdoll <= 0.1 && Math.hypot(o.x - t.x, o.z - t.z) < 1.65) {
+              hitMob(o, 34, sx, sz, 13.5, 6.2, false, false);
+            }
+          }
+          if (g.timer <= 0) {
+            player.rx = 0; player.grapple = null;
+            // Smart-aim toward nearest explosive drum, boss, or crowd cluster for epic human bowling!
+            let aimX = Math.sin(player.yaw), aimZ = Math.cos(player.yaw), bestScore = 999;
+            for (const hz of hazards) {
+              if (hz.kind === "drum") {
+                const d = Math.hypot(hz.x - player.x, hz.z - player.z);
+                if (d > 1.5 && d < 14.0 && d - 3.0 < bestScore) { bestScore = d - 3.0; aimX = (hz.x - player.x) / d; aimZ = (hz.z - player.z) / d; }
+              }
+            }
+            for (const ob of bosses) {
+              if (ob !== t && !ob.ko) {
+                const d = Math.hypot(ob.x - player.x, ob.z - player.z);
+                if (d > 1.2 && d < 16.0 && d - 2.0 < bestScore) { bestScore = d - 2.0; aimX = (ob.x - player.x) / d; aimZ = (ob.z - player.z) / d; }
+              }
+            }
+            for (const om of mobs) {
+              if (om !== t && !om.ko) {
+                const d = Math.hypot(om.x - player.x, om.z - player.z);
+                if (d > 1.5 && d < 14.0 && d < bestScore) { bestScore = d; aimX = (om.x - player.x) / d; aimZ = (om.z - player.z) / d; }
+              }
+            }
+            player.yaw = Math.atan2(aimX, aimZ);
+            if (g.isBoss) {
+              hitBoss(t, g.bossIdx, 78, aimX, aimZ, 24.5, 5.2, "🌪️🎳 자이언트 스윙 투척!!", true);
+            } else {
+              hitMob(t, 95, aimX, aimZ, 25.5, 5.2, true, false);
+            }
+            t.vx = aimX * 25.0; t.vz = aimZ * 25.0; t.vy = 5.0;
+            t.ragdoll = 1.65; t.bowlingT = 1.20;
+            playSfx("heavy"); shakeMag = 0.58; shakeT = 0.24; haptic(55);
+            spawnShockRing(player.x, player.z, 3.8, [0.88, 0.35, 1.0]);
+            popText(player.x, 2.55, player.z, "🌪️🎳 자이언트 스윙 인간볼링!!", "#e879f9", 27);
+            updateHud();
+          }
+        }
+      } else if (player.ridingChair) {
         const ch = player.ridingChair;
         if (ilen > 0.05) {
           const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
@@ -2308,22 +2712,8 @@
             }
           });
         }
-      } else if (player.dashTimer > 0) {
-        player.dashTimer -= rawDt;
-        const dx = Math.sin(player.yaw), dz = Math.cos(player.yaw);
-        player.vx = dx * 18.5; player.vz = dz * 18.5;
-        player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + player.vx * dt));
-        player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + player.vz * dt));
-        // Shoulder-tackle crowd villains while dashing!
-        let tackled = 0;
-        for (const m of mobs) {
-          if (!m.ko && m.ragdoll <= 0.15 && Math.hypot(m.x - player.x, m.z - player.z) < 1.6) {
-            tackled++;
-            hitMob(m, 28, dx, dz, 13.5, 5.5, false, tackled === 1);
-          }
-        }
-        if (tackled > 0) { playSfx("hit"); updateHud(); }
       } else {
+        player.rx *= 0.8; player.y = 0;
         if (ilen > 0.05) {
           const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
           player.vx = nx * 8.6 * spdBoost; player.vz = nz * 8.6 * spdBoost;
@@ -2336,12 +2726,12 @@
 
       // Check 3D Warp Portal / Demolition Switch Entry!
       const st = STAGES[stageIdx];
-      if (portalOpen && Math.hypot(player.x - st.portalPos[0], player.z - st.portalPos[1]) < 2.85) {
+      if (portalOpen && !player.grapple && Math.hypot(player.x - st.portalPos[0], player.z - st.portalPos[1]) < 2.85) {
         triggerPortalAction();
         return;
       }
 
-      // Detect nearest grabbable weapon & nearest rideable vehicle/chair
+      // Detect nearest grabbable weapon & nearest rideable vehicle/chair -> Contextual #btnInteract ONLY!
       nearestProp = null; nearestChair = null;
       let bestPD = 2.7, bestCD = 2.9;
       for (const p of props) {
@@ -2350,36 +2740,36 @@
         if (p.grabbable && d < bestPD) { bestPD = d; nearestProp = p; }
         if (p.rideable && d < bestCD) { bestCD = d; nearestChair = p; }
       }
-      const btnGrab = document.getElementById("btnGrab");
-      if (player.heldProp) {
-        btnGrab.classList.add("active-ring");
-        document.getElementById("grabIcon").textContent = "🎯"; document.getElementById("grabText").textContent = "던지기!";
-      } else if (nearestProp) {
-        btnGrab.classList.add("active-ring");
-        document.getElementById("grabIcon").textContent = nearestProp.icon; document.getElementById("grabText").textContent = "집기";
-      } else {
-        btnGrab.classList.remove("active-ring");
-        document.getElementById("grabIcon").textContent = "🖐️"; document.getElementById("grabText").textContent = "집기";
+      const btnInteract = document.getElementById("btnInteract");
+      const showCtx = !player.grapple && !player.ridingChair && !player.heldProp && !!(nearestChair || nearestProp);
+      btnInteract.classList.toggle("hidden", !showCtx);
+      if (showCtx) {
+        if (nearestChair && (!nearestProp || bestCD <= bestPD + 0.4)) {
+          const isFork = nearestChair.type === "forklift";
+          document.getElementById("interactIcon").textContent = isFork ? "🚜" : "🪑";
+          document.getElementById("interactText").textContent = isFork ? "지게차 탑승" : "의자 탑승";
+        } else if (nearestProp) {
+          document.getElementById("interactIcon").textContent = nearestProp.icon;
+          document.getElementById("interactText").textContent = `${nearestProp.label} 집기`;
+        }
       }
-
-      const btnRide = document.getElementById("btnRide");
-      btnRide.classList.toggle("chair-ring", !!(player.ridingChair || nearestChair));
-      document.getElementById("rideText").textContent = player.ridingChair ? "하차" : (stageIdx === 0 ? "지게차" : "의자·카트");
 
       for (const hz of hazards) if (hz.cd > 0) hz.cd -= dt;
 
-      // Update Swarming Crowd Villains (22~27 Mobs + Domino Bowling + Reinforcements!)
+      // Update Swarming Crowd Villains (22~27 Mobs + Tekken Bound + Giant Swing Bowling + Reinforcements!)
       let aliveMobs = 0;
       for (let mi = mobs.length - 1; mi >= 0; mi--) {
         const m = mobs[mi];
         if (m.flash > 0) m.flash -= rawDt;
         if (m.shockT > 0) m.shockT -= dt;
+        if (player.grapple && player.grapple.target === m) { aliveMobs++; continue; }
         if (m.ko) {
           m.koCleanup -= rawDt;
           if (m.koCleanup <= 0) { mobs.splice(mi, 1); continue; }
         } else {
           aliveMobs++;
         }
+        if (m.bowlingT > 0) m.bowlingT = Math.max(0, m.bowlingT - dt);
 
         if (m.ragdoll > 0 || m.y > 0.01 || m.ko) {
           m.ragdoll = Math.max(0, m.ragdoll - dt);
@@ -2389,19 +2779,36 @@
           if (Math.abs(m.x) > MAP_X) { m.x = Math.sign(m.x) * MAP_X; m.vx *= -0.65; }
           if (Math.abs(m.z) > MAP_Z) { m.z = Math.sign(m.z) * MAP_Z; m.vz *= -0.65; }
           if (m.y <= 0) {
-            m.y = 0;
-            if (Math.abs(m.vy) > 3.0 && !m.ko) m.vy = -m.vy * 0.35; else m.vy = 0;
-            m.vx *= 0.80; m.vz *= 0.80;
+            if (m.boundPending && !m.ko) {
+              m.boundPending = false;
+              m.y = 0.02; m.vy = 9.6; m.vx *= 0.42; m.vz *= 0.42;
+              spawnShockRing(m.x, m.z, 2.6, [1.0, 0.84, 0.2]);
+              playSfx("heavy");
+              popText(m.x, 1.8, m.z, "🌪️ 바운드!!", "#fde047", 20);
+            } else {
+              m.y = 0;
+              if (Math.abs(m.vy) > 3.0 && !m.ko) m.vy = -m.vy * 0.35; else m.vy = 0;
+              m.vx *= 0.80; m.vz *= 0.80;
+            }
           }
 
           const mSpd = Math.hypot(m.vx, m.vz);
           if (mSpd > 5.8) {
-            // Domino Bowling: flying villain knocks down nearby standing villains!
+            const isBowl = m.bowlingT > 0;
+            const bRad = isBowl ? 2.15 : 1.05;
+            // Domino / Giant-Swing Human Bowling: flying villain plows through crowds & bosses!
             for (const o of mobs) {
-              if (o !== m && !o.ko && o.ragdoll <= 0.05 && Math.hypot(o.x - m.x, o.z - m.z) < 1.05) {
-                hitMob(o, 26, m.vx / mSpd, m.vz / mSpd, 10.5, 4.8, false, false);
-                m.vx *= 0.84; m.vz *= 0.84;
+              if (o !== m && !o.ko && o.ragdoll <= 0.05 && Math.hypot(o.x - m.x, o.z - m.z) < bRad) {
+                hitMob(o, isBowl ? 78 : 26, m.vx / mSpd, m.vz / mSpd, isBowl ? 15.5 : 10.5, isBowl ? 7.2 : 4.8, isBowl, false);
+                m.vx *= isBowl ? 0.94 : 0.84; m.vz *= isBowl ? 0.94 : 0.84;
               }
+            }
+            if (isBowl) {
+              bosses.forEach((ob, obi) => {
+                if (!ob.ko && ob.ragdoll <= 0.08 && Math.hypot(ob.x - m.x, ob.z - m.z) < 2.15) {
+                  hitBoss(ob, obi, 54, m.vx / mSpd, m.vz / mSpd, 15.5, 7.2, "🎳 인간볼링 스트라이크!!", true);
+                }
+              });
             }
             for (let hi = hazards.length - 1; hi >= 0; hi--) {
               const hz = hazards[hi];
@@ -2428,7 +2835,6 @@
           else {
             let dx = player.x - m.x, dz = player.z - m.z;
             const d = Math.hypot(dx, dz) || 1;
-            // Gentle separation so 25 villains surround the player cleanly
             let sepX = 0, sepZ = 0;
             for (let j = 0; j < mobs.length; j += 2) {
               const o = mobs[j];
@@ -2457,13 +2863,15 @@
         mobs.push(createMob(st, false));
       }
 
-      // Update Stage Bosses + Domino & Hazard Collisions
+      // Update Stage Bosses + Tekken Bound + Giant Swing Bowling & Hazard Collisions
       bosses.forEach((b, idx) => {
         if (b.flash > 0) b.flash -= rawDt;
         if (b.shockT > 0) {
           b.shockT -= dt;
           if (Math.random() < 0.35) spawnParticles(b.x, b.y + 1.0, b.z, 1, "shock");
         }
+        if (player.grapple && player.grapple.target === b) return;
+        if (b.bowlingT > 0) b.bowlingT = Math.max(0, b.bowlingT - dt);
         if (b.ko && freePlayMode) {
           b.respawn -= rawDt;
           if (b.respawn <= 0) {
@@ -2481,17 +2889,34 @@
           if (Math.abs(b.x) > MAP_X) { b.x = Math.sign(b.x) * MAP_X; b.vx *= -0.65; }
           if (Math.abs(b.z) > MAP_Z) { b.z = Math.sign(b.z) * MAP_Z; b.vz *= -0.65; }
           if (b.y <= 0) {
-            b.y = 0;
-            if (Math.abs(b.vy) > 2.8 && !b.ko) b.vy = -b.vy * 0.4; else b.vy = 0;
-            b.vx *= 0.80; b.vz *= 0.80;
+            if (b.boundPending && !b.ko) {
+              b.boundPending = false;
+              b.y = 0.02; b.vy = 9.4; b.vx *= 0.42; b.vz *= 0.42;
+              spawnShockRing(b.x, b.z, 3.0, [1.0, 0.84, 0.2]);
+              playSfx("heavy");
+              popText(b.x, 2.1, b.z, "🌪️ 보스 바운드!! 추가타 찬스!", "#fde047", 23);
+            } else {
+              b.y = 0;
+              if (Math.abs(b.vy) > 2.8 && !b.ko) b.vy = -b.vy * 0.4; else b.vy = 0;
+              b.vx *= 0.80; b.vz *= 0.80;
+            }
           }
 
           const bSpd = Math.hypot(b.vx, b.vz);
           if (bSpd > 5.0) {
+            const isBowl = b.bowlingT > 0;
+            const bRad = isBowl ? 2.3 : 1.35;
             for (const m of mobs) {
-              if (!m.ko && m.ragdoll <= 0.05 && Math.hypot(m.x - b.x, m.z - b.z) < 1.35) {
-                hitMob(m, 38, b.vx / bSpd, b.vz / bSpd, 13.0, 6.0, true, false);
+              if (!m.ko && m.ragdoll <= 0.05 && Math.hypot(m.x - b.x, m.z - b.z) < bRad) {
+                hitMob(m, isBowl ? 85 : 38, b.vx / bSpd, b.vz / bSpd, isBowl ? 16.5 : 13.0, isBowl ? 7.8 : 6.0, true, false);
               }
+            }
+            if (isBowl) {
+              bosses.forEach((ob, obi) => {
+                if (ob !== b && !ob.ko && ob.ragdoll <= 0.08 && Math.hypot(ob.x - b.x, ob.z - b.z) < 2.2) {
+                  hitBoss(ob, obi, 58, b.vx / bSpd, b.vz / bSpd, 15.5, 7.2, "🎳 임원 볼링 충돌!!", true);
+                }
+              });
             }
           }
 
@@ -2539,17 +2964,18 @@
         }
       });
 
-      // Co-op AI Raid Teammates (Fight crowd mobs & bosses alongside player!)
+      // Co-op AI Raid Teammates (Fight crowd mobs & bosses alongside player, skipping player's grappled target!)
       if (aiPartyEnabled) {
+        const gTarget = player.grapple ? player.grapple.target : null;
         for (const a of aiAllies) {
           if (a.atkT > 0) a.atkT -= dt;
           if (a.cd > 0) a.cd -= dt;
           let target = null, isMob = false, bestD = 999;
           for (const b of bosses) {
-            if (!b.ko) { const d = Math.hypot(b.x - a.x, b.z - a.z); if (d < bestD) { bestD = d; target = b; isMob = false; } }
+            if (!b.ko && b !== gTarget) { const d = Math.hypot(b.x - a.x, b.z - a.z); if (d < bestD) { bestD = d; target = b; isMob = false; } }
           }
           for (const m of mobs) {
-            if (!m.ko) { const d = Math.hypot(m.x - a.x, m.z - a.z); if (d < bestD) { bestD = d; target = m; isMob = true; } }
+            if (!m.ko && m !== gTarget) { const d = Math.hypot(m.x - a.x, m.z - a.z); if (d < bestD) { bestD = d; target = m; isMob = true; } }
           }
           if (target) {
             const dx = target.x - a.x, dz = target.z - a.z, d = Math.hypot(dx, dz) || 1;
@@ -2611,6 +3037,14 @@
             }
           }
         }
+      }
+
+      // Tekken Ground Shockwave Rings
+      for (let i = shockRings.length - 1; i >= 0; i--) {
+        const sr = shockRings[i];
+        sr.life -= rawDt;
+        if (sr.life <= 0) { shockRings.splice(i, 1); continue; }
+        sr.r += (sr.maxR - sr.r) * 10.5 * rawDt;
       }
 
       // Particles
@@ -2732,7 +3166,7 @@
       camX += (targetCamX - camX) * 0.12;
       camZ += (targetCamZ - camZ) * 0.12;
       const portrait = window.innerHeight > window.innerWidth;
-      const zoom = (detonateCutscene > 0 ? 11.5 : 0) + (portrait ? 3.8 : 0.8) + (player.ridingChair ? 1.8 : 0) + (slowMo > 0 ? -2.0 : 0);
+      const zoom = (detonateCutscene > 0 ? 11.5 : 0) + (portrait ? 3.8 : 0.8) + (player.ridingChair ? 1.8 : 0) + (player.grapple ? -2.2 : 0) + (slowMo > 0 ? -1.8 : 0);
       let sx = 0, sy = 0;
       if (shakeT > 0) { shakeT = Math.max(0, shakeT - rawDt); sx = (Math.random() - 0.5) * 2 * shakeMag; sy = (Math.random() - 0.5) * 2 * shakeMag; if (shakeT <= 0) shakeMag = 0; }
 
@@ -2789,7 +3223,7 @@
         }
       };
 
-      // 3. Ground Shadows & Highlight Rings
+      // 3. Ground Shadows, Highlight Rings & Tekken Shockwaves
       gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
       const shd = (x, z, r) => {
         mTRS(rootM, x, 0.02, z, 0, 0, 0, r * 2, 1, r * 2);
@@ -2801,7 +3235,7 @@
       remotePlayers.forEach((rp) => { if (rp.stage === stageIdx) shd(rp.x, rp.z, 0.50); });
       if (aiPartyEnabled) aiAllies.forEach((a) => shd(a.x, a.z, 0.48));
 
-      if (nearestProp && !player.heldProp && !player.ridingChair) {
+      if (nearestProp && !player.heldProp && !player.ridingChair && !player.grapple) {
         mTRS(rootM, nearestProp.x, 0.03, nearestProp.z, 0, tSec * 2.5, 0, 1.1, 1, 1.1);
         drawMesh(M.ring, rootM, { outline: 0, unlit: true, tint: [0.22, 0.78, 0.98], alpha: 0.85 });
       }
@@ -2809,6 +3243,11 @@
         const pulse = 0.9 + Math.sin(tSec * 8) * 0.12;
         mTRS(rootM, player.x, 0.035, player.z, 0, -tSec * 3, 0, pulse, 1, pulse);
         drawMesh(M.ring, rootM, { outline: 0, unlit: true, tint: [0.98, 0.82, 0.22], alpha: 0.75 });
+      }
+      for (const sr of shockRings) {
+        const a = Math.max(0, sr.life / sr.maxLife) * 0.92;
+        mTRS(rootM, sr.x, 0.045, sr.z, 0, tSec * 4.5, 0, sr.r, 1, sr.r);
+        drawMesh(M.ring, rootM, { outline: 0, unlit: true, tint: sr.tint, alpha: a });
       }
       gl.depthMask(true); gl.disable(gl.BLEND);
 
@@ -2823,21 +3262,27 @@
         drawMesh(p.mesh, rootM, { outline: 0.020 });
       }
 
-      // 5. Local Player
+      // 5. Local Player (Tekken Poses: EWGF, Air Juggle, Tornado Bound, Deathfist, Suplex & Giant Swing!)
       {
         const mv = Math.min(1, Math.hypot(player.vx, player.vz) / 6.5);
         let py = player.yaw, swL = 0, swR = 0, fs = 1 + (player.powerLv - 1) * 0.22;
-        if (player.atkTimer > 0 && !player.ridingChair) {
+        if (player.grapple) {
+          swL = -1.45; swR = -1.45; fs += 0.35;
+        } else if (player.atkTimer > 0 && !player.ridingChair) {
           const pr = 1 - player.atkTimer / player.atkDur, arc = Math.sin(pr * Math.PI);
-          if (player.atkType === "spin" || player.atkType === "weaponSwing") { py += pr * 6.28; swR = -1.8 * arc; fs += 0.45 * arc; }
+          if (player.atkType === "airJuggle" || player.atkType === "weaponSwing") { py += pr * 6.28; swR = -1.9 * arc; fs += 0.45 * arc; }
+          else if (player.atkType === "ewgf") { swR = -2.75 * arc; swL = 0.6 * arc; fs += 0.9 * arc; }
+          else if (player.atkType === "tornadoBound") { swL = -2.45 * arc; swR = -2.45 * arc; fs += 0.75 * arc; }
+          else if (player.atkType === "deathfist") { swR = -2.0 * arc; swL = 0.8 * arc; fs += 1.05 * arc; }
           else if (player.atkType === "jab") swL = -1.65 * arc;
-          else { swR = -2.1 * arc; fs += 0.6 * arc; }
+          else { swR = -2.1 * arc; fs += 0.55 * arc; }
         }
         drawCharacter({
-          x: player.x, y: player.ridingChair ? 0.42 : player.y, z: player.z, yaw: py,
+          x: player.x, y: player.ridingChair ? 0.42 : player.y, z: player.z,
+          rx: player.rx || 0, yaw: py,
           scale: 1.0 + (player.powerLv - 1) * 0.04,
           torso: M.torsoWorker, tint: [1, 1, 1], hat: M.hairHero,
-          face: player.atkTimer > 0 ? 1 : 0, walk: player.walk, moveAmt: player.ridingChair ? 0 : mv,
+          face: (player.atkTimer > 0 || player.grapple) ? 1 : 0, walk: player.walk, moveAmt: (player.ridingChair || player.grapple) ? 0 : mv,
           swL, swR, fistScale: fs, heldMesh: player.heldProp ? player.heldProp.mesh : null
         });
       }
