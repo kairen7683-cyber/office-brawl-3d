@@ -448,10 +448,23 @@
           </div>
         </div>
 
-        <!-- Row C: Smooth Dual-Layer HP Bar -->
+        <!-- Row C: Smooth Dual-Layer Boss HP Bar -->
         <div style="position:relative; width:100%; height:7px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden;">
           <div id="hpTrail" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.82); border-radius:999px; transition:width 0.4s ease;"></div>
           <div id="hpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#f43f5e,#fb923c,#fde047); border-radius:999px; transition:width 0.08s ease;"></div>
+        </div>
+
+        <!-- Row D: Player HP Bar + 17:00 Clock-Out Deadline -->
+        <div class="flex items-center justify-between" style="gap:8px; margin-top:1px;">
+          <div class="flex items-center" style="flex:1; min-width:0; gap:5px;">
+            <span id="playerHpText" class="nowrap" style="font-size:10px; font-weight:900; color:#4ade80;">❤️ 100</span>
+            <div style="position:relative; flex:1; height:6px; background:rgba(255,255,255,0.14); border-radius:999px; overflow:hidden;">
+              <div id="playerHpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#22c55e,#4ade80); border-radius:999px; transition:width 0.12s ease;"></div>
+            </div>
+          </div>
+          <div id="clockHud" class="nowrap" style="padding:1px 7px; border-radius:999px; background:rgba(15,23,42,0.72); border:1px solid rgba(125,211,252,0.45); font-size:10px; font-weight:900; font-family:monospace; color:#7dd3fc;">
+            🕔 16:00 / 17:00
+          </div>
         </div>
       </div>
     </div>
@@ -1382,12 +1395,14 @@
         portalPos: [0, -16.8], portalLabel: "🌀 서울본사 이동 포털",
         mobPool: [
           { title:"잔소리 조장", torso:"torsoFactory", hat:"hatHardhat", tint:[1,1,1], hp:38, speed:2.9, taunts:["특근 뛰고 가!", "라인 빨리 돌려!", "딴짓하지 마!"] },
-          { title:"안전감시 주임", torso:"torsoFactory", hat:"hatBujangBald", tint:[0.9,0.95,1], hp:42, speed:3.0, taunts:["시말서 써와!", "화장실 금지!", "휴식시간 끝!"] },
-          { title:"텃세 작업반장", torso:"torsoKkondae", hat:"hatHardhat", tint:[1,0.92,0.85], hp:46, speed:2.8, taunts:["내 밑으로 집합!", "잔업 수당 없어!"] }
+          { title:"시말서 주임", torso:"torsoFactory", hat:"hatBujangBald", tint:[0.9,0.95,1], hp:42, speed:3.0, taunts:["시말서 써와!", "화장실 금지!", "휴식시간 끝!"] },
+          { title:"텃세 작업반장", torso:"torsoKkondae", hat:"hatHardhat", tint:[1,0.92,0.85], hp:46, speed:2.8, taunts:["내 밑으로 집합!", "잔업 수당 없어!"] },
+          { title:"라떼는 계장", torso:"torsoKkondae", hat:"hatBujangBald", tint:[0.95,0.95,0.9], hp:44, speed:2.9, taunts:["나 때는 밥도 안 먹었어!", "요즘 애들은 끈기가 없어!"] },
+          { title:"호통 생산과장", torso:"torsoBujang", hat:"hairHero", tint:[1,0.95,0.92], hp:48, speed:3.0, taunts:["5시 칼퇴? 어림없다!", "물량 맞추고 가!"] }
         ],
         bosses: [
           { idx:0, rank:"반장", badgeBg:"#d97706", name:"독사 강반장", scale:1.12, torso:"torsoFactory", hat:"hatHardhat", face:2, hp:150, bounty:90000, homeX:-9, homeZ:2, speed:2.7, taunts:["라인 멈추면 주말도 출근이다!", "스패너 어딨어!!"] },
-          { idx:1, rank:"생산부장", badgeBg:"#475569", name:"철야 남부장", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:200, bounty:140000, homeX:9, homeZ:1, speed:2.8, taunts:["울산공장 목표량 200% 채워!", "칼퇴는 꿈도 꾸지 마!"] },
+          { idx:1, rank:"생산부장", badgeBg:"#475569", name:"철야 남부장", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:200, bounty:140000, homeX:9, homeZ:1, speed:2.8, taunts:["울산공장 목표량 200% 채워!", "5시 칼퇴는 꿈도 꾸지 마!"] },
           { idx:2, rank:"공장장", badgeBg:"#b91c1c", name:"울산 폭군 마공장장", scale:1.38, wideX:1.20, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:270, bounty:220000, homeX:0, homeZ:-9, speed:2.9, taunts:["내가 울산공장 왕이다!! 다 막아!!", "서울본사엔 절대 못 간다!!"] }
         ]
       },
@@ -1398,12 +1413,14 @@
         mobPool: [
           { title:"야근강요 과장", torso:"torsoKkondae", hat:"hairHero", tint:[0.85,0.9,1], hp:44, speed:3.0, taunts:["야근하고 퇴근해!", "피피티 폰트 바꿔!", "주말에 카톡 봐!"] },
           { title:"보고서 차장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,1,1], hp:48, speed:2.9, taunts:["처음부터 다시 해와!", "라떼는 말이야!", "회식 불참 금지!"] },
-          { title:"법카 아부팀장", torso:"torsoSangmu", hat:"hatSangmuVisor", tint:[0.95,1,0.9], hp:50, speed:3.2, taunts:["상무님 골프백 챙겨!", "내 커피 타와!"] }
+          { title:"법카 아부팀장", torso:"torsoSangmu", hat:"hatSangmuVisor", tint:[0.95,1,0.9], hp:50, speed:3.2, taunts:["상무님 골프백 챙겨!", "내 커피 타와!"] },
+          { title:"주말카톡 대리", torso:"torsoKkondae", hat:"hatSangmuVisor", tint:[0.92,0.95,1], hp:45, speed:3.1, taunts:["주말인데 카톡 왜 안 봐?!", "월요일 아침까지 수정해!"] },
+          { title:"회식강요 부장", torso:"torsoBujang", hat:"hatBonbujangPompadour", tint:[1,0.92,0.92], hp:52, speed:2.9, taunts:["오늘 3차까지 필참이다!", "5시 퇴근이 웬 말이냐!"] }
         ],
         bosses: [
           { idx:0, rank:"부장", badgeBg:"#475569", name:"꼰대 김부장", scale:1.12, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:180, bounty:120000, homeX:-10, homeZ:3, speed:2.7, taunts:["오늘 전원 밤샘 야근이다!!", "결재 서류 다시 가져와!"] },
           { idx:1, rank:"상무", badgeBg:"#65a30d", name:"골프광 박상무", scale:1.22, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:230, bounty:180000, homeX:10, homeZ:3, speed:3.1, taunts:["근무시간엔 역시 퍼팅이지~", "법인카드로 한우 회식 가자!"] },
-          { idx:2, rank:"본부장", badgeBg:"#7e22ce", name:"어깨깡패 최본부장", scale:1.40, wideX:1.24, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, hp:310, bounty:260000, homeX:-6, homeZ:-8, speed:2.9, taunts:["서울본사를 쑥대밭으로 만들 셈이냐?!", "경비 다 불러!!"] },
+          { idx:2, rank:"본부장", badgeBg:"#7e22ce", name:"어깨깡패 최본부장", scale:1.40, wideX:1.24, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, hp:310, bounty:260000, homeX:-6, homeZ:-8, speed:2.9, taunts:["서울본사를 쑥대밭으로 만들 셈이냐?!", "야근 결재 전원 올려!!"] },
           { idx:3, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.52, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:380, bounty:420000, homeX:6, homeZ:-10, speed:2.6, taunts:["그룹본사 회장님께 이른다!!", "내 비자금에 손대지 마!!"] }
         ]
       },
@@ -1412,21 +1429,24 @@
         targetKills: 50, activeMobs: 28, isFinal: true,
         portalPos: [0, -16.8], portalLabel: "💥 그룹본사 폭파 스위치!!",
         mobPool: [
-          { title:"비서실 흑복경호원", torso:"torsoGuard", hat:"hatGuardShades", tint:[1,1,1], hp:54, speed:3.3, taunts:["회장님 경호해!!", "침입자 제압하라!", "전원 포위해!"] },
-          { title:"감사실 기동대", torso:"torsoGuard", hat:"hairHero", tint:[0.9,0.9,1], hp:50, speed:3.2, taunts:["사원증 압수해!", "비자금 금고 지켜!"] },
-          { title:"총수 친위임원", torso:"torsoKkondae", hat:"hatBonbujangPompadour", tint:[1,0.9,0.95], hp:56, speed:3.0, taunts:["회장님 만세!!", "감히 여기가 어디라고!"] }
+          { title:"갑질 수석부장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,0.96,0.92], hp:52, speed:3.1, taunts:["감히 5시에 퇴근을 해?!", "결재 서류 백 번 다시 써와!", "어디서 눈을 똑바로 떠!"] },
+          { title:"꼰대 감사팀장", torso:"torsoKkondae", hat:"hatBonbujangPompadour", tint:[0.94,0.94,1], hp:50, speed:3.2, taunts:["근태 불량 시말서 제출해!", "연차? 그런 거 없다!"] },
+          { title:"낙하산 상무보", torso:"torsoSangmu", hat:"hatSangmuVisor", tint:[0.95,1,0.92], hp:54, speed:3.1, taunts:["내가 누군지 알고 대들어?!", "내 골프채부터 닦아!"] },
+          { title:"총수 친위전무", torso:"torsoBonbujang", hat:"hatBonbujangPompadour", tint:[1,0.9,0.95], hp:56, speed:3.0, taunts:["회장님 만세!!", "야근은 애사심이다!"] },
+          { title:"야근지옥 이사", torso:"torsoCEO", hat:"hatBujangBald", tint:[1,0.92,0.88], hp:56, speed:3.1, taunts:["칼퇴하면 인사평가 F다!", "밤새워 보고서 올려!"] }
         ],
         bosses: [
-          { idx:0, rank:"비서실장", badgeBg:"#1e293b", name:"그림자 구실장", scale:1.22, torso:"torsoGuard", hat:"hatGuardShades", face:6, clubInHand:true, hp:240, bounty:200000, homeX:-10, homeZ:2, speed:3.3, taunts:["경호실 전원 돌격하라!!", "회장님 옥좌 근처도 못 간다!"] },
+          { idx:0, rank:"전무", badgeBg:"#0f766e", name:"갑질왕 구전무", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:6, clubInHand:true, hp:240, bounty:200000, homeX:-10, homeZ:2, speed:3.2, taunts:["전 임원진 총동원해서 칼퇴 막아!!", "5시 퇴근? 내 눈에 흙이 들어가기 전엔 안 돼!"] },
           { idx:1, rank:"부회장", badgeBg:"#7e22ce", name:"황태자 천부회장", scale:1.42, wideX:1.22, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, dropsCashOnHit:true, hp:340, bounty:350000, homeX:10, homeZ:2, speed:3.0, taunts:["내가 차기 그룹 총수다!!", "돈다발로 싸대기를 날려주마!"] },
           { idx:2, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.50, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:390, bounty:450000, homeX:-7, homeZ:-9, speed:2.7, taunts:["천회장님 제발 살려주십시오!!", "그룹본사가 무너진다!!"] },
-          { idx:3, rank:"🐉총수회장", badgeBg:"#dc2626", name:"그룹 총수 천회장", scale:1.72, torso:"torsoChairman", hat:"hatChairman", face:7, onThrone:true, dropsCashOnHit:true, hp:600, bounty:1500000, homeX:3, homeZ:-10, speed:3.2, taunts:["감히 개미 따위가 그룹본사에 쳐들어와?!", "황금 전동 옥좌 풀파워 돌진!!", "경호원들 뭐하느냐!! 당장 막아라!!"] }
+          { idx:3, rank:"🐉총수회장", badgeBg:"#dc2626", name:"그룹 총수 천회장", scale:1.72, torso:"torsoChairman", hat:"hatChairman", face:7, onThrone:true, dropsCashOnHit:true, hp:600, bounty:1500000, homeX:3, homeZ:-10, speed:3.2, taunts:["감히 개미 따위가 5시 칼퇴를 꿈꿔?!", "황금 전동 옥좌 풀파워 돌진!!", "임원 꼰대들 뭐하느냐!! 전원 야근시켜!!"] }
         ]
       }
     ];
 
     const player = {
       x: 0, y: 0, z: 12.5, vx: 0, vz: 0, yaw: Math.PI, rx: 0, walk: 0,
+      hp: 100, maxHp: 100, invuln: 0, hurtFlash: 0,
       atkTimer: 0, atkDur: 0.20, atkType: "jab", comboStep: 0, comboReset: 0,
       deathfistCd: 0,
       grapple: null,     // { target, isBoss, bossIdx, phase: "hold"|"suplex"|"swing"|"powerbomb", timer, dur, origX, origZ }
@@ -1436,6 +1456,18 @@
       powerLv: 1, fever: 0,
       myEmote: "", myEmoteT: 0, netJustAttacked: false
     };
+
+    const WORK_TOTAL_REAL_SEC = 270; // 4분 30초 = 오후 4:00 (16:00) -> 오후 5:00 (17:00) 칼퇴 마감!
+    let workRemainSec = WORK_TOTAL_REAL_SEC;
+    let warnedFiveMin = false;
+    let warnedOneMin = false;
+
+    function formatWorkClock() {
+      const ratio = Math.max(0, Math.min(1, 1 - workRemainSec / WORK_TOTAL_REAL_SEC));
+      const totalMin = Math.min(60, Math.floor(ratio * 60));
+      if (totalMin >= 60) return "17:00";
+      return `16:${String(totalMin).padStart(2, "0")}`;
+    }
 
     let stageIdx = 0;
     let freePlayMode = false;
@@ -1678,7 +1710,52 @@
         const wf = document.getElementById("whiteFlash");
         wf.style.opacity = "0.85";
         setTimeout(() => { wf.style.opacity = "0"; }, 250);
-        loadStage(stageIdx + 1, true);
+        loadStage(stageIdx + 1, true, { resetHp: false, resetClock: false });
+        popText(player.x, 2.5, player.z, "☕ 거점 돌파 커피 수혈 +35 HP!", "#4ade80", 22);
+      }
+    }
+
+    function healPlayer(amount, label = "") {
+      if (campaignOver || player.hp <= 0) return;
+      const before = player.hp;
+      player.hp = Math.min(player.maxHp, player.hp + amount);
+      const gained = Math.round(player.hp - before);
+      if (gained > 0 && label) {
+        popText(player.x, 2.35, player.z, `${label} +${gained} HP`, "#4ade80", 19);
+      }
+      updateHud();
+    }
+
+    function damagePlayer(rawDmg, label = "꼰대 공격!", srcX = player.x, srcZ = player.z) {
+      if (campaignOver || detonateCutscene > 0 || player.invuln > 0 || player.grapple) return;
+      const dmg = Math.max(1, Math.round(player.ridingChair ? rawDmg * 0.5 : rawDmg));
+      player.hp = Math.max(0, player.hp - dmg);
+      player.invuln = 0.58;
+      player.hurtFlash = 0.28;
+      const hf = document.getElementById("hurtFlash");
+      if (hf) {
+        hf.style.opacity = "0.95";
+        setTimeout(() => { hf.style.opacity = "0"; }, 180);
+      }
+      const kx = player.x - srcX, kz = player.z - srcZ, kd = Math.hypot(kx, kz) || 1;
+      player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + (kx / kd) * 0.55));
+      player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + (kz / kd) * 0.55));
+      shakeMag = Math.max(shakeMag, 0.32);
+      shakeT = Math.max(shakeT, 0.16);
+      playSfx("hit");
+      haptic(35);
+      popText(player.x, 2.25, player.z, `💢 ${label} -${dmg}`, "#fb7185", 20);
+      updateHud();
+
+      if (player.hp <= 0) {
+        if (freePlayMode) {
+          player.hp = player.maxHp;
+          player.invuln = 2.0;
+          popText(player.x, 2.5, player.z, "☕ 무한난투 아아 부활!!", "#38bdf8", 24);
+          updateHud();
+        } else {
+          showDefeatModal("hp");
+        }
       }
     }
 
@@ -1708,6 +1785,7 @@
         addCash(22000);
         spawnParticles(m.x, m.y + 1.0, m.z, 5, Math.random() < 0.45 ? "cash" : "paper");
         if (showTxt) popText(m.x, m.y + 2.0, m.z, `💥 ${m.tpl.title} 참교육!`, "#4ade80", 19);
+        if (stageKills % 8 === 0) healPlayer(6, "☕ 커피 수혈");
         checkStageObjectives();
       } else if (showTxt) {
         popText(m.x, m.y + 1.9, m.z, "죽방!", "#fde047", 18);
@@ -1726,6 +1804,7 @@
       haptic(65);
       spawnParticles(b.x, b.y + 1.0, b.z, 22, b.def.dropsCashOnHit ? "cash" : "paper");
       popText(b.x, b.y + 2.6, b.z, `🎉 ${b.def.name} 제압!! +₩${b.def.bounty.toLocaleString()}`, "#4ade80", 26);
+      healPlayer(20, "☕ 임원 참교육 아아");
       checkStageObjectives();
       updateHud();
     }
@@ -1838,7 +1917,8 @@
             if (hz.hp <= 0) { hz.hp = hz.maxHp; addCash(350000); spawnParticles(hz.x, 1.4, hz.z, 30, "cash"); playSfx("ko"); }
           } else if (hz.kind === "vending" && hz.cd <= 0) {
             hz.cd = 3.5; player.fever = Math.min(100, player.fever + 45);
-            playSfx("coin"); popText(hz.x, 2.3, hz.z, "🥤 고카페인! 레이지 +45%", "#38bdf8", 21);
+            healPlayer(20);
+            playSfx("coin"); popText(hz.x, 2.3, hz.z, "🥤 고카페인! 체력 +20 · 레이지 +45%", "#38bdf8", 21);
           }
         }
       }
@@ -2271,6 +2351,45 @@
         setTimeout(() => { document.getElementById("hpTrail").style.width = `${pct}%`; }, 160);
       }
 
+      const pHpPct = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
+      const pHpText = document.getElementById("playerHpText");
+      const pHpFill = document.getElementById("playerHpFill");
+      if (pHpText && pHpFill) {
+        pHpText.textContent = `❤️ ${Math.ceil(player.hp)}`;
+        pHpFill.style.width = `${pHpPct}%`;
+        if (pHpPct <= 30) {
+          pHpText.style.color = "#fb7185";
+          pHpFill.style.background = "linear-gradient(90deg,#e11d48,#fb7185)";
+        } else if (pHpPct <= 60) {
+          pHpText.style.color = "#fbbf24";
+          pHpFill.style.background = "linear-gradient(90deg,#f59e0b,#fde047)";
+        } else {
+          pHpText.style.color = "#4ade80";
+          pHpFill.style.background = "linear-gradient(90deg,#22c55e,#4ade80)";
+        }
+      }
+      const clkEl = document.getElementById("clockHud");
+      if (clkEl) {
+        if (freePlayMode) {
+          clkEl.textContent = "♾ 자유난투";
+          clkEl.style.color = "#4ade80";
+          clkEl.style.borderColor = "rgba(74,222,128,0.5)";
+        } else {
+          const clkStr = formatWorkClock();
+          clkEl.textContent = `🕔 ${clkStr} / 17:00`;
+          if (workRemainSec <= 30) {
+            clkEl.style.color = "#fb7185";
+            clkEl.style.borderColor = "rgba(251,113,133,0.85)";
+          } else if (workRemainSec <= 75) {
+            clkEl.style.color = "#fde047";
+            clkEl.style.borderColor = "rgba(253,224,71,0.75)";
+          } else {
+            clkEl.style.color = "#7dd3fc";
+            clkEl.style.borderColor = "rgba(125,211,252,0.45)";
+          }
+        }
+      }
+
       document.getElementById("koHud").textContent = `누적 ${koTotal}`;
       document.getElementById("cashHud").textContent = formatCompactWon(cash);
       const nextCost = player.powerLv * 120000;
@@ -2469,13 +2588,17 @@
     });
     document.getElementById("btnCloseStage").addEventListener("click", () => stageModal.classList.add("hidden"));
 
+    document.getElementById("btnRetryStage").addEventListener("click", () => {
+      freePlayMode = false;
+      loadStage(stageIdx, true, { resetHp: true, resetClock: true });
+    });
     document.getElementById("btnNextOrRetry").addEventListener("click", () => {
       freePlayMode = false;
-      loadStage(0, true);
+      loadStage(0, true, { resetHp: true, resetClock: true });
     });
     document.getElementById("btnStayFree").addEventListener("click", () => {
       freePlayMode = true;
-      loadStage(2, false);
+      loadStage(2, false, { resetHp: true, resetClock: true });
       popText(player.x, 2.4, player.z, "♾ 그룹본사 무한 대난투 모드!", "#4ade80", 24);
     });
 
@@ -2525,15 +2648,38 @@
     // =========================================================================
     // 9. SIMULATION STEP (Swarming Mobs, Bowling Dominoes, Portal & Demolition!)
     // =========================================================================
-    let netSyncAcc = 0, boomTick = 0, mobSpawnAcc = 0;
+    let netSyncAcc = 0, boomTick = 0, mobSpawnAcc = 0, clockUiAcc = 0;
 
     function showFinaleModal() {
       campaignOver = true;
       const modal = document.getElementById("finaleModal");
+      const clkStr = formatWorkClock();
       document.getElementById("finaleIcon").textContent = "💥🏢🔥🎊";
-      document.getElementById("finaleTitle").textContent = "그룹본사 완전 폭파 & 참교육 대성공!!";
-      document.getElementById("finaleDesc").innerHTML = "울산공장 → 서울본사 → 그룹본사 천회장 일당과 경호 군단까지 모조리 참교육하고 블랙기업 본사를 시원하게 날려버렸습니다!!";
-      document.getElementById("finaleStats").textContent = `총 참교육 인원: ${koTotal}명  |  확보 비자금: ₩${cash.toLocaleString()}  |  주먹 LV.${player.powerLv}`;
+      document.getElementById("finaleTitle").textContent = `🕔 ${clkStr} 칼퇴 대성공!!`;
+      document.getElementById("finaleTitle").style.color = "#fde047";
+      document.getElementById("finaleDesc").innerHTML = "5시 퇴근 시간 전에 울산공장 → 서울본사 → 그룹본사 천회장 일당과 꼰대 상사 군단을 모조리 참교육하고 본사를 시원하게 폭파했습니다!!";
+      document.getElementById("finaleStats").textContent = `칼퇴 시각: ${clkStr}  |  총 참교육: ${koTotal}명  |  비자금: ₩${cash.toLocaleString()}  |  체력 ${Math.ceil(player.hp)}/${player.maxHp}`;
+      document.getElementById("btnRetryStage").classList.add("hidden");
+      modal.classList.remove("hidden");
+    }
+
+    function showDefeatModal(reason = "hp") {
+      if (campaignOver) return;
+      campaignOver = true;
+      playSfx("ko");
+      haptic(100);
+      const modal = document.getElementById("finaleModal");
+      const isTime = reason === "time";
+      document.getElementById("finaleIcon").textContent = isTime ? "🕔😱📄" : "😵💢🏥";
+      document.getElementById("finaleTitle").textContent = isTime
+        ? "17:00 땡!! 칼퇴 실패 — 강제 야근 확정!!"
+        : "체력·멘탈 소진!! 꼰대 폭격에 쓰러짐!!";
+      document.getElementById("finaleTitle").style.color = "#fb7185";
+      document.getElementById("finaleDesc").innerHTML = isTime
+        ? `오후 5시 퇴근 시간 전까지 ${STAGES[stageIdx].short} 꼰대 상사들을 다 처리하지 못했습니다... 오늘도 야근입니다!`
+        : `${STAGES[stageIdx].short} 꼰대 상사들의 집중 잔소리와 갑질에 체력이 바닥났습니다! 자판기·보스 참교육으로 체력을 회복하며 다시 도전하세요!`;
+      document.getElementById("finaleStats").textContent = `현재 거점: ${STAGES[stageIdx].short}  |  참교육: ${stageKills}/${STAGES[stageIdx].targetKills}명  |  시각: ${formatWorkClock()}`;
+      document.getElementById("btnRetryStage").classList.remove("hidden");
       modal.classList.remove("hidden");
     }
 
@@ -2567,10 +2713,42 @@
         return;
       }
 
+      // 5:00 PM (17:00) Clock-Out Deadline Countdown!
+      if (!freePlayMode) {
+        workRemainSec = Math.max(0, workRemainSec - rawDt);
+        clockUiAcc += rawDt;
+        if (clockUiAcc >= 0.4) {
+          clockUiAcc = 0;
+          updateHud();
+        }
+        if (!warnedFiveMin && workRemainSec <= 45) {
+          warnedFiveMin = true;
+          const tk = document.getElementById("eventTicker");
+          tk.textContent = "🚨 오후 4:50!! 5시 칼퇴 마감까지 얼마 안 남았습니다!! 서두르세요!!";
+          tk.classList.remove("hidden");
+          activeEvent = "deadline"; eventRemain = 5.0;
+          popText(player.x, 2.6, player.z, "🚨 5시 칼퇴 임박!!", "#fde047", 25);
+        }
+        if (!warnedOneMin && workRemainSec <= 15) {
+          warnedOneMin = true;
+          const tk = document.getElementById("eventTicker");
+          tk.textContent = "🔥 16:57!! 지금 못 끝내면 야근 확정입니다!! 마지막 스퍼트!!";
+          tk.classList.remove("hidden");
+          activeEvent = "deadline"; eventRemain = 5.0;
+        }
+        if (workRemainSec <= 0) {
+          updateHud();
+          showDefeatModal("time");
+          return;
+        }
+      }
+
       if (hitStop > 0) { hitStop -= rawDt; return; }
       const dt = slowMo > 0 ? rawDt * 0.30 : rawDt;
       if (slowMo > 0) slowMo -= rawDt;
 
+      if (player.invuln > 0) player.invuln = Math.max(0, player.invuln - rawDt);
+      if (player.hurtFlash > 0) player.hurtFlash = Math.max(0, player.hurtFlash - rawDt);
       if (player.atkTimer > 0) player.atkTimer = Math.max(0, player.atkTimer - rawDt);
       if (player.comboReset > 0 && (player.comboReset -= rawDt) <= 0) { player.comboStep = 0; updateHud(); }
       if (player.deathfistCd > 0) player.deathfistCd = Math.max(0, player.deathfistCd - rawDt);
@@ -2922,12 +3100,17 @@
               }
             }
             m.yaw = Math.atan2(dx, dz);
+            if (m.atkCd > 0) m.atkCd -= dt;
             if (d > 1.35) {
               const vx = (dx / d) * m.tpl.speed + sepX;
               const vz = (dz / d) * m.tpl.speed + sepZ;
               m.x = Math.max(-MAP_X, Math.min(MAP_X, m.x + vx * dt));
               m.z = Math.max(-MAP_Z, Math.min(MAP_Z, m.z + vz * dt));
               m.walk += dt * 9.5;
+            } else if (m.atkCd <= 0) {
+              m.atkCd = 1.65 + Math.random() * 0.75;
+              const mobDmg = 5 + stageIdx * 1.5;
+              damagePlayer(mobDmg, `${m.tpl.title} 잔소리!`, m.x, m.z);
             }
           }
         }
@@ -3028,9 +3211,18 @@
           if (b.stun > 0) b.stun -= dt;
           else {
             const dx = player.x - b.x, dz = player.z - b.z, d = Math.hypot(dx, dz) || 1;
+            if (b.atkCd > 0) b.atkCd -= dt;
             if (d < 22.0) {
               b.yaw = Math.atan2(dx, dz);
-              if (d > 1.85) { b.x += (dx / d) * b.def.speed * dt; b.z += (dz / d) * b.def.speed * dt; b.walk += dt * 8.0; }
+              if (d > 1.85) {
+                b.x += (dx / d) * b.def.speed * dt;
+                b.z += (dz / d) * b.def.speed * dt;
+                b.walk += dt * 8.0;
+              } else if (b.atkCd <= 0) {
+                b.atkCd = 1.45 + Math.random() * 0.55;
+                const bossDmg = 11 + stageIdx * 3;
+                damagePlayer(bossDmg, `${b.def.name} 야근철퇴!`, b.x, b.z);
+              }
             }
           }
         }
