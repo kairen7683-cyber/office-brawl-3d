@@ -355,6 +355,7 @@
 
   <!-- Screen Flash & Finale Detonation Cutscene Modal -->
   <div id="whiteFlash" class="fixed inset-0 pointer-events-none" style="background:#fff; opacity:0; transition:opacity 0.25s; z-index:48;"></div>
+  <div id="hurtFlash" class="fixed inset-0 pointer-events-none" style="background:radial-gradient(circle, rgba(225,29,72,0) 42%, rgba(225,29,72,0.58) 100%); opacity:0; transition:opacity 0.14s; z-index:47;"></div>
   <div id="finaleModal" class="fixed inset-0 hidden items-center justify-center pointer-events-auto" style="background:rgba(9,5,15,0.82); backdrop-filter:blur(8px); padding:16px; z-index:60;">
     <div class="glass" style="max-width:390px; width:100%; border-radius:26px; padding:24px; text-align:center; border-color:rgba(251,191,36,0.6);">
       <div id="finaleIcon" style="font-size:52px; line-height:1.1;">💥🏢🔥</div>
@@ -364,8 +365,9 @@
       </div>
       <div id="finaleStats" style="margin-top:12px; padding:10px; border-radius:14px; background:rgba(255,255,255,0.07); font-size:12px; font-weight:800; color:#4ade80;"></div>
       <div class="flex" style="gap:8px; margin-top:16px;">
-        <button id="btnNextOrRetry" class="pill-btn cta-amber" style="flex:1; height:42px; justify-content:center; font-size:13px;">🚀 울산공장부터 다시 난투</button>
-        <button id="btnStayFree" class="glass pill-btn" style="height:42px; padding:0 14px; font-size:12px;">계속 패기</button>
+        <button id="btnRetryStage" class="pill-btn cta-amber hidden" style="flex:1; height:42px; justify-content:center; font-size:12.5px;">🔄 현재 거점 재도전</button>
+        <button id="btnNextOrRetry" class="pill-btn cta-amber" style="flex:1; height:42px; justify-content:center; font-size:12.5px;">🚀 울산공장부터 다시</button>
+        <button id="btnStayFree" class="glass pill-btn" style="height:42px; padding:0 12px; font-size:12px;">계속 패기</button>
       </div>
     </div>
   </div>
@@ -1527,7 +1529,7 @@
       };
     }
 
-    function loadStage(idx, broadcast = true) {
+    function loadStage(idx, broadcast = true, opts = {}) {
       stageIdx = Math.max(0, Math.min(STAGES.length - 1, idx));
       const st = STAGES[stageIdx];
       stageKills = 0;
@@ -1536,6 +1538,24 @@
       campaignOver = false;
       focusBossIdx = 0;
       document.getElementById("finaleModal").classList.add("hidden");
+
+      const shouldResetHp = opts.resetHp !== undefined ? opts.resetHp : true;
+      const shouldResetClock = opts.resetClock !== undefined ? opts.resetClock : true;
+      if (shouldResetHp) {
+        player.hp = player.maxHp;
+      } else {
+        player.hp = Math.min(player.maxHp, player.hp + 35);
+      }
+      player.invuln = 1.2;
+      player.hurtFlash = 0;
+      const hf = document.getElementById("hurtFlash");
+      if (hf) hf.style.opacity = "0";
+
+      if (shouldResetClock) {
+        workRemainSec = stageIdx === 0 ? WORK_TOTAL_REAL_SEC : (stageIdx === 1 ? Math.round(WORK_TOTAL_REAL_SEC * 0.67) : Math.round(WORK_TOTAL_REAL_SEC * 0.38));
+        warnedFiveMin = false;
+        warnedOneMin = false;
+      }
 
       player.x = 0; player.y = 0; player.z = 12.5;
       player.vx = 0; player.vz = 0; player.yaw = Math.PI; player.rx = 0;
@@ -1594,6 +1614,7 @@
         ragdoll: 0, stun: 0, shockT: 0, flash: 0,
         boundPending: false, bowlingT: 0,
         ko: false, respawn: 0,
+        atkCd: 1.1 + i * 0.35,
         speechT: 1.2 + i * 0.9, speech: d.taunts[0], hurtSpeech: false
       }));
       for (let i = 0; i < 5; i++) {
@@ -1611,8 +1632,8 @@
 
       const tk = document.getElementById("eventTicker");
       tk.textContent = st.isFinal
-        ? `🔥 그룹본사 최종결전! [🤼잡기] 수플렉스·자이언트스윙과 [🥊철권콤보]로 천회장을 날려버리세요!`
-        : `🔥 ${st.short}! [🥊콤보] 초풍·공중콤보 & [🤼잡기] 수플렉스·자이언트스윙으로 참교육하세요!`;
+        ? `🕔 5시 칼퇴 마감 전 천회장과 꼰대 임원진을 모두 제압하고 본사를 폭파하세요!`
+        : `🕔 ${st.short}! 오후 5시 퇴근 전까지 꼰대 상사들을 싹 다 참교육하세요!`;
       tk.classList.remove("hidden");
       activeEvent = "briefing"; eventRemain = 5.5;
 
@@ -2278,7 +2299,9 @@
     function doUltimate() {
       if (player.fever < 100) return;
       if (player.grapple) player.grapple = null;
-      player.fever = 0; slowMo = 0.58; shakeMag = 0.82; shakeT = 0.48;
+      player.fever = 0; player.invuln = Math.max(player.invuln, 1.2);
+      healPlayer(18);
+      slowMo = 0.58; shakeMag = 0.82; shakeT = 0.48;
       playSfx("slam"); playSfx("ko"); haptic(95);
       spawnParticles(player.x, 1.3, player.z, 42, "paper");
       spawnParticles(player.x, 1.3, player.z, 24, "tekken");
