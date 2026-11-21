@@ -1715,17 +1715,61 @@
     }
 
     const KKONDAE_BANTER = [
-      { boss: "초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!", reply: "니가 초딩이냐?!" },
-      { boss: "글자 간격이 안 맞잖아!! 처음부터 다시 해!", reply: "눈대중 자 대고 다니세요?!" },
-      { boss: "자네, 오늘 야근일세~ 칼퇴는 무슨!", reply: "야근은 상사님이나 혼자 하세요!!" },
-      { boss: "줄간격 160% 말고 158%로 다시 맞춰와!", reply: "줄간격 대신 턱주가리 맞춰드릴게요!!" },
-      { boss: "아까랑 폰트 느낌만 살짝 다르게 해봐, 알지?", reply: "느낌이 뭔데요! 맑은고딕 펀치나 드세요!!" },
-      { boss: "라떼는 밤새우고도 주말 특근 뛰었어!", reply: "라떼는 카페 가서 드세요!!" },
-      { boss: "이거 5분이면 끝나는 거잖아? 오늘 안에 올려!", reply: "그 5분 니가 직접 해보시죠!!" },
-      { boss: "회식도 업무의 연장일세! 3차까지 필참!", reply: "내 간은 회사 소유가 아닙니다!!" },
-      { boss: "5시 퇴근? 애사심이 바닥이구만!", reply: "월급부터 올려주고 말하세요!!" },
-      { boss: "주말에 카톡 왜 씹었어?! 읽씹 금지야!", reply: "주말엔 꼰대 차단 모드입니다!!" }
+      { boss: "줄간격 글자간격 맞춰야지, 자네 눈이 어떻게 됐나?", reply: "눈대중 자 대고 다니세요?!" },
+      { boss: "보고서를 초등학생도 이해할 수 있게 만들란 말이야!!", reply: "니가 초딩이냐?!" },
+      { boss: "오늘 야근이야.", reply: "야근은 너나 해!!" },
+      { boss: "낼 아침까지 조사해서 알려주게.", reply: "내일 아침에 사표로 알려드릴게요!!" },
+      { boss: "자네 어제 밤새느라 고생 많았어, 오늘 저녁 사줄게~", reply: "밥 말고 집에 보내주세요!!" },
+      { boss: "아까 버전이 더 나은 것 같네? 원래대로 돌려와.", reply: "아까 그걸 왜 엎으셨는데요!!" },
+      { boss: "금요일 5시인데... 다들 별일 없으면 회의 좀 할까?", reply: "5시 땡! 퇴근이 제일 큰 일입니다!!" },
+      { boss: "이거 별거 아니잖아, 퇴근 전에 5분만 보고 가.", reply: "그 5분 니가 직접 해!!" },
+      { boss: "느낌이 좀... 뭐랄까, 좀 더 고급지게 바꿔봐.", reply: "고급진 죽방 맛 좀 보실래요?!" },
+      { boss: "요즘 애들은 왜 이렇게 칼퇴를 당연하게 생각하지?", reply: "근로계약서 안 읽어보셨어요?!" },
+      { boss: "내가 시켜서 하는 게 아니라 다 자네 성장하라고 하는 거야.", reply: "성장 말고 월급을 올려주세요!!" },
+      { boss: "어? 벌써 가방 싸네? 오늘 무슨 약속 있어?", reply: "집에 가서 눕는 중요한 약속입니다!!" },
+      { boss: "주말에 카톡 보냈는데 왜 월요일 아침에 답장해?", reply: "주말엔 꼰대 차단 모드입니다!!" },
+      { boss: "연차 쓰려고? 누구 허락 받고 쉬겠다는 거야?", reply: "내 연차 내가 쓰는데 무슨 허락!!" },
+      { boss: "회식도 업무의 연장이야! 오늘 3차까지 필참!", reply: "내 간은 회사 소유가 아닙니다!!" },
+      { boss: "라떼는 말이야, 야근 수당 없어도 감사하며 일했어.", reply: "라떼는 카페 가서 드세요!!" },
+      { boss: "이건 내가 한 번만 말할게... (1시간째 설교 중)", reply: "제발 한 번만 말하고 끝내세요!!" },
+      { boss: "왜 이렇게 표정이 안 좋아? 회사 생활이 불만이야?", reply: "님 얼굴 보면 웃음이 나오겠어요?!" },
+      { boss: "일단 해보고 안 되면 다시 생각해보자고.", reply: "그걸 왜 맨날 나한테만 시켜!!" },
+      { boss: "다 좋은데 뭔가 2% 부족해. 다시 고민해와.", reply: "부족한 2% 주먹으로 채워드림!!" },
+      { boss: "내가 다 책임질 테니까 일단 질러! (책임 안 짐)", reply: "책임은 맨날 나만 지더라!!" },
+      { boss: "월요일 아침 8시까지 요약본 1장으로 정리해와.", reply: "주말 반납? 어림도 없다!!" },
+      { boss: "자네는 왜 시키는 것만 해? 알아서 센스 있게 해야지!", reply: "알아서 하면 왜 멋대로 하냐며!!" },
+      { boss: "점심시간에 밥만 먹지 말고 트렌드 공부 좀 해.", reply: "밥 먹을 때만이라도 좀 냅둬!!" },
+      { boss: "어허, 상사가 말하는데 어디서 말대꾸야?!", reply: "말대꾸 말고 주먹대꾸 받아라!!" },
+      { boss: "폰트가 좀 차가워 보여. 따뜻한 느낌으로 바꿔와.", reply: "따뜻한 맑은고딕 펀치 드세요!!" },
+      { boss: "내일 휴가라고? 노트북은 챙겨가서 급한 건 처리해.", reply: "휴가 때 노트북을 왜 챙겨!!" },
+      { boss: "자네가 제일 잘해서 맡기는 거야~ (일 몰아주기)", reply: "칭찬 말고 수당으로 주세요!!" },
+      { boss: "그걸 꼭 내가 하나하나 다 알려줘야 아나?", reply: "알려준 적도 없으면서!!" },
+      { boss: "요즘 회사가 어려워서 보너스는 없지만 다들 힘내자!", reply: "대표님 차는 왜 새로 뽑았어요?!" },
+      { boss: "PPT 애니메이션이 너무 심심한데 좀 화려하게 해봐.", reply: "화려한 수플렉스 맛 좀 봐라!!" },
+      { boss: "퇴근 시간 10분 전인데, 급한 거 하나만 부탁할게.", reply: "10분 전에 급한 거 꺼내지 마!!" },
+      { boss: "왜 이렇게 보고가 늦어? 나한테 텔레파시로 보냈나?", reply: "주먹으로 즉시 보고 드립니다!!" },
+      { boss: "우리 부서는 가족 같은 분위기야~ (진짜 가족 아님)", reply: "가족이면 유산부터 나눠주세요!!" },
+      { boss: "오늘 점심은 내가 쏜다! (메뉴는 내 맘대로, 2시간 잔소리)", reply: "내 돈 내고 혼자 먹을게요!!" },
+      { boss: "이 프로젝트 망하면 자네가 다 책임지는 거야, 알지?", reply: "성공하면 자기 공이라 할 거면서!!" }
     ];
+    let banterDeck = [];
+    let lastBanterBoss = "";
+    function pickRandomBanter() {
+      if (banterDeck.length === 0) {
+        banterDeck = KKONDAE_BANTER.slice();
+        for (let i = banterDeck.length - 1; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          [banterDeck[i], banterDeck[j]] = [banterDeck[j], banterDeck[i]];
+        }
+        if (banterDeck.length > 1 && banterDeck[banterDeck.length - 1].boss === lastBanterBoss) {
+          [banterDeck[0], banterDeck[banterDeck.length - 1]] = [banterDeck[banterDeck.length - 1], banterDeck[0]];
+        }
+      }
+      const picked = banterDeck.pop();
+      lastBanterBoss = picked.boss;
+      return picked;
+    }
+
     let banterIdx = 0;
     let bossBannerTimer = null;
 
@@ -1741,8 +1785,8 @@
     }
 
     function triggerKkondaeBanter(bossObj, forcePair = null) {
-      // Boss speaks ONLY their irritating line — player's satisfying reply triggers when YOU hit/punch!
-      const pair = forcePair || KKONDAE_BANTER[banterIdx++ % KKONDAE_BANTER.length];
+      // Boss speaks ONLY one random irritating line — player's reply triggers when YOU punch!
+      const pair = forcePair || pickRandomBanter();
       if (bossObj) {
         bossObj.speech = pair.boss;
         bossObj.hurtSpeech = false;
@@ -1753,28 +1797,52 @@
 
     const CIDER_PUNCH_LINES = [
       "니가 초딩이냐?!",
-      "글자 간격 니가 맞춰!!",
+      "줄간격 대신 턱주가리 맞춰주마!!",
       "오늘 야근은 너나 해!!",
       "5시 땡! 나 칼퇴한다!!",
+      "밥 말고 집에 보내주세요!!",
       "라떼는 카페 가서 마셔!!",
-      "줄간격 대신 턱주가리 맞춰주마!!",
-      "폰트 느낌? 주먹 느낌 받아라!!",
+      "그 5분 니가 직접 해!!",
       "월급부터 올려주고 말해!!",
       "내 주말 카톡 읽씹이다!!",
       "3차 회식 혼자 가세요!!",
       "시말서는 네 이마에 붙여!!",
-      "그 5분 니가 직접 해!!"
+      "근로계약서 다시 읽어!!",
+      "폰트 느낌? 주먹 느낌 받아라!!",
+      "내 연차 내가 쓴다!!",
+      "휴가 때 노트북 안 챙겨!!",
+      "칭찬 말고 수당으로 줘!!",
+      "가족이면 유산부터 나눠줘!!",
+      "10분 전에 일 던지지 마!!",
+      "아까 버전 왜 엎었어!!",
+      "주먹으로 즉시 보고 드립니다!!",
+      "내 간은 회사 소유가 아니다!!",
+      "말대꾸 말고 주먹대꾸 받아라!!",
+      "눈대중 자 대고 다니세요?!",
+      "사표 받아라 이 꼰대야!!"
     ];
     const CIDER_ULT_LINES = [
       "🔥 니가 초딩이냐?! 사표 대폭격!! 오늘 무조건 칼퇴한다!!",
-      "🔥 글자 간격 대신 네 턱주가리 맞춰주마!! 전 사원 칼퇴 각성!!",
+      "🔥 줄간격 대신 네 턱주가리 맞춰주마!! 전 사원 칼퇴 각성!!",
       "🔥 오늘 야근은 너나 해!! 내 퇴근은 내가 지킨다!!",
-      "🔥 라떼 타령 그만해!! 초강력 칼퇴 사표 폭격!!"
+      "🔥 라떼 타령 그만해!! 초강력 칼퇴 사표 폭격!!",
+      "🔥 5시 땡! 전원 칼퇴!! 꼰대들 싹 다 날려버린다!!"
     ];
-    let ciderPunchIdx = 0;
+    let ciderDeck = [];
     let ciderUltIdx = 0;
     let lastCiderAt = 0;
     let bossIntroTimers = [];
+
+    function pickRandomCider() {
+      if (ciderDeck.length === 0) {
+        ciderDeck = CIDER_PUNCH_LINES.slice();
+        for (let i = ciderDeck.length - 1; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          [ciderDeck[i], ciderDeck[j]] = [ciderDeck[j], ciderDeck[i]];
+        }
+      }
+      return ciderDeck.pop();
+    }
 
     function shoutCiderReply(isUlt = false) {
       const now = performance.now();
@@ -1782,7 +1850,7 @@
       lastCiderAt = now;
       const line = isUlt
         ? CIDER_ULT_LINES[ciderUltIdx++ % CIDER_ULT_LINES.length]
-        : CIDER_PUNCH_LINES[ciderPunchIdx++ % CIDER_PUNCH_LINES.length];
+        : pickRandomCider();
       player.myEmote = isUlt ? line : `💥 ${line}`;
       player.myEmoteT = isUlt ? 3.4 : 2.3;
       popText(player.x, 2.55, player.z, isUlt ? line : `💬 ${line}`, isUlt ? "#fde047" : "#7dd3fc", isUlt ? 25 : 21);
@@ -1817,6 +1885,7 @@
       const roomNames = ["공장장실", "연구소장실", "대표이사실", "회장 집무실"];
       const roomName = roomNames[stageIdx] || "임원실";
 
+      const cutinLine = pickRandomBanter().boss;
       const wf = document.getElementById("whiteFlash");
       if (wf) { wf.style.opacity = "0.9"; setTimeout(() => { wf.style.opacity = "0"; }, 260); }
       const cutin = document.getElementById("duelCutin");
@@ -1824,7 +1893,7 @@
         document.getElementById("cutinRoom").textContent = `🚪 ${roomName} 진입 // 1 vs 1 철권 보스전!!`;
         document.getElementById("cutinPlayerName").textContent = `${ch.icon} ${ch.name}`;
         document.getElementById("cutinBossName").textContent = `${finalBoss.def.rank} ${finalBoss.def.name}`;
-        document.getElementById("cutinBossQuote").textContent = `"글자 간격이 안 맞잖아!! 초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?! 자네, 오늘 야근일세~"`;
+        document.getElementById("cutinBossQuote").textContent = `"${cutinLine}"`;
         cutin.classList.remove("hidden");
         cutin.style.display = "flex";
         setTimeout(() => {
@@ -1835,18 +1904,14 @@
 
       bossIntroTimers.forEach((tid) => clearTimeout(tid));
       bossIntroTimers = [];
-      const introQuotes = [
-        "글자 간격이 안 맞잖아!! 처음부터 다시 해!",
-        "초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!",
-        "자네, 오늘 야근일세~ 5시 칼퇴는 무슨!!"
-      ];
+      const introQuotes = [pickRandomBanter().boss, pickRandomBanter().boss];
       introQuotes.forEach((q, qi) => {
         const tid = setTimeout(() => {
           if (campaignOver || !finalBoss || finalBoss.ko) return;
           finalBoss.speech = q;
           finalBoss.hurtSpeech = false;
-          finalBoss.speechT = 3.2;
-        }, 2600 + qi * 1600);
+          finalBoss.speechT = 3.6;
+        }, 2800 + qi * 3200);
         bossIntroTimers.push(tid);
       });
 
@@ -2893,7 +2958,7 @@
         }
       }
 
-      document.getElementById("koHud").textContent = `v19 · ${clearCount + 1}회차`;
+      document.getElementById("koHud").textContent = `v20 · ${clearCount + 1}회차`;
       document.getElementById("cashHud").textContent = formatCompactWon(cash);
       const nextCost = player.powerLv * 120000;
       document.getElementById("upgradeLabel").textContent = cash >= nextCost ? `LV.${player.powerLv} UP!` : `LV.${player.powerLv}`;
