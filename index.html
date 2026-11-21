@@ -379,12 +379,11 @@
     <div style="max-width:390px; width:100%; border-radius:24px; padding:22px 18px; text-align:center; border:2px solid #fde047; background:rgba(15,23,42,0.88); box-shadow:0 0 40px rgba(239,68,68,0.65);">
       <div id="cutinRoom" style="display:inline-block; padding:3px 12px; border-radius:999px; background:#dc2626; color:#fef08a; font-size:11px; font-weight:900; letter-spacing:0.06em;">🚪 공장장실 진입 // 1 vs 1 철권 결투!!</div>
       <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:12px;">
-        <span style="font-size:15px; font-weight:900; color:#38bdf8;">🥊 나 (사원)</span>
+        <span id="cutinPlayerName" style="font-size:15px; font-weight:900; color:#38bdf8;">🥊 신입 김사원</span>
         <span style="font-size:24px; font-weight:900; color:#fde047; font-style:italic;">VS</span>
         <span id="cutinBossName" style="font-size:16px; font-weight:900; color:#fb7185;">울산 폭군 마공장장</span>
       </div>
-      <div id="cutinBossQuote" style="margin-top:14px; padding:10px 12px; border-radius:14px; background:rgba(255,255,255,0.96); color:#0f172a; font-size:13px; font-weight:900; line-height:1.4;">"글자 간격이 안 맞잖아!! 초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!"</div>
-      <div id="cutinPlayerReply" style="margin-top:9px; padding:8px 12px; border-radius:14px; background:linear-gradient(135deg,#0284c7,#4f46e5); color:#ffffff; font-size:13px; font-weight:900;">💬 "니가 초딩이냐?! 오늘 야근은 너나 해!!"</div>
+      <div id="cutinBossQuote" style="margin-top:14px; padding:11px 13px; border-radius:14px; background:rgba(255,255,255,0.96); color:#0f172a; font-size:13px; font-weight:900; line-height:1.45;">"글자 간격이 안 맞잖아!! 초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!"</div>
     </div>
   </div>
   <div id="bossWarningBanner" class="boss-banner hidden">
@@ -397,13 +396,15 @@
       <div id="finaleIcon" style="font-size:52px; line-height:1.1;">💥🏢🔥</div>
       <div id="finaleTitle" style="font-size:21px; font-weight:900; color:#fde047; margin-top:8px;">그룹본사 완전 폭파 성공!!</div>
       <div id="finaleDesc" style="font-size:13px; color:#e2e8f0; line-height:1.6; margin-top:8px;">
-        울산공장 → 서울본사 → 그룹본사 총수 천회장 일당까지 싹 다 날려버렸습니다!<br/>전 사원 평생 유급 칼퇴 달성!
+        울산공장 → 대전연구소 → 서울본사 → 그룹본사 총수 천회장 일당까지 싹 다 날려버렸습니다!<br/>전 사원 평생 유급 칼퇴 달성!
       </div>
       <div id="finaleStats" style="margin-top:12px; padding:10px; border-radius:14px; background:rgba(255,255,255,0.07); font-size:12px; font-weight:800; color:#4ade80;"></div>
+      <div id="finaleUnlock" class="hidden" style="margin-top:8px; padding:8px 10px; border-radius:12px; background:rgba(56,189,248,0.18); border:1px solid rgba(56,189,248,0.55); font-size:12px; font-weight:900; color:#7dd3fc;"></div>
       <div class="flex" style="gap:8px; margin-top:16px;">
         <button id="btnRetryStage" class="pill-btn cta-amber hidden" style="flex:1; height:42px; justify-content:center; font-size:12.5px;">🔄 현재 거점 재도전</button>
-        <button id="btnNextOrRetry" class="pill-btn cta-amber" style="flex:1; height:42px; justify-content:center; font-size:12.5px;">🚀 울산공장부터 다시</button>
-        <button id="btnStayFree" class="glass pill-btn" style="height:42px; padding:0 12px; font-size:12px;">계속 패기</button>
+        <button id="btnNextOrRetry" class="pill-btn cta-amber" style="flex:1; height:42px; justify-content:center; font-size:12.5px;">🔥 다음 회차 타임어택!</button>
+        <button id="btnOpenCharFromFinale" class="glass pill-btn" style="height:42px; padding:0 12px; font-size:12px;">🧑‍💼 캐릭</button>
+        <button id="btnStayFree" class="glass pill-btn" style="height:42px; padding:0 10px; font-size:11.5px;">자유</button>
       </div>
     </div>
   </div>
@@ -419,6 +420,20 @@
     </div>
   </div>
 
+  <!-- Character Select & Unlock Modal -->
+  <div id="charModal" class="fixed inset-0 hidden items-center justify-center pointer-events-auto" style="background:rgba(4,7,15,0.78); backdrop-filter:blur(6px); padding:16px; z-index:62;">
+    <div class="glass" style="max-width:370px; width:100%; border-radius:24px; padding:18px; border-color:rgba(125,211,252,0.45);">
+      <div class="flex items-center justify-between" style="margin-bottom:8px;">
+        <div>
+          <div style="font-size:15px; font-weight:900;">🧑‍💼 캐릭터 선택 & 회차 해금</div>
+          <div id="charClearBadge" style="font-size:11px; font-weight:800; color:#fde047; margin-top:2px;">현재 1회차 · 클리어 0회</div>
+        </div>
+        <button id="btnCloseChar" style="width:28px; height:28px; border-radius:99px; background:rgba(255,255,255,0.1); font-weight:800;">✕</button>
+      </div>
+      <div id="charListBtns" class="flex flex-col" style="gap:8px;"></div>
+    </div>
+  </div>
+
   <!-- ==================== ULTRA-SLIM TOP HUD (LESS SCREEN OBSTRUCTION!) ==================== -->
   <div class="fixed top-0 inset-x-0 pointer-events-none" style="padding: max(4px, env(safe-area-inset-top)) 7px 0; z-index:30;">
     <!-- TEKKEN 1v1 BOSS ARENA VS BAR (Shown ONLY during 1v1 Boss Duel!) -->
@@ -426,7 +441,7 @@
       <div class="flex items-center justify-between" style="gap:6px;">
         <div style="flex:1; min-width:0;">
           <div class="flex items-center justify-between" style="font-size:10px; font-weight:900; color:#38bdf8;">
-            <span>🥊 나 (사원)</span>
+            <span id="tkPlayerNameTxt">🥊 신입 김사원</span>
             <span id="tkPlayerHpTxt">100%</span>
           </div>
           <div style="height:7px; background:rgba(255,255,255,0.14); border-radius:999px; overflow:hidden; margin-top:2px;">
@@ -457,7 +472,7 @@
       <!-- TIER 1: Slim 27px Header -->
       <div class="flex items-center justify-between pointer-events-auto" style="gap:4px; width:100%;">
         <button id="btnStageSelect" class="glass hud-btn" style="height:26px; padding:0 7px; font-size:10px; border-color:rgba(125,211,252,0.4); color:#f8fafc;">
-          <span id="stageBadge">🏭 1/3 울산공장</span>
+          <span id="stageBadge">🏭 1/4 울산공장</span>
           <span style="font-size:8px; color:#7dd3fc;">▾</span>
         </button>
 
@@ -469,6 +484,7 @@
         </button>
 
         <div class="flex items-center" style="gap:3px; flex-shrink:0;">
+          <button id="btnCharSelect" class="glass hud-icon-btn" style="width:26px; height:26px; font-size:11px; border-color:rgba(125,211,252,0.5);" title="캐릭터 선택">🧑‍💼</button>
           <button id="btnMulti" class="hud-btn cta-violet" style="height:26px; padding:0 6px; font-size:10px;" title="실시간 멀티플레이">
             <span id="multiDot" style="width:5px; height:5px; border-radius:99px; background:#4ade80;"></span>
             <span>👥</span>
@@ -1665,13 +1681,34 @@
       myEmote: "", myEmoteT: 0, netJustAttacked: false
     };
 
-    const WORK_TOTAL_REAL_SEC = 1080; // 18분 = 오후 4:00 (16:00) -> 오후 5:00 (17:00) 칼퇴 마감!
-    let workRemainSec = WORK_TOTAL_REAL_SEC;
+    const PLAYABLE_CHARS = [
+      { id: "rookie", name: "신입 김사원", icon: "🧑‍💼", unlockClears: 0, desc: "균형형 · 기본 철권 콤보 & 사표 폭격", maxHp: 150, dmgMult: 1.0, spdMult: 1.0, feverMult: 1.0, tint: [1, 1, 1] },
+      { id: "daeri",  name: "만년 박대리", icon: "☕",  unlockClears: 1, desc: "스피드형 · 이속 +18% · 필살기 충전 +25%", maxHp: 155, dmgMult: 1.08, spdMult: 1.18, feverMult: 1.25, tint: [0.65, 1.0, 0.88] },
+      { id: "dev",    name: "야근 이개발", icon: "💻",  unlockClears: 2, desc: "화력형 · 공격력 +25% · 사이다 극딜", maxHp: 165, dmgMult: 1.25, spdMult: 1.08, feverMult: 1.15, tint: [0.68, 0.78, 1.0] },
+      { id: "union",  name: "전설 노조위원장", icon: "📢", unlockClears: 3, desc: "파괴형 · 체력 220 · 공격력 +35%", maxHp: 220, dmgMult: 1.35, spdMult: 1.05, feverMult: 1.30, tint: [1.0, 0.58, 0.58] }
+    ];
+    let clearCount = Math.max(0, Number(localStorage.getItem("ob3d_clears") || 0));
+    let selectedCharId = localStorage.getItem("ob3d_char") || "rookie";
+    function getCurrentChar() {
+      const found = PLAYABLE_CHARS.find((c) => c.id === selectedCharId && clearCount >= c.unlockClears);
+      return found || PLAYABLE_CHARS[0];
+    }
+    function getLoopTimeSec() {
+      // 1회차 18분 -> 2회차 15분 -> 3회차 12.5분 -> 4회차+ 10.5분 타임어택!
+      const table = [1080, 900, 750, 630];
+      return table[Math.min(clearCount, table.length - 1)];
+    }
+    function getLoopHpMult() {
+      return 1 + clearCount * 0.15;
+    }
+
+    let workTotalRealSec = getLoopTimeSec();
+    let workRemainSec = workTotalRealSec;
     let warnedFiveMin = false;
     let warnedOneMin = false;
 
     function formatWorkClock() {
-      const ratio = Math.max(0, Math.min(1, 1 - workRemainSec / WORK_TOTAL_REAL_SEC));
+      const ratio = Math.max(0, Math.min(1, 1 - workRemainSec / Math.max(1, workTotalRealSec)));
       const totalMin = Math.min(60, Math.floor(ratio * 60));
       if (totalMin >= 60) return "17:00";
       return `16:${String(totalMin).padStart(2, "0")}`;
@@ -1691,7 +1728,6 @@
     ];
     let banterIdx = 0;
     let bossBannerTimer = null;
-    let pendingReplyTimer = null;
 
     function showBossBanner(topTxt, nameTxt, quoteTxt) {
       const el = document.getElementById("bossWarningBanner");
@@ -1705,19 +1741,13 @@
     }
 
     function triggerKkondaeBanter(bossObj, forcePair = null) {
+      // Boss speaks ONLY their irritating line — player's satisfying reply triggers when YOU hit/punch!
       const pair = forcePair || KKONDAE_BANTER[banterIdx++ % KKONDAE_BANTER.length];
       if (bossObj) {
         bossObj.speech = pair.boss;
         bossObj.hurtSpeech = false;
         bossObj.speechT = 4.6;
       }
-      if (pendingReplyTimer) clearTimeout(pendingReplyTimer);
-      pendingReplyTimer = setTimeout(() => {
-        if (campaignOver) return;
-        player.myEmote = `💬 ${pair.reply}`;
-        player.myEmoteT = 3.2;
-        popText(player.x, 2.55, player.z, `💬 ${pair.reply}`, "#7dd3fc", 21);
-      }, 720);
       return pair;
     }
 
@@ -1768,10 +1798,9 @@
       finalBoss.z = 0;
       finalBoss.yaw = -Math.PI * 0.5;
       finalBoss.vx = 0; finalBoss.vy = 0; finalBoss.vz = 0;
-      finalBoss.stun = 3.0; // Hold during dramatic VS cut-in!
+      finalBoss.stun = 3.0;
       focusBossIdx = bosses.length - 1;
 
-      // Transition into enclosed Executive Boss Room (공장장실 / 대표이사실 / 회장 집무실)
       player.x = -3.6; player.y = 0; player.z = 0;
       player.vx = 0; player.vz = 0; player.yaw = Math.PI * 0.5;
       player.heldProp = null; player.ridingChair = null;
@@ -1784,18 +1813,18 @@
 
       healPlayer(35, "🔥 1:1 결투 돌입");
       const st = STAGES[stageIdx];
+      const ch = getCurrentChar();
       const roomNames = ["공장장실", "연구소장실", "대표이사실", "회장 집무실"];
       const roomName = roomNames[stageIdx] || "임원실";
 
-      // Full-screen Tekken VS Screen Transition Cut-in!
       const wf = document.getElementById("whiteFlash");
       if (wf) { wf.style.opacity = "0.9"; setTimeout(() => { wf.style.opacity = "0"; }, 260); }
       const cutin = document.getElementById("duelCutin");
       if (cutin) {
         document.getElementById("cutinRoom").textContent = `🚪 ${roomName} 진입 // 1 vs 1 철권 보스전!!`;
+        document.getElementById("cutinPlayerName").textContent = `${ch.icon} ${ch.name}`;
         document.getElementById("cutinBossName").textContent = `${finalBoss.def.rank} ${finalBoss.def.name}`;
         document.getElementById("cutinBossQuote").textContent = `"글자 간격이 안 맞잖아!! 초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?! 자네, 오늘 야근일세~"`;
-        document.getElementById("cutinPlayerReply").textContent = `💬 "니가 초딩이냐?! 오늘 야근은 너나 해!!"`;
         cutin.classList.remove("hidden");
         cutin.style.display = "flex";
         setTimeout(() => {
@@ -1817,21 +1846,12 @@
           finalBoss.speech = q;
           finalBoss.hurtSpeech = false;
           finalBoss.speechT = 3.2;
-          if (qi === 1) {
-            player.myEmote = "💬 니가 초딩이냐?!";
-            player.myEmoteT = 2.6;
-            popText(player.x, 2.55, player.z, "💬 니가 초딩이냐?!", "#7dd3fc", 23);
-          } else if (qi === 2) {
-            player.myEmote = "🔥 오늘 야근은 너나 해!!";
-            player.myEmoteT = 2.6;
-            popText(player.x, 2.55, player.z, "🔥 오늘 야근은 너나 해!!", "#fde047", 23);
-          }
         }, 2600 + qi * 1600);
         bossIntroTimers.push(tid);
       });
 
       const tk = document.getElementById("eventTicker");
-      tk.textContent = `⚔️ [${roomName} 1:1 철권 보스전] ${finalBoss.def.name}을(를) 이겨야 포털이 열립니다!!`;
+      tk.textContent = `⚔️ [${roomName} 1:1 철권 보스전] ${finalBoss.def.name}을(를) 이겨야 다음 단계로 이동합니다!!`;
       tk.classList.remove("hidden");
       activeEvent = "boss_duel"; eventRemain = 6.0;
 
@@ -1913,6 +1933,8 @@
       focusBossIdx = 0;
       document.getElementById("finaleModal").classList.add("hidden");
 
+      const ch = getCurrentChar();
+      player.maxHp = ch.maxHp;
       const shouldResetHp = opts.resetHp !== undefined ? opts.resetHp : true;
       const shouldResetClock = opts.resetClock !== undefined ? opts.resetClock : true;
       if (shouldResetHp) {
@@ -1926,8 +1948,9 @@
       if (hf) hf.style.opacity = "0";
 
       if (shouldResetClock) {
+        workTotalRealSec = getLoopTimeSec();
         const splits = [1.0, 0.75, 0.50, 0.28];
-        workRemainSec = Math.round(WORK_TOTAL_REAL_SEC * (splits[stageIdx] || 1.0));
+        workRemainSec = Math.round(workTotalRealSec * (splits[stageIdx] || 1.0));
         warnedFiveMin = false;
         warnedOneMin = false;
       }
@@ -1980,8 +2003,10 @@
         }
       }
 
+      const loopHpMult = getLoopHpMult();
       bosses = st.bosses.map((d, i) => {
         const isFinalBoss = i === st.bosses.length - 1;
+        const scaledHp = Math.round(d.hp * loopHpMult);
         return {
           def: { ...d, idx: i },
           x: isFinalBoss ? 0 : d.homeX,
@@ -1989,7 +2014,7 @@
           z: isFinalBoss ? -999 : d.homeZ,
           vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
           yaw: 0, walk: 0,
-          hp: d.hp, maxHp: d.hp,
+          hp: scaledHp, maxHp: scaledHp,
           ragdoll: 0, stun: 0, shockT: 0, flash: 0,
           boundPending: false, bowlingT: 0,
           ko: false, waiting: isFinalBoss, respawn: 0,
@@ -2191,7 +2216,8 @@
 
     function hitMob(m, baseDmg, dx, dz, force, liftY, heavy = false, showTxt = false) {
       if (m.ko) return;
-      const pwrMult = 1 + (player.powerLv - 1) * 0.30 + (activeEvent === "caffeine" ? 0.4 : 0);
+      const ch = getCurrentChar();
+      const pwrMult = (1 + (player.powerLv - 1) * 0.30 + (activeEvent === "caffeine" ? 0.4 : 0)) * ch.dmgMult;
       const dmg = Math.round(baseDmg * pwrMult);
       const f = force * (1 + (player.powerLv - 1) * 0.14);
 
@@ -2202,7 +2228,7 @@
       m.vrx = (Math.random() - 0.5) * 18; m.vrz = (Math.random() - 0.5) * 18;
 
       comboCount++; comboTimer = 3.2;
-      player.fever = Math.min(100, player.fever + (heavy ? 5.5 : 3.5));
+      player.fever = Math.min(100, player.fever + (heavy ? 5.5 : 3.5) * ch.feverMult);
       addCash(9500);
       spawnParticles(m.x, m.y + 0.9, m.z, heavy ? 4 : 2, "spark");
 
@@ -2244,9 +2270,10 @@
     function hitBoss(b, idx, baseDmg, dx, dz, force, liftY, label, heavy, fromLocal = true) {
       if (b.ko || b.waiting) return;
       focusBossIdx = idx;
+      const ch = getCurrentChar();
       const isCounter = b.charging > 0;
       if (isCounter) b.charging = 0;
-      const pwrMult = (1 + (player.powerLv - 1) * 0.28 + (activeEvent === "caffeine" ? 0.4 : 0)) * (isCounter ? 1.5 : 1.0);
+      const pwrMult = (1 + (player.powerLv - 1) * 0.28 + (activeEvent === "caffeine" ? 0.4 : 0)) * (isCounter ? 1.5 : 1.0) * ch.dmgMult;
       const dmg = Math.round(baseDmg * pwrMult);
       const f = force * (1 + (player.powerLv - 1) * 0.14);
 
@@ -2781,9 +2808,11 @@
       const deadSubCnt = subBosses.filter((b) => b.ko).length;
 
       if (bossDuelActive && finalBoss) {
+        const ch = getCurrentChar();
         const roomNames = ["공장장실 1:1", "연구소장실 1:1", "대표이사실 1:1", "회장집무실 1:1"];
         const pPct = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
         const bPct = Math.max(0, Math.min(100, (finalBoss.hp / finalBoss.maxHp) * 100));
+        document.getElementById("tkPlayerNameTxt").textContent = `${ch.icon} ${ch.name}`;
         document.getElementById("tkPlayerHpTxt").textContent = `${Math.ceil(pPct)}%`;
         document.getElementById("tkPlayerHpFill").style.width = `${pPct}%`;
         document.getElementById("tkBossHpTxt").textContent = `${Math.ceil(bPct)}%`;
@@ -2864,7 +2893,7 @@
         }
       }
 
-      document.getElementById("koHud").textContent = `v18 · ${koTotal}`;
+      document.getElementById("koHud").textContent = `v19 · ${clearCount + 1}회차`;
       document.getElementById("cashHud").textContent = formatCompactWon(cash);
       const nextCost = player.powerLv * 120000;
       document.getElementById("upgradeLabel").textContent = cash >= nextCost ? `LV.${player.powerLv} UP!` : `LV.${player.powerLv}`;
@@ -3064,12 +3093,53 @@
     });
     document.getElementById("btnCloseStage").addEventListener("click", () => stageModal.classList.add("hidden"));
 
+    const charModal = document.getElementById("charModal");
+    function openCharModal() {
+      const box = document.getElementById("charListBtns");
+      const badge = document.getElementById("charClearBadge");
+      if (badge) badge.textContent = `현재 ${clearCount + 1}회차 (제한 ${Math.round(getLoopTimeSec() / 60)}분) · 누적 클리어 ${clearCount}회`;
+      box.innerHTML = PLAYABLE_CHARS.map((c) => {
+        const locked = clearCount < c.unlockClears;
+        const active = c.id === getCurrentChar().id;
+        return `
+          <button data-cid="${c.id}" ${locked ? 'data-locked="1"' : ''} class="glass pill-btn" style="height:auto; min-height:52px; width:100%; justify-content:space-between; padding:8px 12px; opacity:${locked ? '0.52' : '1'}; border-color:${active ? '#fde047' : 'rgba(255,255,255,0.14)'};">
+            <div style="text-align:left;">
+              <div style="font-size:13px; font-weight:900; color:#fff;">${locked ? '🔒 ' : ''}${c.icon} ${c.name} ${active ? '✅' : ''}</div>
+              <div style="font-size:10.5px; color:#cbd5e1; margin-top:2px;">${c.desc}</div>
+            </div>
+            <span style="font-size:10.5px; font-weight:900; color:${locked ? '#fca5a5' : '#4ade80'}; white-space:nowrap;">${locked ? `${c.unlockClears}회 클리어 해금` : (active ? '사용 중' : '선택')}</span>
+          </button>
+        `;
+      }).join("");
+      box.querySelectorAll("button[data-cid]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (btn.getAttribute("data-locked") === "1") {
+            popText(player.x, 2.3, player.z, "🔒 그룹 회장까지 클리어하면 해금됩니다!", "#fb7185", 18);
+            return;
+          }
+          selectedCharId = btn.getAttribute("data-cid");
+          localStorage.setItem("ob3d_char", selectedCharId);
+          const ch = getCurrentChar();
+          player.maxHp = ch.maxHp;
+          player.hp = Math.min(player.maxHp, Math.max(player.hp, ch.maxHp));
+          charModal.classList.add("hidden");
+          popText(player.x, 2.5, player.z, `${ch.icon} ${ch.name} 출격!!`, "#38bdf8", 23);
+          updateHud();
+        });
+      });
+      charModal.classList.remove("hidden");
+    }
+    document.getElementById("btnCharSelect").addEventListener("click", openCharModal);
+    document.getElementById("btnOpenCharFromFinale").addEventListener("click", openCharModal);
+    document.getElementById("btnCloseChar").addEventListener("click", () => charModal.classList.add("hidden"));
+
     document.getElementById("btnRetryStage").addEventListener("click", () => {
       freePlayMode = false;
       loadStage(stageIdx, true, { resetHp: true, resetClock: true });
     });
     document.getElementById("btnNextOrRetry").addEventListener("click", () => {
       freePlayMode = false;
+      unlockedStage = 0;
       loadStage(0, true, { resetHp: true, resetClock: true });
     });
     document.getElementById("btnStayFree").addEventListener("click", () => {
@@ -3128,13 +3198,26 @@
 
     function showFinaleModal() {
       campaignOver = true;
+      clearCount++;
+      localStorage.setItem("ob3d_clears", String(clearCount));
       const modal = document.getElementById("finaleModal");
       const clkStr = formatWorkClock();
+      const nextMin = Math.round(getLoopTimeSec() / 60);
       document.getElementById("finaleIcon").textContent = "💥🏢🔥🎊";
-      document.getElementById("finaleTitle").textContent = `🕔 ${clkStr} 칼퇴 대성공!!`;
+      document.getElementById("finaleTitle").textContent = `🕔 ${clkStr} 칼퇴 대성공!! (${clearCount}회차 클리어)`;
       document.getElementById("finaleTitle").style.color = "#fde047";
-      document.getElementById("finaleDesc").innerHTML = "5시 퇴근 시간 전에 울산공장 → 대전연구소 → 서울본사 → 그룹본사 천회장 일당과 꼰대 상사 군단을 모조리 참교육하고 본사를 시원하게 폭파했습니다!!";
-      document.getElementById("finaleStats").textContent = `칼퇴 시각: ${clkStr}  |  총 참교육: ${koTotal}명  |  비자금: ₩${cash.toLocaleString()}  |  체력 ${Math.ceil(player.hp)}/${player.maxHp}`;
+      document.getElementById("finaleDesc").innerHTML = `울산공장 → 대전연구소 → 서울본사 → 그룹본사 천회장까지 완벽 참교육!!<br/>다음 <b>${clearCount + 1}회차</b>는 <b>${nextMin}분 타임어택</b>으로 더 어려워집니다!`;
+      document.getElementById("finaleStats").textContent = `칼퇴 시각: ${clkStr}  |  총 참교육: ${koTotal}명  |  비자금: ₩${cash.toLocaleString()}`;
+      const unlockedChar = PLAYABLE_CHARS.find((c) => c.unlockClears === clearCount);
+      const unlockEl = document.getElementById("finaleUnlock");
+      if (unlockEl) {
+        if (unlockedChar) {
+          unlockEl.textContent = `🎉 신규 캐릭터 잠금 해제!! [${unlockedChar.icon} ${unlockedChar.name}] — ${unlockedChar.desc}`;
+          unlockEl.classList.remove("hidden");
+        } else {
+          unlockEl.classList.add("hidden");
+        }
+      }
       document.getElementById("btnRetryStage").classList.add("hidden");
       modal.classList.remove("hidden");
     }
@@ -3460,7 +3543,8 @@
         player.rx *= 0.8; player.y = 0;
         if (ilen > 0.05) {
           const nx = ix / Math.max(1, ilen), nz = iz / Math.max(1, ilen);
-          player.vx = nx * 8.6 * spdBoost; player.vz = nz * 8.6 * spdBoost;
+          const chSpd = getCurrentChar().spdMult;
+          player.vx = nx * 8.6 * spdBoost * chSpd; player.vz = nz * 8.6 * spdBoost * chSpd;
           if (player.atkTimer <= 0.04) player.yaw = Math.atan2(nx, nz);
           player.walk += dt * 14.0 * spdBoost;
         } else { player.vx *= 0.74; player.vz *= 0.74; }
@@ -4048,7 +4132,7 @@
           x: player.x, y: player.ridingChair ? 0.42 : player.y, z: player.z,
           rx: player.rx || 0, yaw: py,
           scale: 1.0 + (player.powerLv - 1) * 0.04,
-          torso: M.torsoWorker, tint: [1, 1, 1], hat: M.hairHero,
+          torso: M.torsoWorker, tint: getCurrentChar().tint, hat: M.hairHero,
           face: (player.atkTimer > 0 || player.grapple) ? 1 : 0, walk: player.walk, moveAmt: (player.ridingChair || player.grapple) ? 0 : mv,
           swL, swR, fistScale: fs, heldMesh: player.heldProp ? player.heldProp.mesh : null
         });
