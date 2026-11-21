@@ -1417,7 +1417,7 @@
     const STAGES = [
       {
         idx: 0, code: "ULSAN", badge: "🏭 1/3 울산공장", short: "🏭 울산공장",
-        targetKills: 15, activeMobs: 22, isFinal: false,
+        targetKills: 25, activeMobs: 24, isFinal: false,
         portalPos: [0, -16.8], portalLabel: "🌀 서울본사 이동 포털",
         mobPool: [
           { title:"잔소리 조장", torso:"torsoFactory", hat:"hatHardhat", tint:[1,1,1], hp:38, speed:2.9, taunts:["특근 뛰고 가!", "라인 빨리 돌려!", "딴짓하지 마!"] },
@@ -1434,7 +1434,7 @@
       },
       {
         idx: 1, code: "SEOUL_HQ", badge: "🏢 2/3 서울본사", short: "🏢 서울본사",
-        targetKills: 20, activeMobs: 24, isFinal: false,
+        targetKills: 32, activeMobs: 26, isFinal: false,
         portalPos: [0, -16.8], portalLabel: "🌀 그룹본사 결전 포털",
         mobPool: [
           { title:"야근강요 과장", torso:"torsoKkondae", hat:"hairHero", tint:[0.85,0.9,1], hp:44, speed:3.0, taunts:["야근하고 퇴근해!", "피피티 폰트 바꿔!", "주말에 카톡 봐!"] },
@@ -1452,7 +1452,7 @@
       },
       {
         idx: 2, code: "GROUP_HQ", badge: "👑 3/3 그룹본사", short: "👑 그룹본사",
-        targetKills: 25, activeMobs: 26, isFinal: true,
+        targetKills: 40, activeMobs: 28, isFinal: true,
         portalPos: [0, -16.8], portalLabel: "💥 그룹본사 폭파 스위치!!",
         mobPool: [
           { title:"갑질 수석부장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,0.96,0.92], hp:52, speed:3.1, taunts:["감히 5시에 퇴근을 해?!", "결재 서류 백 번 다시 써와!", "어디서 눈을 똑바로 떠!"] },
@@ -1539,6 +1539,43 @@
       return pair;
     }
 
+    const CIDER_PUNCH_LINES = [
+      "니가 초딩이냐?!",
+      "글자 간격 니가 맞춰!!",
+      "오늘 야근은 너나 해!!",
+      "5시 땡! 나 칼퇴한다!!",
+      "라떼는 카페 가서 마셔!!",
+      "줄간격 대신 턱주가리 맞춰주마!!",
+      "폰트 느낌? 주먹 느낌 받아라!!",
+      "월급부터 올려주고 말해!!",
+      "내 주말 카톡 읽씹이다!!",
+      "3차 회식 혼자 가세요!!",
+      "시말서는 네 이마에 붙여!!",
+      "그 5분 니가 직접 해!!"
+    ];
+    const CIDER_ULT_LINES = [
+      "🔥 니가 초딩이냐?! 사표 대폭격!! 오늘 무조건 칼퇴한다!!",
+      "🔥 글자 간격 대신 네 턱주가리 맞춰주마!! 전 사원 칼퇴 각성!!",
+      "🔥 오늘 야근은 너나 해!! 내 퇴근은 내가 지킨다!!",
+      "🔥 라떼 타령 그만해!! 초강력 칼퇴 사표 폭격!!"
+    ];
+    let ciderPunchIdx = 0;
+    let ciderUltIdx = 0;
+    let lastCiderAt = 0;
+    let bossIntroTimers = [];
+
+    function shoutCiderReply(isUlt = false) {
+      const now = performance.now();
+      if (!isUlt && now - lastCiderAt < 850) return;
+      lastCiderAt = now;
+      const line = isUlt
+        ? CIDER_ULT_LINES[ciderUltIdx++ % CIDER_ULT_LINES.length]
+        : CIDER_PUNCH_LINES[ciderPunchIdx++ % CIDER_PUNCH_LINES.length];
+      player.myEmote = isUlt ? line : `💥 ${line}`;
+      player.myEmoteT = isUlt ? 3.4 : 2.3;
+      popText(player.x, 2.55, player.z, isUlt ? line : `💬 ${line}`, isUlt ? "#fde047" : "#7dd3fc", isUlt ? 25 : 21);
+    }
+
     function summonOfficeFinalBoss() {
       const finalBoss = bosses[bosses.length - 1];
       if (!finalBoss || !finalBoss.waiting) return;
@@ -1548,9 +1585,10 @@
       finalBoss.y = 9.5;
       finalBoss.z = -8.5;
       finalBoss.vx = 0; finalBoss.vy = -4.0; finalBoss.vz = 0;
+      finalBoss.stun = 3.2; // Brief dramatic entrance monologue so player reads all 3 irritating quotes!
       focusBossIdx = bosses.length - 1;
 
-      // Clear remaining crowd mobs & sub-bosses so it becomes a pure 1-on-1 Boss Duel!
+      // Clear remaining crowd mobs so it becomes a pure 1-on-1 Boss Duel!
       for (const m of mobs) {
         if (!m.ko) {
           m.ko = true;
@@ -1560,23 +1598,45 @@
           m.vz = -10;
         }
       }
-      for (let i = 0; i < bosses.length - 1; i++) {
-        if (!bosses[i].ko) {
-          bosses[i].ko = true;
-          bosses[i].hp = 0;
-          const tagEl = document.getElementById(`bossTag${i}`);
-          if (tagEl) tagEl.style.opacity = "0";
-        }
-      }
 
       healPlayer(25, "🔥 1:1 결투 돌입");
-      const pair = triggerKkondaeBanter(finalBoss);
       const st = STAGES[stageIdx];
-      showBossBanner(`⚔️ 1 vs 1 보스전 // ${st.short} 최종 보스!!`, `${finalBoss.def.rank} ${finalBoss.def.name}`, pair.boss);
+      bossIntroTimers.forEach((tid) => clearTimeout(tid));
+      bossIntroTimers = [];
+
+      const introQuotes = [
+        "글자 간격이 안 맞잖아!! 처음부터 다시 해!",
+        "초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!",
+        "자네, 오늘 야근일세~ 5시 칼퇴는 무슨!!"
+      ];
+      introQuotes.forEach((q, qi) => {
+        const tid = setTimeout(() => {
+          if (campaignOver || !finalBoss || finalBoss.ko) return;
+          finalBoss.speech = q;
+          finalBoss.hurtSpeech = false;
+          finalBoss.speechT = 3.2;
+          showBossBanner(
+            qi === 0 ? `✨ 짜잔!! ${st.short} 보스 강림 (1 vs 1) ✨` : `💢 ${finalBoss.def.name} 꼰대 망언 ${qi + 1}/3`,
+            `${finalBoss.def.rank} ${finalBoss.def.name}`,
+            q
+          );
+          if (qi === 1) {
+            player.myEmote = "💬 니가 초딩이냐?!";
+            player.myEmoteT = 2.6;
+            popText(player.x, 2.55, player.z, "💬 니가 초딩이냐?!", "#7dd3fc", 23);
+          } else if (qi === 2) {
+            player.myEmote = "🔥 오늘 야근은 너나 해!!";
+            player.myEmoteT = 2.6;
+            popText(player.x, 2.55, player.z, "🔥 오늘 야근은 너나 해!!", "#fde047", 23);
+          }
+        }, qi * 1450);
+        bossIntroTimers.push(tid);
+      });
+
       const tk = document.getElementById("eventTicker");
       tk.textContent = `⚔️ [1대1 보스전] ${finalBoss.def.name}을(를) 직접 처치해야 다음 단계로 이동합니다!!`;
       tk.classList.remove("hidden");
-      activeEvent = "boss_duel"; eventRemain = 6.5;
+      activeEvent = "boss_duel"; eventRemain = 7.0;
 
       spawnShockRing(finalBoss.x, finalBoss.z, 9.0, [1.0, 0.2, 0.25]);
       spawnParticles(finalBoss.x, 1.5, finalBoss.z, 28, "fire");
@@ -1938,10 +1998,12 @@
         addCash(22000);
         spawnParticles(m.x, m.y + 1.0, m.z, 5, Math.random() < 0.45 ? "cash" : "paper");
         if (showTxt) popText(m.x, m.y + 2.0, m.z, `💥 ${m.tpl.title} 참교육!`, "#4ade80", 19);
+        if (heavy || showTxt) shoutCiderReply(false);
         if (stageKills % 8 === 0) healPlayer(6, "☕ 커피 수혈");
         checkStageObjectives();
       } else if (showTxt) {
         popText(m.x, m.y + 1.9, m.z, "죽방!", "#fde047", 18);
+        if (heavy) shoutCiderReply(false);
       }
     }
 
@@ -1990,6 +2052,7 @@
       }
 
       if (fromLocal) {
+        if (!isCounter) shoutCiderReply(false);
         comboCount++; comboTimer = 3.2;
         player.fever = Math.min(100, player.fever + (heavy ? 12 : 7));
         addCash(dmg * 600);
@@ -2457,7 +2520,7 @@
         const dx = b.x - player.x, dz = b.z - player.z, d = Math.hypot(dx, dz) || 1;
         if (!b.ko && d < 18.5) { swept++; hitBoss(b, idx, 125, dx / d, dz / d, 18.5, 11.8, "🔥 레이지 아츠: 사표 폭격!!", true); }
       });
-      popText(player.x, 2.8, player.z, `🔥 레이지 아츠: 사표 대폭격!! (${swept}명 초토화!)`, "#fde047", 30);
+      shoutCiderReply(true);
       updateHud();
     }
 
@@ -2571,7 +2634,7 @@
         }
       }
 
-      document.getElementById("koHud").textContent = `v13 · 누적 ${koTotal}`;
+      document.getElementById("koHud").textContent = `v14 · 누적 ${koTotal}`;
       document.getElementById("cashHud").textContent = formatCompactWon(cash);
       const nextCost = player.powerLv * 120000;
       document.getElementById("upgradeLabel").textContent = cash >= nextCost ? `LV.${player.powerLv} UP!` : `LV.${player.powerLv}`;
