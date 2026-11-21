@@ -1417,7 +1417,7 @@
     const STAGES = [
       {
         idx: 0, code: "ULSAN", badge: "🏭 1/3 울산공장", short: "🏭 울산공장",
-        targetKills: 30, activeMobs: 24, isFinal: false,
+        targetKills: 20, activeMobs: 24, isFinal: false,
         portalPos: [0, -16.8], portalLabel: "🌀 서울본사 이동 포털",
         mobPool: [
           { title:"잔소리 조장", torso:"torsoFactory", hat:"hatHardhat", tint:[1,1,1], hp:38, speed:2.9, taunts:["특근 뛰고 가!", "라인 빨리 돌려!", "딴짓하지 마!"] },
@@ -1434,7 +1434,7 @@
       },
       {
         idx: 1, code: "SEOUL_HQ", badge: "🏢 2/3 서울본사", short: "🏢 서울본사",
-        targetKills: 40, activeMobs: 26, isFinal: false,
+        targetKills: 25, activeMobs: 26, isFinal: false,
         portalPos: [0, -16.8], portalLabel: "🌀 그룹본사 결전 포털",
         mobPool: [
           { title:"야근강요 과장", torso:"torsoKkondae", hat:"hairHero", tint:[0.85,0.9,1], hp:44, speed:3.0, taunts:["야근하고 퇴근해!", "피피티 폰트 바꿔!", "주말에 카톡 봐!"] },
@@ -1452,7 +1452,7 @@
       },
       {
         idx: 2, code: "GROUP_HQ", badge: "👑 3/3 그룹본사", short: "👑 그룹본사",
-        targetKills: 50, activeMobs: 28, isFinal: true,
+        targetKills: 30, activeMobs: 28, isFinal: true,
         portalPos: [0, -16.8], portalLabel: "💥 그룹본사 폭파 스위치!!",
         mobPool: [
           { title:"갑질 수석부장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,0.96,0.92], hp:52, speed:3.1, taunts:["감히 5시에 퇴근을 해?!", "결재 서류 백 번 다시 써와!", "어디서 눈을 똑바로 떠!"] },
@@ -1542,18 +1542,44 @@
     function summonOfficeFinalBoss() {
       const finalBoss = bosses[bosses.length - 1];
       if (!finalBoss || !finalBoss.waiting) return;
+      bossDuelActive = true;
       finalBoss.waiting = false;
       finalBoss.x = 0;
       finalBoss.y = 9.5;
-      finalBoss.z = -9.5;
+      finalBoss.z = -8.5;
       finalBoss.vx = 0; finalBoss.vy = -4.0; finalBoss.vz = 0;
       focusBossIdx = bosses.length - 1;
 
+      // Clear remaining crowd mobs & sub-bosses so it becomes a pure 1-on-1 Boss Duel!
+      for (const m of mobs) {
+        if (!m.ko) {
+          m.ko = true;
+          m.koCleanup = 0.45;
+          m.vx = (m.x >= 0 ? 1 : -1) * 14;
+          m.vy = 8.5;
+          m.vz = -10;
+        }
+      }
+      for (let i = 0; i < bosses.length - 1; i++) {
+        if (!bosses[i].ko) {
+          bosses[i].ko = true;
+          bosses[i].hp = 0;
+          const tagEl = document.getElementById(`bossTag${i}`);
+          if (tagEl) tagEl.style.opacity = "0";
+        }
+      }
+
+      healPlayer(25, "🔥 1:1 결투 돌입");
       const pair = triggerKkondaeBanter(finalBoss);
       const st = STAGES[stageIdx];
-      showBossBanner(`🚨 WARNING // ${st.short} 보스 강림!!`, `${finalBoss.def.rank} ${finalBoss.def.name}`, pair.boss);
-      spawnShockRing(finalBoss.x, finalBoss.z, 8.5, [1.0, 0.2, 0.25]);
-      spawnParticles(finalBoss.x, 1.5, finalBoss.z, 26, "fire");
+      showBossBanner(`⚔️ 1 vs 1 보스전 // ${st.short} 최종 보스!!`, `${finalBoss.def.rank} ${finalBoss.def.name}`, pair.boss);
+      const tk = document.getElementById("eventTicker");
+      tk.textContent = `⚔️ [1대1 보스전] ${finalBoss.def.name}을(를) 직접 처치해야 다음 단계로 이동합니다!!`;
+      tk.classList.remove("hidden");
+      activeEvent = "boss_duel"; eventRemain = 6.5;
+
+      spawnShockRing(finalBoss.x, finalBoss.z, 9.0, [1.0, 0.2, 0.25]);
+      spawnParticles(finalBoss.x, 1.5, finalBoss.z, 28, "fire");
       shakeMag = 0.85; shakeT = 0.42;
       playSfx("ko"); haptic(95);
       updateHud();
@@ -1562,6 +1588,7 @@
     let stageIdx = 0;
     let freePlayMode = false;
     let stageKills = 0;
+    let bossDuelActive = false;
     let portalOpen = false;
     let detonateCutscene = 0;
     let campaignOver = false;
@@ -1621,6 +1648,7 @@
       stageIdx = Math.max(0, Math.min(STAGES.length - 1, idx));
       const st = STAGES[stageIdx];
       stageKills = 0;
+      bossDuelActive = false;
       portalOpen = false;
       detonateCutscene = 0;
       campaignOver = false;
@@ -1793,19 +1821,19 @@
       const st = STAGES[stageIdx];
       const finalBoss = bosses[bosses.length - 1];
       if (finalBoss && finalBoss.waiting) {
-        const subBossesAllDead = bosses.slice(0, -1).every((b) => b.ko);
-        if (subBossesAllDead || stageKills >= Math.ceil(st.targetKills * 0.4)) {
+        if (stageKills >= st.targetKills) {
           summonOfficeFinalBoss();
         }
+        return;
       }
-      const allBossDead = bosses.every((b) => b.ko && !b.waiting);
-      if (allBossDead && stageKills >= st.targetKills) {
+      if (finalBoss && finalBoss.ko && !finalBoss.waiting) {
+        bossDuelActive = false;
         portalOpen = true;
         playSfx("ko"); haptic(90);
         const tk = document.getElementById("eventTicker");
         tk.textContent = st.isFinal
-          ? "💥 참교육 완료!! 상단 [💥본사 폭파!] 버튼 또는 북쪽 폭파 스위치로 진입하세요!!"
-          : `🌀 ${st.portalLabel} 개방!! 상단 [🌀다음 거점➔] 버튼 또는 북쪽 포털로 이동하세요!`;
+          ? "💥 최종 보스 1:1 격파!! 상단 [💥본사 폭파!] 버튼 또는 북쪽 폭파 스위치로 진입하세요!!"
+          : `🎉 보스 1:1 참교육 완료!! 상단 [🌀다음 거점➔] 버튼 또는 북쪽 포털로 이동하세요!`;
         tk.classList.remove("hidden");
         activeEvent = "portal"; eventRemain = 18;
         popText(player.x, 2.8, player.z, st.isFinal ? "💥 그룹본사 폭파 스위치 OPEN!!" : `🌀 ${st.portalLabel} OPEN!!`, "#e879f9", 28);
@@ -2463,10 +2491,17 @@
       const deadBossCnt = bosses.filter((b) => b.ko).length;
       const kpEl = document.getElementById("koProgressText");
       const bpEl = document.getElementById("bossProgressText");
-      kpEl.textContent = `🥊 참교육 ${stageKills}/${st.targetKills}명`;
-      kpEl.style.color = stageKills >= st.targetKills ? "#4ade80" : "#fde047";
-      bpEl.textContent = `임원 ${deadBossCnt}/${bosses.length}`;
-      bpEl.style.color = deadBossCnt === bosses.length ? "#4ade80" : "#a5f3fc";
+      if (bossDuelActive) {
+        kpEl.textContent = "⚔️ 1:1 보스 결투!";
+        kpEl.style.color = "#fb7185";
+        bpEl.textContent = "보스 단독 처치";
+        bpEl.style.color = "#fde047";
+      } else {
+        kpEl.textContent = `🥊 참교육 ${Math.min(stageKills, st.targetKills)}/${st.targetKills}명`;
+        kpEl.style.color = stageKills >= st.targetKills ? "#4ade80" : "#fde047";
+        bpEl.textContent = portalOpen ? "보스 격파!" : "보스 대기";
+        bpEl.style.color = portalOpen ? "#4ade80" : "#a5f3fc";
+      }
 
       const pqBtn = document.getElementById("btnPortalQuick");
       if (portalOpen) {
@@ -3256,9 +3291,9 @@
         }
       }
 
-      // Continuous Crowd Reinforcement Spawner (Always plenty of villains to punch!)
+      // Continuous Crowd Reinforcement Spawner (Paused during 1v1 Boss Duel!)
       mobSpawnAcc += rawDt;
-      const desiredMobs = (portalOpen && !freePlayMode) ? Math.round(st.activeMobs * 0.55) : st.activeMobs;
+      const desiredMobs = bossDuelActive ? 0 : ((portalOpen && !freePlayMode) ? Math.round(st.activeMobs * 0.55) : st.activeMobs);
       if (mobSpawnAcc >= 0.28 && aliveMobs < desiredMobs) {
         mobSpawnAcc = 0;
         mobs.push(createMob(st, false));
@@ -3390,8 +3425,8 @@
         }
       });
 
-      // Co-op AI Raid Teammates (Fight crowd mobs & bosses alongside player, skipping player's grappled target!)
-      if (aiPartyEnabled) {
+      // Co-op AI Raid Teammates (Step back during 1v1 Boss Duel so it's a pure 1-on-1 showdown!)
+      if (aiPartyEnabled && !bossDuelActive) {
         const gTarget = player.grapple ? player.grapple.target : null;
         for (const a of aiAllies) {
           if (a.atkT > 0) a.atkT -= dt;
