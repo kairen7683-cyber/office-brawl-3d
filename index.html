@@ -260,16 +260,35 @@
       background: rgba(255, 255, 255, 0.96);
       color: #0f172a;
       border: 1.5px solid #0f172a;
-      border-radius: 999px;
-      padding: 3.5px 10px;
+      border-radius: 14px;
+      padding: 4px 10px;
       font-size: 11px;
-      font-weight: 800;
-      white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.28);
+      font-weight: 900;
+      max-width: 230px;
+      white-space: normal;
+      text-align: center;
+      line-height: 1.28;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.34);
       z-index: 22;
     }
     .speech-pill.hurt { background: #fef08a; color: #991b1b; }
-    .speech-pill.emote { background: #6366f1; color: #ffffff; border-color: rgba(255,255,255,0.5); font-size: 12px; }
+    .speech-pill.emote { background: linear-gradient(135deg, #0284c7, #4f46e5); color: #ffffff; border: 1.5px solid #bae6fd; font-size: 11.5px; z-index: 24; }
+    .boss-banner {
+      position: fixed;
+      top: 136px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 92vw;
+      padding: 10px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(153,27,27,0.95), rgba(15,23,42,0.95));
+      border: 2px solid #fde047;
+      box-shadow: 0 10px 30px rgba(220,38,38,0.55);
+      text-align: center;
+      pointer-events: none;
+      z-index: 45;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
 
     .comic-pop {
       position: absolute;
@@ -356,6 +375,11 @@
   <!-- Screen Flash & Finale Detonation Cutscene Modal -->
   <div id="whiteFlash" class="fixed inset-0 pointer-events-none" style="background:#fff; opacity:0; transition:opacity 0.25s; z-index:48;"></div>
   <div id="hurtFlash" class="fixed inset-0 pointer-events-none" style="background:radial-gradient(circle, rgba(225,29,72,0) 42%, rgba(225,29,72,0.58) 100%); opacity:0; transition:opacity 0.14s; z-index:47;"></div>
+  <div id="bossWarningBanner" class="boss-banner hidden">
+    <div id="bossBannerTop" style="font-size:11px; font-weight:900; color:#fde047; letter-spacing:0.06em;">🚨 WARNING // 사무실 보스 출현!!</div>
+    <div id="bossBannerName" style="font-size:17px; font-weight:900; color:#ffffff; margin-top:2px;">울산 폭군 마공장장</div>
+    <div id="bossBannerQuote" style="font-size:12px; font-weight:800; color:#fecaca; margin-top:3px;">"자네, 오늘 야근일세!!"</div>
+  </div>
   <div id="finaleModal" class="fixed inset-0 hidden items-center justify-center pointer-events-auto" style="background:rgba(9,5,15,0.82); backdrop-filter:blur(8px); padding:16px; z-index:60;">
     <div class="glass" style="max-width:390px; width:100%; border-radius:26px; padding:24px; text-align:center; border-color:rgba(251,191,36,0.6);">
       <div id="finaleIcon" style="font-size:52px; line-height:1.1;">💥🏢🔥</div>
@@ -1471,6 +1495,70 @@
       return `16:${String(totalMin).padStart(2, "0")}`;
     }
 
+    const KKONDAE_BANTER = [
+      { boss: "초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!", reply: "니가 초딩이냐?!" },
+      { boss: "글자 간격이 안 맞잖아!! 처음부터 다시 해!", reply: "눈대중 자 대고 다니세요?!" },
+      { boss: "자네, 오늘 야근일세~ 칼퇴는 무슨!", reply: "야근은 상사님이나 혼자 하세요!!" },
+      { boss: "줄간격 160% 말고 158%로 다시 맞춰와!", reply: "줄간격 대신 턱주가리 맞춰드릴게요!!" },
+      { boss: "아까랑 폰트 느낌만 살짝 다르게 해봐, 알지?", reply: "느낌이 뭔데요! 맑은고딕 펀치나 드세요!!" },
+      { boss: "라떼는 밤새우고도 주말 특근 뛰었어!", reply: "라떼는 카페 가서 드세요!!" },
+      { boss: "이거 5분이면 끝나는 거잖아? 오늘 안에 올려!", reply: "그 5분 니가 직접 해보시죠!!" },
+      { boss: "회식도 업무의 연장일세! 3차까지 필참!", reply: "내 간은 회사 소유가 아닙니다!!" },
+      { boss: "5시 퇴근? 애사심이 바닥이구만!", reply: "월급부터 올려주고 말하세요!!" },
+      { boss: "주말에 카톡 왜 씹었어?! 읽씹 금지야!", reply: "주말엔 꼰대 차단 모드입니다!!" }
+    ];
+    let banterIdx = 0;
+    let bossBannerTimer = null;
+    let pendingReplyTimer = null;
+
+    function showBossBanner(topTxt, nameTxt, quoteTxt) {
+      const el = document.getElementById("bossWarningBanner");
+      if (!el) return;
+      document.getElementById("bossBannerTop").textContent = topTxt;
+      document.getElementById("bossBannerName").textContent = nameTxt;
+      document.getElementById("bossBannerQuote").textContent = `"${quoteTxt}"`;
+      el.classList.remove("hidden");
+      if (bossBannerTimer) clearTimeout(bossBannerTimer);
+      bossBannerTimer = setTimeout(() => { el.classList.add("hidden"); }, 3400);
+    }
+
+    function triggerKkondaeBanter(bossObj, forcePair = null) {
+      const pair = forcePair || KKONDAE_BANTER[banterIdx++ % KKONDAE_BANTER.length];
+      if (bossObj) {
+        bossObj.speech = pair.boss;
+        bossObj.hurtSpeech = false;
+        bossObj.speechT = 4.6;
+      }
+      if (pendingReplyTimer) clearTimeout(pendingReplyTimer);
+      pendingReplyTimer = setTimeout(() => {
+        if (campaignOver) return;
+        player.myEmote = `💬 ${pair.reply}`;
+        player.myEmoteT = 3.2;
+        popText(player.x, 2.55, player.z, `💬 ${pair.reply}`, "#7dd3fc", 21);
+      }, 720);
+      return pair;
+    }
+
+    function summonOfficeFinalBoss() {
+      const finalBoss = bosses[bosses.length - 1];
+      if (!finalBoss || !finalBoss.waiting) return;
+      finalBoss.waiting = false;
+      finalBoss.x = 0;
+      finalBoss.y = 9.5;
+      finalBoss.z = -9.5;
+      finalBoss.vx = 0; finalBoss.vy = -4.0; finalBoss.vz = 0;
+      focusBossIdx = bosses.length - 1;
+
+      const pair = triggerKkondaeBanter(finalBoss);
+      const st = STAGES[stageIdx];
+      showBossBanner(`🚨 WARNING // ${st.short} 보스 강림!!`, `${finalBoss.def.rank} ${finalBoss.def.name}`, pair.boss);
+      spawnShockRing(finalBoss.x, finalBoss.z, 8.5, [1.0, 0.2, 0.25]);
+      spawnParticles(finalBoss.x, 1.5, finalBoss.z, 26, "fire");
+      shakeMag = 0.85; shakeT = 0.42;
+      playSfx("ko"); haptic(95);
+      updateHud();
+    }
+
     let stageIdx = 0;
     let freePlayMode = false;
     let stageKills = 0;
@@ -1605,18 +1693,27 @@
         }
       }
 
-      bosses = st.bosses.map((d, i) => ({
-        def: { ...d, idx: i },
-        x: d.homeX, y: 1.8, z: d.homeZ,
-        vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
-        yaw: 0, walk: 0,
-        hp: d.hp, maxHp: d.hp,
-        ragdoll: 0, stun: 0, shockT: 0, flash: 0,
-        boundPending: false, bowlingT: 0,
-        ko: false, respawn: 0,
-        atkCd: 1.1 + i * 0.35,
-        speechT: 1.2 + i * 0.9, speech: d.taunts[0], hurtSpeech: false
-      }));
+      bosses = st.bosses.map((d, i) => {
+        const isFinalBoss = i === st.bosses.length - 1;
+        return {
+          def: { ...d, idx: i },
+          x: isFinalBoss ? 0 : d.homeX,
+          y: isFinalBoss ? -999 : 1.8,
+          z: isFinalBoss ? -999 : d.homeZ,
+          vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
+          yaw: 0, walk: 0,
+          hp: d.hp, maxHp: d.hp,
+          ragdoll: 0, stun: 0, shockT: 0, flash: 0,
+          boundPending: false, bowlingT: 0,
+          ko: false, waiting: isFinalBoss, respawn: 0,
+          atkCd: 1.1 + i * 0.35,
+          chargeCd: 5.5 + i * 2.0,
+          charging: 0,
+          speechT: 1.5 + i * 1.1, speech: d.taunts[0], hurtSpeech: false
+        };
+      });
+      const bwEl = document.getElementById("bossWarningBanner");
+      if (bwEl) bwEl.classList.add("hidden");
       for (let i = 0; i < 5; i++) {
         const el = document.getElementById(`bossTag${i}`);
         if (el) el.style.opacity = "0";
@@ -1694,7 +1791,14 @@
     function checkStageObjectives() {
       if (portalOpen) return;
       const st = STAGES[stageIdx];
-      const allBossDead = bosses.every((b) => b.ko);
+      const finalBoss = bosses[bosses.length - 1];
+      if (finalBoss && finalBoss.waiting) {
+        const subBossesAllDead = bosses.slice(0, -1).every((b) => b.ko);
+        if (subBossesAllDead || stageKills >= Math.ceil(st.targetKills * 0.4)) {
+          summonOfficeFinalBoss();
+        }
+      }
+      const allBossDead = bosses.every((b) => b.ko && !b.waiting);
       if (allBossDead && stageKills >= st.targetKills) {
         portalOpen = true;
         playSfx("ko"); haptic(90);
@@ -1831,9 +1935,11 @@
     }
 
     function hitBoss(b, idx, baseDmg, dx, dz, force, liftY, label, heavy, fromLocal = true) {
-      if (b.ko) return;
+      if (b.ko || b.waiting) return;
       focusBossIdx = idx;
-      const pwrMult = 1 + (player.powerLv - 1) * 0.28 + (activeEvent === "caffeine" ? 0.4 : 0);
+      const isCounter = b.charging > 0;
+      if (isCounter) b.charging = 0;
+      const pwrMult = (1 + (player.powerLv - 1) * 0.28 + (activeEvent === "caffeine" ? 0.4 : 0)) * (isCounter ? 1.5 : 1.0);
       const dmg = Math.round(baseDmg * pwrMult);
       const f = force * (1 + (player.powerLv - 1) * 0.14);
 
@@ -1843,9 +1949,17 @@
       b.stun = 1.1; b.flash = 0.14;
       b.vrx = (Math.random() - 0.5) * 15; b.vrz = (Math.random() - 0.5) * 15;
 
-      const hurts = ["억!! 결재 승인!!", "살려줘!! 칼퇴해!!", "아악 내 법인카드!!", "비자금 줄게 살려줘!!", "꾸웨에엑!!"];
+      const hurts = ["억!! 결재 승인!!", "살려줘!! 칼퇴해!!", "글자 간격 괜찮아!!", "아악 내 법인카드!!", "오늘 야근 취소!!", "꾸웨에엑!!"];
       b.speech = hurts[(Math.random() * hurts.length) | 0];
       b.hurtSpeech = true; b.speechT = 2.0;
+
+      if (isCounter) {
+        const pair = KKONDAE_BANTER[banterIdx++ % KKONDAE_BANTER.length];
+        player.myEmote = `💥 ${pair.reply}`;
+        player.myEmoteT = 2.6;
+        popText(b.x, b.y + 2.5, b.z, `⚡ 사이다 카운터!! -${dmg}`, "#38bdf8", 25);
+        spawnShockRing(b.x, b.z, 4.5, [0.22, 0.92, 1.0]);
+      }
 
       if (fromLocal) {
         comboCount++; comboTimer = 3.2;
@@ -2363,7 +2477,10 @@
         pqBtn.classList.remove("portal-cta-ready");
       }
 
-      const aliveBoss = bosses[focusBossIdx] && !bosses[focusBossIdx].ko ? bosses[focusBossIdx] : (bosses.find((b) => !b.ko) || bosses[bosses.length - 1]);
+      const aliveBoss =
+        bosses[focusBossIdx] && !bosses[focusBossIdx].ko && !bosses[focusBossIdx].waiting
+          ? bosses[focusBossIdx]
+          : (bosses.find((b) => !b.ko && !b.waiting) || bosses[bosses.length - 1]);
       if (aliveBoss) {
         const badge = document.getElementById("focusRankBadge");
         badge.textContent = aliveBoss.def.rank;
@@ -2514,7 +2631,7 @@
 
       const bCols = ["#fb923c", "#a3e635", "#c084fc", "#facc15"];
       bosses.forEach((b, i) => {
-        if (b.ko) return;
+        if (b.ko || b.waiting) return;
         rctx.fillStyle = bCols[i % bCols.length];
         rctx.beginPath(); rctx.arc(mx(b.x), mz(b.z), 3.3, 0, 6.28); rctx.fill();
       });
@@ -3149,7 +3266,9 @@
 
       // Update Stage Bosses + Tekken Bound + Giant Swing Bowling & Hazard Collisions
       bosses.forEach((b, idx) => {
+        if (b.waiting) return;
         if (b.flash > 0) b.flash -= rawDt;
+        if (b.charging > 0) b.charging = Math.max(0, b.charging - dt);
         if (b.shockT > 0) {
           b.shockT -= dt;
           if (Math.random() < 0.35) spawnParticles(b.x, b.y + 1.0, b.z, 1, "shock");
@@ -3197,7 +3316,7 @@
             }
             if (isBowl) {
               bosses.forEach((ob, obi) => {
-                if (ob !== b && !ob.ko && ob.ragdoll <= 0.08 && Math.hypot(ob.x - b.x, ob.z - b.z) < 2.2) {
+                if (ob !== b && !ob.ko && !ob.waiting && ob.ragdoll <= 0.08 && Math.hypot(ob.x - b.x, ob.z - b.z) < 2.2) {
                   hitBoss(ob, obi, 58, b.vx / bSpd, b.vz / bSpd, 15.5, 7.2, "🎳 임원 볼링 충돌!!", true);
                 }
               });
@@ -3235,15 +3354,25 @@
           else {
             const dx = player.x - b.x, dz = player.z - b.z, d = Math.hypot(dx, dz) || 1;
             if (b.atkCd > 0) b.atkCd -= dt;
+            if (b.chargeCd > 0) b.chargeCd -= dt;
+            if (d < 16.0 && d > 2.5 && b.chargeCd <= 0 && !b.ko) {
+              b.chargeCd = 7.2 + Math.random() * 2.5;
+              b.charging = 0.85;
+              b.flash = 0.35;
+              spawnShockRing(b.x, b.z, 3.8, [1.0, 0.25, 0.25]);
+              triggerKkondaeBanter(b);
+            }
             if (d < 22.0) {
               b.yaw = Math.atan2(dx, dz);
+              const moveSpd = b.def.speed * (b.charging > 0 ? 1.85 : 1.0);
               if (d > 1.85) {
-                b.x += (dx / d) * b.def.speed * dt;
-                b.z += (dz / d) * b.def.speed * dt;
-                b.walk += dt * 8.0;
+                b.x += (dx / d) * moveSpd * dt;
+                b.z += (dz / d) * moveSpd * dt;
+                b.walk += dt * (b.charging > 0 ? 14.0 : 8.0);
               } else if (b.atkCd <= 0) {
                 b.atkCd = 1.45 + Math.random() * 0.55;
-                const bossDmg = 11 + stageIdx * 3;
+                const bossDmg = (11 + stageIdx * 3) + (b.charging > 0 ? 4 : 0);
+                b.charging = 0;
                 damagePlayer(bossDmg, `${b.def.name} 야근철퇴!`, b.x, b.z);
               }
             }
@@ -3252,8 +3381,12 @@
 
         b.speechT -= rawDt;
         if (b.speechT <= 0 && !b.ko) {
-          b.speech = b.def.taunts[(Math.random() * b.def.taunts.length) | 0];
-          b.hurtSpeech = false; b.speechT = 4.0;
+          if (Math.hypot(b.x - player.x, b.z - player.z) < 13.5 && Math.random() < 0.7) {
+            triggerKkondaeBanter(b);
+          } else {
+            b.speech = b.def.taunts[(Math.random() * b.def.taunts.length) | 0];
+            b.hurtSpeech = false; b.speechT = 4.2;
+          }
         }
       });
 
@@ -3524,7 +3657,7 @@
       };
       shd(player.x, player.z, 0.52);
       for (const m of mobs) { if (!m.ko || m.y > 0.05) shd(m.x, m.z, 0.44 * m.scale); }
-      bosses.forEach((b) => { if (!b.ko) shd(b.x, b.z, 0.58 * b.def.scale); });
+      bosses.forEach((b) => { if (!b.ko && !b.waiting) shd(b.x, b.z, 0.58 * b.def.scale); });
       remotePlayers.forEach((rp) => { if (rp.stage === stageIdx) shd(rp.x, rp.z, 0.50); });
       if (aiPartyEnabled) aiAllies.forEach((a) => shd(a.x, a.z, 0.48));
 
@@ -3629,7 +3762,7 @@
 
       bosses.forEach((b, idx) => {
         const tagEl = document.getElementById(`bossTag${idx}`);
-        if (b.ko) { if (tagEl) tagEl.style.opacity = "0"; return; }
+        if (b.ko || b.waiting) { if (tagEl) tagEl.style.opacity = "0"; return; }
 
         const rag = b.ragdoll > 0 || b.y > 0.05;
         const face = b.shockT > 0 ? 4 : (rag || b.flash > 0 ? 3 : b.def.face);
