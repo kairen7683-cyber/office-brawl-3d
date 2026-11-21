@@ -372,9 +372,21 @@
     <div id="remoteLabels"></div>
   </div>
 
-  <!-- Screen Flash & Finale Detonation Cutscene Modal -->
+  <!-- Screen Flash, Tekken VS Cut-In & Finale Modal -->
   <div id="whiteFlash" class="fixed inset-0 pointer-events-none" style="background:#fff; opacity:0; transition:opacity 0.25s; z-index:48;"></div>
   <div id="hurtFlash" class="fixed inset-0 pointer-events-none" style="background:radial-gradient(circle, rgba(225,29,72,0) 42%, rgba(225,29,72,0.58) 100%); opacity:0; transition:opacity 0.14s; z-index:47;"></div>
+  <div id="duelCutin" class="fixed inset-0 hidden items-center justify-center pointer-events-none" style="background:radial-gradient(circle at 50% 45%, rgba(153,27,27,0.92), rgba(7,10,19,0.96)); backdrop-filter:blur(6px); padding:18px; z-index:58;">
+    <div style="max-width:390px; width:100%; border-radius:24px; padding:22px 18px; text-align:center; border:2px solid #fde047; background:rgba(15,23,42,0.88); box-shadow:0 0 40px rgba(239,68,68,0.65);">
+      <div id="cutinRoom" style="display:inline-block; padding:3px 12px; border-radius:999px; background:#dc2626; color:#fef08a; font-size:11px; font-weight:900; letter-spacing:0.06em;">🚪 공장장실 진입 // 1 vs 1 철권 결투!!</div>
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:12px;">
+        <span style="font-size:15px; font-weight:900; color:#38bdf8;">🥊 나 (사원)</span>
+        <span style="font-size:24px; font-weight:900; color:#fde047; font-style:italic;">VS</span>
+        <span id="cutinBossName" style="font-size:16px; font-weight:900; color:#fb7185;">울산 폭군 마공장장</span>
+      </div>
+      <div id="cutinBossQuote" style="margin-top:14px; padding:10px 12px; border-radius:14px; background:rgba(255,255,255,0.96); color:#0f172a; font-size:13px; font-weight:900; line-height:1.4;">"글자 간격이 안 맞잖아!! 초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!"</div>
+      <div id="cutinPlayerReply" style="margin-top:9px; padding:8px 12px; border-radius:14px; background:linear-gradient(135deg,#0284c7,#4f46e5); color:#ffffff; font-size:13px; font-weight:900;">💬 "니가 초딩이냐?! 오늘 야근은 너나 해!!"</div>
+    </div>
+  </div>
   <div id="bossWarningBanner" class="boss-banner hidden">
     <div id="bossBannerTop" style="font-size:11px; font-weight:900; color:#fde047; letter-spacing:0.06em;">🚨 WARNING // 사무실 보스 출현!!</div>
     <div id="bossBannerName" style="font-size:17px; font-weight:900; color:#ffffff; margin-top:2px;">울산 폭군 마공장장</div>
@@ -407,89 +419,106 @@
     </div>
   </div>
 
-  <!-- ==================== CLEAN, NON-WRAPPING 2-TIER TOP HUD ==================== -->
-  <div class="fixed top-0 inset-x-0 pointer-events-none" style="padding: max(8px, env(safe-area-inset-top)) 10px 0; z-index:30;">
-    <!-- TIER 1: Single-Row Action Header (Fixed 34px Height, Zero Line Wrap) -->
-    <div class="flex items-center justify-between pointer-events-auto" style="gap:5px; width:100%;">
-      <!-- Left: Stage Selector Pill -->
-      <button id="btnStageSelect" class="glass hud-btn" style="border-color:rgba(125,211,252,0.4); color:#f8fafc;">
-        <span id="stageBadge">🏭 1/3 울산공장</span>
-        <span style="font-size:9px; color:#7dd3fc;">▾</span>
-      </button>
-
-      <!-- Center: Cash + One-Tap Fist Upgrade Pill -->
-      <button id="btnUpgrade" class="hud-btn cta-amber" title="비자금으로 주먹 파워 강화">
-        <span>💪</span>
-        <span id="upgradeLabel">LV.1</span>
-        <span style="opacity:0.45;">|</span>
-        <span id="cashHud" style="font-family:monospace; font-weight:900;">₩0</span>
-      </button>
-
-      <!-- Right: Compact Icon Cluster (Multiplayer, PWA Install, Sound) -->
-      <div class="flex items-center" style="gap:4px; flex-shrink:0;">
-        <button id="btnMulti" class="hud-btn cta-violet" style="padding:0 9px;" title="실시간 멀티플레이 및 감정표현">
-          <span id="multiDot" style="width:6px; height:6px; border-radius:99px; background:#4ade80;"></span>
-          <span>👥</span>
-          <span id="multiCountText">3</span>
-        </button>
-        <button id="btnInstallPwa" class="hud-icon-btn cta-emerald" title="앱 설치">📲</button>
-        <button id="btnSound" class="glass hud-icon-btn" title="사운드 켜기/끄기">🔊</button>
+  <!-- ==================== ULTRA-SLIM TOP HUD (LESS SCREEN OBSTRUCTION!) ==================== -->
+  <div class="fixed top-0 inset-x-0 pointer-events-none" style="padding: max(4px, env(safe-area-inset-top)) 7px 0; z-index:30;">
+    <!-- TEKKEN 1v1 BOSS ARENA VS BAR (Shown ONLY during 1v1 Boss Duel!) -->
+    <div id="tekkenHud" class="glass hidden" style="border-radius:12px; padding:6px 9px; border-color:rgba(251,191,36,0.7); background:rgba(10,14,26,0.86);">
+      <div class="flex items-center justify-between" style="gap:6px;">
+        <div style="flex:1; min-width:0;">
+          <div class="flex items-center justify-between" style="font-size:10px; font-weight:900; color:#38bdf8;">
+            <span>🥊 나 (사원)</span>
+            <span id="tkPlayerHpTxt">100%</span>
+          </div>
+          <div style="height:7px; background:rgba(255,255,255,0.14); border-radius:999px; overflow:hidden; margin-top:2px;">
+            <div id="tkPlayerHpFill" style="height:100%; width:100%; background:linear-gradient(90deg,#22c55e,#38bdf8); transition:width 0.12s;"></div>
+          </div>
+        </div>
+        <div style="text-align:center; flex-shrink:0; padding:0 4px;">
+          <div id="tkRoomLabel" style="font-size:9px; font-weight:900; color:#fde047;">공장장실 1:1</div>
+          <div id="tkClockTxt" style="font-size:11px; font-weight:900; font-family:monospace; color:#fff;">16:00</div>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div class="flex items-center justify-between" style="font-size:10px; font-weight:900; color:#fb7185;">
+            <span id="tkBossHpTxt">100%</span>
+            <span id="tkBossNameTxt" class="truncate">울산 폭군 마공장장</span>
+          </div>
+          <div style="height:7px; background:rgba(255,255,255,0.14); border-radius:999px; overflow:hidden; margin-top:2px;">
+            <div id="tkBossHpFill" style="height:100%; width:100%; margin-left:auto; background:linear-gradient(90deg,#fde047,#f43f5e); transition:width 0.12s;"></div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- TIER 2: Compact Mini-Radar (Left) + Unified Combat & Boss HP Card (Right) -->
-    <div class="flex items-start" style="margin-top:6px; gap:7px; width:100%;">
-      <!-- Left: Mini Radar + Tiny Ally/Reset Controls -->
-      <div class="glass pointer-events-auto flex flex-col items-center" style="border-radius:13px; padding:4px; flex-shrink:0;">
-        <canvas id="radarCanvas" width="76" height="54" style="display:block; border-radius:8px;"></canvas>
-        <div class="flex items-center justify-between" style="width:100%; margin-top:3px; gap:3px;">
-          <button id="btnAiParty" style="flex:1; height:19px; border-radius:6px; background:rgba(255,255,255,0.08); font-size:9px; font-weight:800; color:#6ee7b7;" class="nowrap">🤖ON</button>
-          <button id="btnReset" style="width:22px; height:19px; border-radius:6px; background:rgba(255,255,255,0.08); font-size:9.5px;" title="스테이지 리셋">🔄</button>
+    <!-- NORMAL OFFICE FLOOR SLIM HUD -->
+    <div id="normalHud">
+      <!-- TIER 1: Slim 27px Header -->
+      <div class="flex items-center justify-between pointer-events-auto" style="gap:4px; width:100%;">
+        <button id="btnStageSelect" class="glass hud-btn" style="height:26px; padding:0 7px; font-size:10px; border-color:rgba(125,211,252,0.4); color:#f8fafc;">
+          <span id="stageBadge">🏭 1/3 울산공장</span>
+          <span style="font-size:8px; color:#7dd3fc;">▾</span>
+        </button>
+
+        <button id="btnUpgrade" class="hud-btn cta-amber" style="height:26px; padding:0 7px; font-size:10px;" title="비자금으로 주먹 파워 강화">
+          <span>💪</span>
+          <span id="upgradeLabel">LV.1</span>
+          <span style="opacity:0.45;">|</span>
+          <span id="cashHud" style="font-family:monospace; font-weight:900;">₩0</span>
+        </button>
+
+        <div class="flex items-center" style="gap:3px; flex-shrink:0;">
+          <button id="btnMulti" class="hud-btn cta-violet" style="height:26px; padding:0 6px; font-size:10px;" title="실시간 멀티플레이">
+            <span id="multiDot" style="width:5px; height:5px; border-radius:99px; background:#4ade80;"></span>
+            <span>👥</span>
+            <span id="multiCountText">3</span>
+          </button>
+          <button id="btnInstallPwa" class="hud-icon-btn cta-emerald" style="width:26px; height:26px; font-size:11px;" title="앱 설치">📲</button>
+          <button id="btnSound" class="glass hud-icon-btn" style="width:26px; height:26px; font-size:11px;" title="사운드">🔊</button>
         </div>
       </div>
 
-      <!-- Right: Crowd KO Progress + Target Boss HP Bar (Never Wraps!) -->
-      <div class="glass flex-col justify-between" style="flex:1; min-width:0; border-radius:14px; padding:7px 10px; display:flex; gap:5px;">
-        <!-- Row A: Crowd KO Counter + Instant Warp/Detonate CTA -->
-        <div class="flex items-center justify-between" style="gap:6px; min-width:0;">
-          <div class="flex items-center truncate" style="gap:6px; font-size:11px; font-weight:900;">
-            <span id="koProgressText" class="nowrap" style="color:#fde047;">🥊 참교육 0/20명</span>
-            <span style="color:rgba(255,255,255,0.22);">·</span>
-            <span id="bossProgressText" class="nowrap" style="color:#a5f3fc;">임원 0/3</span>
-          </div>
-          <button id="btnPortalQuick" class="pointer-events-auto nowrap" style="height:21px; padding:0 8px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); font-size:10px; font-weight:900; color:#cbd5e1;">
-            🔒 포털대기
-          </button>
-        </div>
-
-        <!-- Row B: Target Boss / Crowd Nameplate + Combo Pill -->
-        <div class="flex items-center justify-between" style="gap:6px; min-width:0;">
-          <div class="flex items-center truncate" style="gap:5px; min-width:0;">
-            <span id="focusRankBadge" class="nowrap" style="padding:1px 5px; border-radius:5px; font-size:9.5px; font-weight:900; background:#e11d48;">공장장</span>
-            <span id="focusBossName" class="truncate" style="font-size:11.5px; font-weight:900; color:#f8fafc;">울산 폭군 마공장장</span>
-          </div>
-          <div class="flex items-center" style="gap:5px; flex-shrink:0;">
-            <span id="comboBadge" class="nowrap" style="opacity:0; transition:opacity 0.15s; padding:1px 7px; border-radius:999px; background:linear-gradient(90deg,#fbbf24,#f43f5e); color:#090d16; font-size:9.5px; font-weight:900;">2 COMBO</span>
-            <span id="koHud" class="nowrap" style="font-size:10px; font-weight:800; color:#94a3b8;">누적 0</span>
+      <!-- TIER 2: Ultra-Compact Mini-Radar (Left) + 2-Row Status Bar (Right) -->
+      <div class="flex items-center" style="margin-top:4px; gap:5px; width:100%;">
+        <div class="glass pointer-events-auto flex flex-col items-center" style="border-radius:10px; padding:2.5px; flex-shrink:0;">
+          <canvas id="radarCanvas" width="52" height="34" style="display:block; border-radius:6px;"></canvas>
+          <div class="flex items-center justify-between" style="width:100%; margin-top:2px; gap:2px;">
+            <button id="btnAiParty" style="flex:1; height:15px; border-radius:4px; background:rgba(255,255,255,0.08); font-size:8px; font-weight:800; color:#6ee7b7;" class="nowrap">🤖ON</button>
+            <button id="btnReset" style="width:16px; height:15px; border-radius:4px; background:rgba(255,255,255,0.08); font-size:8.5px;" title="리셋">🔄</button>
           </div>
         </div>
 
-        <!-- Row C: Smooth Dual-Layer Boss HP Bar -->
-        <div style="position:relative; width:100%; height:7px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden;">
-          <div id="hpTrail" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.82); border-radius:999px; transition:width 0.4s ease;"></div>
-          <div id="hpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#f43f5e,#fb923c,#fde047); border-radius:999px; transition:width 0.08s ease;"></div>
-        </div>
-
-        <!-- Row D: Player HP Bar + 17:00 Clock-Out Deadline -->
-        <div class="flex items-center justify-between" style="gap:8px; margin-top:1px;">
-          <div class="flex items-center" style="flex:1; min-width:0; gap:5px;">
-            <span id="playerHpText" class="nowrap" style="font-size:10px; font-weight:900; color:#4ade80;">❤️ 100</span>
-            <div style="position:relative; flex:1; height:6px; background:rgba(255,255,255,0.14); border-radius:999px; overflow:hidden;">
-              <div id="playerHpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#22c55e,#4ade80); border-radius:999px; transition:width 0.12s ease;"></div>
+        <div class="glass flex-col justify-between" style="flex:1; min-width:0; border-radius:11px; padding:4px 7px; display:flex; gap:3px; background:rgba(12,17,30,0.68);">
+          <!-- Row 1: Sub-Boss Progress + Target Name + Portal CTA -->
+          <div class="flex items-center justify-between" style="gap:4px; min-width:0;">
+            <div class="flex items-center truncate" style="gap:4px; font-size:10px; font-weight:900; min-width:0;">
+              <span id="koProgressText" class="nowrap" style="color:#fde047;">🥊 중간보스 0/2</span>
+              <span id="focusRankBadge" class="nowrap" style="padding:0 4px; border-radius:4px; font-size:9px; font-weight:900; background:#e11d48;">반장</span>
+              <span id="focusBossName" class="truncate" style="font-size:10px; font-weight:900; color:#f8fafc;">독사 강반장</span>
+            </div>
+            <div class="flex items-center" style="gap:4px; flex-shrink:0;">
+              <span id="comboBadge" class="nowrap" style="opacity:0; transition:opacity 0.15s; padding:0 5px; border-radius:999px; background:linear-gradient(90deg,#fbbf24,#f43f5e); color:#090d16; font-size:8.5px; font-weight:900;">2C</span>
+              <button id="btnPortalQuick" class="pointer-events-auto nowrap" style="height:18px; padding:0 6px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); font-size:9px; font-weight:900; color:#cbd5e1;">
+                🔒 포털대기
+              </button>
             </div>
           </div>
-          <div id="clockHud" class="nowrap" style="padding:1px 7px; border-radius:999px; background:rgba(15,23,42,0.72); border:1px solid rgba(125,211,252,0.45); font-size:10px; font-weight:900; font-family:monospace; color:#7dd3fc;">
-            🕔 16:00 / 17:00
+          <!-- Slim Boss HP Bar -->
+          <div style="position:relative; width:100%; height:5px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden;">
+            <div id="hpTrail" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:rgba(255,255,255,0.82); border-radius:999px; transition:width 0.4s ease;"></div>
+            <div id="hpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#f43f5e,#fb923c,#fde047); border-radius:999px; transition:width 0.08s ease;"></div>
+          </div>
+          <!-- Row 2: Player HP + 17:00 Clock + v15 -->
+          <div class="flex items-center justify-between" style="gap:5px;">
+            <div class="flex items-center" style="flex:1; min-width:0; gap:4px;">
+              <span id="playerHpText" class="nowrap" style="font-size:9.5px; font-weight:900; color:#4ade80;">❤️ 100</span>
+              <div style="position:relative; flex:1; height:5px; background:rgba(255,255,255,0.14); border-radius:999px; overflow:hidden;">
+                <div id="playerHpFill" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:linear-gradient(90deg,#22c55e,#4ade80); border-radius:999px; transition:width 0.12s ease;"></div>
+              </div>
+            </div>
+            <span id="bossProgressText" class="hidden"></span>
+            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v15 · 0</span>
+            <div id="clockHud" class="nowrap" style="padding:0 6px; border-radius:999px; background:rgba(15,23,42,0.75); border:1px solid rgba(125,211,252,0.45); font-size:9.5px; font-weight:900; font-family:monospace; color:#7dd3fc;">
+              🕔 16:00/17:00
+            </div>
           </div>
         </div>
       </div>
@@ -1081,6 +1110,44 @@
     }
     M.stageMaps = [0, 1, 2].map(buildStageMap);
 
+    function buildTekkenRoom() {
+      const g = new Geo();
+      // Executive dark walnut floor + red carpet Tekken combat ring ([-7.2..7.2] x [-5.0..5.0])
+      for (let gx = -4; gx < 4; gx++) {
+        for (let gz = -3; gz < 3; gz++) {
+          const x = (gx + 0.5) * 2.0, z = (gz + 0.5) * 2.0;
+          const isInner = Math.abs(x) < 5.6 && Math.abs(z) < 3.6;
+          const chk = (gx + gz) % 2 === 0;
+          const col = isInner
+            ? (chk ? rgb(0x7f1d1d) : rgb(0x991b1b))
+            : (chk ? rgb(0x271c16) : rgb(0x1f1612));
+          g.addBox(1.98, 0.14, 1.98, col, x, -0.07, z);
+        }
+      }
+      // Glowing Gold Tekken Arena Ring Borders
+      g.addBox(14.0, 0.08, 0.22, rgb(0xfacc15), 0, 0.04, -4.6);
+      g.addBox(14.0, 0.08, 0.22, rgb(0xfacc15), 0, 0.04,  4.6);
+      g.addBox(0.22, 0.08, 9.4,  rgb(0xfacc15), -7.0, 0.04, 0);
+      g.addBox(0.22, 0.08, 9.4,  rgb(0xfacc15),  7.0, 0.04, 0);
+      // Executive Back Wall + Side Walls + Gold Nameplate Trim
+      g.addBox(16.4, 5.2, 0.5, rgb(0x1e1b2e), 0, 2.6, -5.6);
+      g.addBox(14.8, 0.18, 0.55, rgb(0xf59e0b), 0, 4.4, -5.55);
+      g.addBox(5.2, 1.6, 0.35, rgb(0x0f172a), 0, 2.9, -5.3);
+      g.addBox(4.8, 1.2, 0.38, rgb(0x38bdf8), 0, 2.9, -5.26);
+      // Side Pillars & Walls
+      g.addBox(0.5, 5.2, 12.0, rgb(0x181826), -7.8, 2.6, 0);
+      g.addBox(0.5, 5.2, 12.0, rgb(0x181826),  7.8, 2.6, 0);
+      for (const px of [-6.8, -2.8, 2.8, 6.8]) {
+        g.addBox(0.65, 5.2, 0.65, rgb(0x451a03), px, 2.6, -5.2);
+      }
+      // Executive Mahogany Desk in Background
+      g.addBox(3.6, 0.9, 1.1, rgb(0x451a03), 0, 0.45, -4.6);
+      g.addBox(3.8, 0.12, 1.25, rgb(0x78350f), 0, 0.94, -4.6);
+      return g.build();
+    }
+    M.tekkenRoom = buildTekkenRoom();
+    const ARENA_X = 6.4, ARENA_Z = 4.1;
+
     // --- SHARED HEAD & LIMBS ---
     M.sdHead = new Geo()
       .addEllipsoid(0.44, 0.41, 0.40, 16, 20, rgb(0xfdba8c), 0, 0.38, 0, true)
@@ -1581,29 +1648,49 @@
       if (!finalBoss || !finalBoss.waiting) return;
       bossDuelActive = true;
       finalBoss.waiting = false;
-      finalBoss.x = 0;
-      finalBoss.y = 9.5;
-      finalBoss.z = -8.5;
-      finalBoss.vx = 0; finalBoss.vy = -4.0; finalBoss.vz = 0;
-      finalBoss.stun = 3.2; // Brief dramatic entrance monologue so player reads all 3 irritating quotes!
+      finalBoss.x = 3.6;
+      finalBoss.y = 0;
+      finalBoss.z = 0;
+      finalBoss.yaw = -Math.PI * 0.5;
+      finalBoss.vx = 0; finalBoss.vy = 0; finalBoss.vz = 0;
+      finalBoss.stun = 3.0; // Hold during dramatic VS cut-in!
       focusBossIdx = bosses.length - 1;
 
-      // Clear remaining crowd mobs so it becomes a pure 1-on-1 Boss Duel!
-      for (const m of mobs) {
-        if (!m.ko) {
-          m.ko = true;
-          m.koCleanup = 0.45;
-          m.vx = (m.x >= 0 ? 1 : -1) * 14;
-          m.vy = 8.5;
-          m.vz = -10;
-        }
+      // Transition into enclosed Executive Boss Room (공장장실 / 대표이사실 / 회장 집무실)
+      player.x = -3.6; player.y = 0; player.z = 0;
+      player.vx = 0; player.vz = 0; player.yaw = Math.PI * 0.5;
+      player.heldProp = null; player.ridingChair = null;
+      player.grapple = null; player.chainThrow = null;
+      player.invuln = 3.2;
+
+      mobs = [];
+      props = [];
+      hazards = [];
+
+      healPlayer(35, "🔥 1:1 결투 돌입");
+      const st = STAGES[stageIdx];
+      const roomNames = ["공장장실", "대표이사실", "회장 집무실"];
+      const roomName = roomNames[stageIdx] || "임원실";
+
+      // Full-screen Tekken VS Screen Transition Cut-in!
+      const wf = document.getElementById("whiteFlash");
+      if (wf) { wf.style.opacity = "0.9"; setTimeout(() => { wf.style.opacity = "0"; }, 260); }
+      const cutin = document.getElementById("duelCutin");
+      if (cutin) {
+        document.getElementById("cutinRoom").textContent = `🚪 ${roomName} 진입 // 1 vs 1 철권 보스전!!`;
+        document.getElementById("cutinBossName").textContent = `${finalBoss.def.rank} ${finalBoss.def.name}`;
+        document.getElementById("cutinBossQuote").textContent = `"글자 간격이 안 맞잖아!! 초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?! 자네, 오늘 야근일세~"`;
+        document.getElementById("cutinPlayerReply").textContent = `💬 "니가 초딩이냐?! 오늘 야근은 너나 해!!"`;
+        cutin.classList.remove("hidden");
+        cutin.style.display = "flex";
+        setTimeout(() => {
+          cutin.classList.add("hidden");
+          cutin.style.display = "";
+        }, 2800);
       }
 
-      healPlayer(25, "🔥 1:1 결투 돌입");
-      const st = STAGES[stageIdx];
       bossIntroTimers.forEach((tid) => clearTimeout(tid));
       bossIntroTimers = [];
-
       const introQuotes = [
         "글자 간격이 안 맞잖아!! 처음부터 다시 해!",
         "초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!",
@@ -1615,11 +1702,6 @@
           finalBoss.speech = q;
           finalBoss.hurtSpeech = false;
           finalBoss.speechT = 3.2;
-          showBossBanner(
-            qi === 0 ? `✨ 짜잔!! ${st.short} 보스 강림 (1 vs 1) ✨` : `💢 ${finalBoss.def.name} 꼰대 망언 ${qi + 1}/3`,
-            `${finalBoss.def.rank} ${finalBoss.def.name}`,
-            q
-          );
           if (qi === 1) {
             player.myEmote = "💬 니가 초딩이냐?!";
             player.myEmoteT = 2.6;
@@ -1629,16 +1711,16 @@
             player.myEmoteT = 2.6;
             popText(player.x, 2.55, player.z, "🔥 오늘 야근은 너나 해!!", "#fde047", 23);
           }
-        }, qi * 1450);
+        }, 2600 + qi * 1600);
         bossIntroTimers.push(tid);
       });
 
       const tk = document.getElementById("eventTicker");
-      tk.textContent = `⚔️ [1대1 보스전] ${finalBoss.def.name}을(를) 직접 처치해야 다음 단계로 이동합니다!!`;
+      tk.textContent = `⚔️ [${roomName} 1:1 철권 보스전] ${finalBoss.def.name}을(를) 이겨야 포털이 열립니다!!`;
       tk.classList.remove("hidden");
-      activeEvent = "boss_duel"; eventRemain = 7.0;
+      activeEvent = "boss_duel"; eventRemain = 6.0;
 
-      spawnShockRing(finalBoss.x, finalBoss.z, 9.0, [1.0, 0.2, 0.25]);
+      spawnShockRing(finalBoss.x, finalBoss.z, 7.5, [1.0, 0.2, 0.25]);
       spawnParticles(finalBoss.x, 1.5, finalBoss.z, 28, "fire");
       shakeMag = 0.85; shakeT = 0.42;
       playSfx("ko"); haptic(95);
@@ -1782,23 +1864,27 @@
         }
       }
 
-      const finalDef = st.bosses[st.bosses.length - 1];
-      bosses = [{
-        def: { ...finalDef, idx: 0 },
-        x: 0,
-        y: -999,
-        z: -999,
-        vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
-        yaw: 0, walk: 0,
-        hp: finalDef.hp, maxHp: finalDef.hp,
-        ragdoll: 0, stun: 0, shockT: 0, flash: 0,
-        boundPending: false, bowlingT: 0,
-        ko: false, waiting: true, respawn: 0,
-        atkCd: 1.1,
-        chargeCd: 5.5,
-        charging: 0,
-        speechT: 1.5, speech: finalDef.taunts[0], hurtSpeech: false
-      }];
+      bosses = st.bosses.map((d, i) => {
+        const isFinalBoss = i === st.bosses.length - 1;
+        return {
+          def: { ...d, idx: i },
+          x: isFinalBoss ? 0 : d.homeX,
+          y: isFinalBoss ? -999 : 1.8,
+          z: isFinalBoss ? -999 : d.homeZ,
+          vx: 0, vy: 0, vz: 0, rx: 0, rz: 0, vrx: 0, vrz: 0,
+          yaw: 0, walk: 0,
+          hp: d.hp, maxHp: d.hp,
+          ragdoll: 0, stun: 0, shockT: 0, flash: 0,
+          boundPending: false, bowlingT: 0,
+          ko: false, waiting: isFinalBoss, respawn: 0,
+          atkCd: 1.1 + i * 0.35,
+          chargeCd: 5.5 + i * 2.0,
+          charging: 0,
+          speechT: 1.5 + i * 1.1, speech: d.taunts[0], hurtSpeech: false
+        };
+      });
+      const cutEl = document.getElementById("duelCutin");
+      if (cutEl) { cutEl.classList.add("hidden"); cutEl.style.display = ""; }
       const bwEl = document.getElementById("bossWarningBanner");
       if (bwEl) bwEl.classList.add("hidden");
       for (let i = 0; i < 5; i++) {
@@ -1879,8 +1965,10 @@
       if (portalOpen) return;
       const st = STAGES[stageIdx];
       const finalBoss = bosses[bosses.length - 1];
+      const subBosses = bosses.slice(0, -1);
       if (finalBoss && finalBoss.waiting) {
-        if (stageKills >= st.targetKills) {
+        const allSubDead = subBosses.length === 0 || subBosses.every((b) => b.ko);
+        if (allSubDead) {
           summonOfficeFinalBoss();
         }
         return;
@@ -1889,11 +1977,12 @@
         bossDuelActive = false;
         portalOpen = true;
         unlockedStage = Math.max(unlockedStage, Math.min(STAGES.length - 1, stageIdx + 1));
+        player.x = 0; player.z = 2.0;
         playSfx("ko"); haptic(90);
         const tk = document.getElementById("eventTicker");
         tk.textContent = st.isFinal
           ? "💥 최종 보스 1:1 격파!! 상단 [💥본사 폭파!] 버튼 또는 북쪽 폭파 스위치로 진입하세요!!"
-          : `🎉 보스 1:1 참교육 완료!! 상단 [🌀다음 거점➔] 버튼 또는 북쪽 포털로 이동하세요!`;
+          : `🎉 보스 1:1 철권 승리!! 포털 개방! 상단 [🌀다음 거점➔] 버튼 또는 북쪽 포털로 이동하세요!`;
         tk.classList.remove("hidden");
         activeEvent = "portal"; eventRemain = 18;
         popText(player.x, 2.8, player.z, st.isFinal ? "💥 그룹본사 폭파 스위치 OPEN!!" : `🌀 ${st.portalLabel} OPEN!!`, "#e879f9", 28);
@@ -2551,19 +2640,37 @@
       const st = STAGES[stageIdx];
       document.getElementById("stageBadge").textContent = st.badge;
 
-      const deadBossCnt = bosses.filter((b) => b.ko).length;
+      const tkHud = document.getElementById("tekkenHud");
+      const nmHud = document.getElementById("normalHud");
+      if (tkHud && nmHud) {
+        tkHud.classList.toggle("hidden", !bossDuelActive);
+        nmHud.classList.toggle("hidden", bossDuelActive);
+      }
+
+      const finalBoss = bosses[bosses.length - 1];
+      const subBosses = bosses.slice(0, -1);
+      const deadSubCnt = subBosses.filter((b) => b.ko).length;
+
+      if (bossDuelActive && finalBoss) {
+        const roomNames = ["공장장실 1:1", "대표이사실 1:1", "회장집무실 1:1"];
+        const pPct = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
+        const bPct = Math.max(0, Math.min(100, (finalBoss.hp / finalBoss.maxHp) * 100));
+        document.getElementById("tkPlayerHpTxt").textContent = `${Math.ceil(pPct)}%`;
+        document.getElementById("tkPlayerHpFill").style.width = `${pPct}%`;
+        document.getElementById("tkBossHpTxt").textContent = `${Math.ceil(bPct)}%`;
+        document.getElementById("tkBossHpFill").style.width = `${bPct}%`;
+        document.getElementById("tkBossNameTxt").textContent = finalBoss.def.name;
+        document.getElementById("tkRoomLabel").textContent = roomNames[stageIdx] || "보스실 1:1";
+        document.getElementById("tkClockTxt").textContent = freePlayMode ? "♾" : formatWorkClock();
+      }
+
       const kpEl = document.getElementById("koProgressText");
-      const bpEl = document.getElementById("bossProgressText");
-      if (bossDuelActive) {
-        kpEl.textContent = "⚔️ 1:1 보스 결투!";
-        kpEl.style.color = "#fb7185";
-        bpEl.textContent = "보스 단독 처치";
-        bpEl.style.color = "#fde047";
+      if (portalOpen) {
+        kpEl.textContent = "🎉 보스 격파!";
+        kpEl.style.color = "#4ade80";
       } else {
-        kpEl.textContent = `🥊 참교육 ${Math.min(stageKills, st.targetKills)}/${st.targetKills}명`;
-        kpEl.style.color = stageKills >= st.targetKills ? "#4ade80" : "#fde047";
-        bpEl.textContent = portalOpen ? "보스 격파!" : "보스 대기";
-        bpEl.style.color = portalOpen ? "#4ade80" : "#a5f3fc";
+        kpEl.textContent = `🥊 중간보스 ${deadSubCnt}/${subBosses.length}`;
+        kpEl.style.color = "#fde047";
       }
 
       const pqBtn = document.getElementById("btnPortalQuick");
@@ -2575,24 +2682,18 @@
         pqBtn.classList.remove("portal-cta-ready");
       }
 
-      const finalBoss = bosses[0];
-      if (finalBoss) {
+      const activeTarget =
+        bosses[focusBossIdx] && !bosses[focusBossIdx].ko && !bosses[focusBossIdx].waiting
+          ? bosses[focusBossIdx]
+          : (bosses.find((b) => !b.ko && !b.waiting) || finalBoss);
+      if (activeTarget) {
         const badge = document.getElementById("focusRankBadge");
-        if (finalBoss.waiting) {
-          badge.textContent = "보스대기";
-          badge.style.background = "#334155";
-          document.getElementById("focusBossName").textContent = `${finalBoss.def.name} (${Math.min(stageKills, st.targetKills)}/${st.targetKills}명 후 1:1 출현)`;
-          const pct = Math.min(100, (stageKills / Math.max(1, st.targetKills)) * 100);
-          document.getElementById("hpFill").style.width = `${pct}%`;
-          document.getElementById("hpTrail").style.width = `${pct}%`;
-        } else {
-          badge.textContent = finalBoss.def.rank;
-          badge.style.background = finalBoss.def.badgeBg;
-          document.getElementById("focusBossName").textContent = `⚔️ [1:1] ${finalBoss.def.name}`;
-          const pct = Math.max(0, (finalBoss.hp / finalBoss.maxHp) * 100);
-          document.getElementById("hpFill").style.width = `${pct}%`;
-          setTimeout(() => { document.getElementById("hpTrail").style.width = `${pct}%`; }, 160);
-        }
+        badge.textContent = activeTarget.def.rank;
+        badge.style.background = activeTarget.def.badgeBg;
+        document.getElementById("focusBossName").textContent = activeTarget.def.name;
+        const pct = Math.max(0, (activeTarget.hp / activeTarget.maxHp) * 100);
+        document.getElementById("hpFill").style.width = `${pct}%`;
+        setTimeout(() => { document.getElementById("hpTrail").style.width = `${pct}%`; }, 160);
       }
 
       const pHpPct = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
@@ -2615,12 +2716,12 @@
       const clkEl = document.getElementById("clockHud");
       if (clkEl) {
         if (freePlayMode) {
-          clkEl.textContent = "♾ 자유난투";
+          clkEl.textContent = "♾ 자유";
           clkEl.style.color = "#4ade80";
           clkEl.style.borderColor = "rgba(74,222,128,0.5)";
         } else {
           const clkStr = formatWorkClock();
-          clkEl.textContent = `🕔 ${clkStr} / 17:00`;
+          clkEl.textContent = `🕔 ${clkStr}/17:00`;
           if (workRemainSec <= 30) {
             clkEl.style.color = "#fb7185";
             clkEl.style.borderColor = "rgba(251,113,133,0.85)";
@@ -2634,7 +2735,7 @@
         }
       }
 
-      document.getElementById("koHud").textContent = `v14 · 누적 ${koTotal}`;
+      document.getElementById("koHud").textContent = `v15 · ${koTotal}`;
       document.getElementById("cashHud").textContent = formatCompactWon(cash);
       const nextCost = player.powerLv * 120000;
       document.getElementById("upgradeLabel").textContent = cash >= nextCost ? `LV.${player.powerLv} UP!` : `LV.${player.powerLv}`;
@@ -3239,8 +3340,19 @@
           if (player.atkTimer <= 0.04) player.yaw = Math.atan2(nx, nz);
           player.walk += dt * 14.0 * spdBoost;
         } else { player.vx *= 0.74; player.vz *= 0.74; }
-        player.x = Math.max(-MAP_X, Math.min(MAP_X, player.x + player.vx * dt));
-        player.z = Math.max(-MAP_Z, Math.min(MAP_Z, player.z + player.vz * dt));
+        const limX = bossDuelActive ? ARENA_X : MAP_X;
+        const limZ = bossDuelActive ? ARENA_Z : MAP_Z;
+        player.x = Math.max(-limX, Math.min(limX, player.x + player.vx * dt));
+        player.z = Math.max(-limZ, Math.min(limZ, player.z + player.vz * dt));
+      }
+      if (bossDuelActive) {
+        player.x = Math.max(-ARENA_X, Math.min(ARENA_X, player.x));
+        player.z = Math.max(-ARENA_Z, Math.min(ARENA_Z, player.z));
+        const fb = bosses[bosses.length - 1];
+        if (fb && !fb.ko) {
+          fb.x = Math.max(-ARENA_X, Math.min(ARENA_X, fb.x));
+          fb.z = Math.max(-ARENA_Z, Math.min(ARENA_Z, fb.z));
+        }
       }
 
       // Check 3D Warp Portal / Demolition Switch Entry!
@@ -3698,23 +3810,27 @@
       if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
       gl.viewport(0, 0, cw, ch);
 
-      const targetCamX = detonateCutscene > 0 ? 0 : player.x;
-      const targetCamZ = detonateCutscene > 0 ? 0 : player.z;
-      camX += (targetCamX - camX) * 0.12;
-      camZ += (targetCamZ - camZ) * 0.12;
+      const fbDuel = bossDuelActive ? bosses[bosses.length - 1] : null;
+      const targetCamX = detonateCutscene > 0 ? 0 : (fbDuel && !fbDuel.ko ? (player.x + fbDuel.x) * 0.5 : player.x);
+      const targetCamZ = detonateCutscene > 0 ? 0 : (fbDuel && !fbDuel.ko ? (player.z + fbDuel.z) * 0.5 : player.z);
+      camX += (targetCamX - camX) * 0.14;
+      camZ += (targetCamZ - camZ) * 0.14;
       const portrait = window.innerHeight > window.innerWidth;
       const zoom = (detonateCutscene > 0 ? 11.5 : 0) + (portrait ? 3.8 : 0.8) + (player.ridingChair ? 1.8 : 0) + (player.grapple ? -2.2 : 0) + (slowMo > 0 ? -1.8 : 0);
       let sx = 0, sy = 0;
       if (shakeT > 0) { shakeT = Math.max(0, shakeT - rawDt); sx = (Math.random() - 0.5) * 2 * shakeMag; sy = (Math.random() - 0.5) * 2 * shakeMag; if (shakeT <= 0) shakeMag = 0; }
 
-      const camPos = [camX + sx, 11.6 + zoom * 0.80 + sy, camZ + 11.8 + zoom];
+      const duelDist = fbDuel && !fbDuel.ko ? Math.hypot(player.x - fbDuel.x, player.z - fbDuel.z) : 5.0;
+      const camPos = bossDuelActive
+        ? [camX + sx, 4.1 + sy, camZ + Math.max(portrait ? 9.8 : 7.6, duelDist * 1.15 + 4.4)]
+        : [camX + sx, 11.6 + zoom * 0.80 + sy, camZ + 11.8 + zoom];
       mPersp(projM, portrait ? 0.90 : 0.75, cw / ch, 0.4, 110.0);
-      mLook(viewM, camPos, [camX, 0.9, camZ], [0, 1, 0]);
+      mLook(viewM, camPos, [camX, bossDuelActive ? 1.25 : 0.9, camZ], [0, 1, 0]);
       mMul(vpM, projM, viewM);
       lastVP.set(vpM);
 
-      const bgRed = detonateCutscene > 0 ? 0.14 + Math.sin(tSec * 18) * 0.06 : 0.05;
-      gl.clearColor(bgRed, 0.07, 0.13, 1.0);
+      const bgRed = detonateCutscene > 0 ? 0.14 + Math.sin(tSec * 18) * 0.06 : (bossDuelActive ? 0.10 : 0.05);
+      gl.clearColor(bgRed, bossDuelActive ? 0.04 : 0.07, bossDuelActive ? 0.07 : 0.13, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
 
@@ -3727,18 +3843,20 @@
 
       const st = STAGES[stageIdx];
 
-      // 1. Current Stage Architecture (울산공장 / 서울본사 / 그룹본사)
+      // 1. Current Stage Architecture OR Enclosed Tekken Executive Boss Room!
       mTRS(rootM, 0, 0, 0, 0, 0, 0);
-      drawMesh(M.stageMaps[stageIdx], rootM, { outline: 0 });
+      drawMesh(bossDuelActive ? M.tekkenRoom : M.stageMaps[stageIdx], rootM, { outline: 0 });
 
-      // 2. 3D Warp Portal / Group HQ Demolition Gate
+      // 2. 3D Warp Portal / Group HQ Demolition Gate (Hidden during 1v1 Boss Room!)
       const [pPosX, pPosZ] = st.portalPos;
-      mTRS(rootM, pPosX, 0, pPosZ, 0, 0, 0);
-      drawMesh(M.portalGate, rootM, { tint: portalOpen ? [1.0, 0.85, 1.0] : [0.45, 0.45, 0.55] });
-      if (portalOpen) {
-        const pPulse = 1.0 + Math.sin(tSec * 7.0) * 0.12;
-        mTRS(rootM, pPosX, 0, pPosZ, 0, 0, tSec * 3.5, pPulse, pPulse, 1);
-        drawMesh(M.portalCore, rootM, { unlit: true, tint: st.isFinal ? [1.0, 0.35, 0.55] : [0.35, 0.92, 1.0] });
+      if (!bossDuelActive) {
+        mTRS(rootM, pPosX, 0, pPosZ, 0, 0, 0);
+        drawMesh(M.portalGate, rootM, { tint: portalOpen ? [1.0, 0.85, 1.0] : [0.45, 0.45, 0.55] });
+        if (portalOpen) {
+          const pPulse = 1.0 + Math.sin(tSec * 7.0) * 0.12;
+          mTRS(rootM, pPosX, 0, pPosZ, 0, 0, tSec * 3.5, pPulse, pPulse, 1);
+          drawMesh(M.portalCore, rootM, { unlit: true, tint: st.isFinal ? [1.0, 0.35, 0.55] : [0.35, 0.92, 1.0] });
+        }
       }
 
       const pTag = document.getElementById("portalTag");
@@ -3839,7 +3957,7 @@
         if (rp.emoteT > 0) pushTag(rp.x, 2.48, rp.z, rp.emote, "speech-pill emote");
       });
 
-      if (aiPartyEnabled) {
+      if (aiPartyEnabled && !bossDuelActive) {
         for (const a of aiAllies) {
           drawCharacter({
             x: a.x, y: 0, z: a.z, yaw: a.yaw, scale: 0.96,
