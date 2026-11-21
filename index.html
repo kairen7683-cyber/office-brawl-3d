@@ -515,7 +515,7 @@
               </div>
             </div>
             <span id="bossProgressText" class="hidden"></span>
-            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v15 · 0</span>
+            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v16 · 0</span>
             <div id="clockHud" class="nowrap" style="padding:0 6px; border-radius:999px; background:rgba(15,23,42,0.75); border:1px solid rgba(125,211,252,0.45); font-size:9.5px; font-weight:900; font-family:monospace; color:#7dd3fc;">
               🕔 16:00/17:00
             </div>
@@ -1484,62 +1484,62 @@
     const STAGES = [
       {
         idx: 0, code: "ULSAN", badge: "🏭 1/3 울산공장", short: "🏭 울산공장",
-        targetKills: 25, activeMobs: 24, isFinal: false,
+        targetKills: 35, activeMobs: 24, isFinal: false,
         portalPos: [0, -16.8], portalLabel: "🌀 서울본사 이동 포털",
         mobPool: [
-          { title:"잔소리 조장", torso:"torsoFactory", hat:"hatHardhat", tint:[1,1,1], hp:38, speed:2.9, taunts:["특근 뛰고 가!", "라인 빨리 돌려!", "딴짓하지 마!"] },
-          { title:"시말서 주임", torso:"torsoFactory", hat:"hatBujangBald", tint:[0.9,0.95,1], hp:42, speed:3.0, taunts:["시말서 써와!", "화장실 금지!", "휴식시간 끝!"] },
-          { title:"텃세 작업반장", torso:"torsoKkondae", hat:"hatHardhat", tint:[1,0.92,0.85], hp:46, speed:2.8, taunts:["내 밑으로 집합!", "잔업 수당 없어!"] },
-          { title:"라떼는 계장", torso:"torsoKkondae", hat:"hatBujangBald", tint:[0.95,0.95,0.9], hp:44, speed:2.9, taunts:["나 때는 밥도 안 먹었어!", "요즘 애들은 끈기가 없어!"] },
-          { title:"호통 생산과장", torso:"torsoBujang", hat:"hairHero", tint:[1,0.95,0.92], hp:48, speed:3.0, taunts:["5시 칼퇴? 어림없다!", "물량 맞추고 가!"] }
+          { title:"잔소리 조장", torso:"torsoFactory", hat:"hatHardhat", tint:[1,1,1], hp:64, speed:2.9, taunts:["특근 뛰고 가!", "라인 빨리 돌려!", "딴짓하지 마!"] },
+          { title:"시말서 주임", torso:"torsoFactory", hat:"hatBujangBald", tint:[0.9,0.95,1], hp:70, speed:3.0, taunts:["시말서 써와!", "화장실 금지!", "휴식시간 끝!"] },
+          { title:"텃세 작업반장", torso:"torsoKkondae", hat:"hatHardhat", tint:[1,0.92,0.85], hp:76, speed:2.8, taunts:["내 밑으로 집합!", "잔업 수당 없어!"] },
+          { title:"라떼는 계장", torso:"torsoKkondae", hat:"hatBujangBald", tint:[0.95,0.95,0.9], hp:72, speed:2.9, taunts:["나 때는 밥도 안 먹었어!", "요즘 애들은 끈기가 없어!"] },
+          { title:"호통 생산과장", torso:"torsoBujang", hat:"hairHero", tint:[1,0.95,0.92], hp:80, speed:3.0, taunts:["5시 칼퇴? 어림없다!", "물량 맞추고 가!"] }
         ],
         bosses: [
-          { idx:0, rank:"반장", badgeBg:"#d97706", name:"독사 강반장", scale:1.12, torso:"torsoFactory", hat:"hatHardhat", face:2, hp:150, bounty:90000, homeX:-9, homeZ:2, speed:2.7, taunts:["라인 멈추면 주말도 출근이다!", "스패너 어딨어!!"] },
-          { idx:1, rank:"생산부장", badgeBg:"#475569", name:"철야 남부장", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:200, bounty:140000, homeX:9, homeZ:1, speed:2.8, taunts:["울산공장 목표량 200% 채워!", "5시 칼퇴는 꿈도 꾸지 마!"] },
-          { idx:2, rank:"공장장", badgeBg:"#b91c1c", name:"울산 폭군 마공장장", scale:1.38, wideX:1.20, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:270, bounty:220000, homeX:0, homeZ:-9, speed:2.9, taunts:["내가 울산공장 왕이다!! 다 막아!!", "서울본사엔 절대 못 간다!!"] }
+          { idx:0, rank:"반장", badgeBg:"#d97706", name:"독사 강반장", scale:1.12, torso:"torsoFactory", hat:"hatHardhat", face:2, hp:520, bounty:90000, homeX:-9, homeZ:2, speed:2.7, taunts:["라인 멈추면 주말도 출근이다!", "스패너 어딨어!!"] },
+          { idx:1, rank:"생산부장", badgeBg:"#475569", name:"철야 남부장", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:700, bounty:140000, homeX:9, homeZ:1, speed:2.8, taunts:["울산공장 목표량 200% 채워!", "5시 칼퇴는 꿈도 꾸지 마!"] },
+          { idx:2, rank:"공장장", badgeBg:"#b91c1c", name:"울산 폭군 마공장장", scale:1.38, wideX:1.20, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:1050, bounty:220000, homeX:0, homeZ:-9, speed:2.9, taunts:["내가 울산공장 왕이다!! 다 막아!!", "서울본사엔 절대 못 간다!!"] }
         ]
       },
       {
         idx: 1, code: "SEOUL_HQ", badge: "🏢 2/3 서울본사", short: "🏢 서울본사",
-        targetKills: 32, activeMobs: 26, isFinal: false,
+        targetKills: 45, activeMobs: 26, isFinal: false,
         portalPos: [0, -16.8], portalLabel: "🌀 그룹본사 결전 포털",
         mobPool: [
-          { title:"야근강요 과장", torso:"torsoKkondae", hat:"hairHero", tint:[0.85,0.9,1], hp:44, speed:3.0, taunts:["야근하고 퇴근해!", "피피티 폰트 바꿔!", "주말에 카톡 봐!"] },
-          { title:"보고서 차장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,1,1], hp:48, speed:2.9, taunts:["처음부터 다시 해와!", "라떼는 말이야!", "회식 불참 금지!"] },
-          { title:"법카 아부팀장", torso:"torsoSangmu", hat:"hatSangmuVisor", tint:[0.95,1,0.9], hp:50, speed:3.2, taunts:["상무님 골프백 챙겨!", "내 커피 타와!"] },
-          { title:"주말카톡 대리", torso:"torsoKkondae", hat:"hatSangmuVisor", tint:[0.92,0.95,1], hp:45, speed:3.1, taunts:["주말인데 카톡 왜 안 봐?!", "월요일 아침까지 수정해!"] },
-          { title:"회식강요 부장", torso:"torsoBujang", hat:"hatBonbujangPompadour", tint:[1,0.92,0.92], hp:52, speed:2.9, taunts:["오늘 3차까지 필참이다!", "5시 퇴근이 웬 말이냐!"] }
+          { title:"야근강요 과장", torso:"torsoKkondae", hat:"hairHero", tint:[0.85,0.9,1], hp:74, speed:3.0, taunts:["야근하고 퇴근해!", "피피티 폰트 바꿔!", "주말에 카톡 봐!"] },
+          { title:"보고서 차장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,1,1], hp:80, speed:2.9, taunts:["처음부터 다시 해와!", "라떼는 말이야!", "회식 불참 금지!"] },
+          { title:"법카 아부팀장", torso:"torsoSangmu", hat:"hatSangmuVisor", tint:[0.95,1,0.9], hp:84, speed:3.2, taunts:["상무님 골프백 챙겨!", "내 커피 타와!"] },
+          { title:"주말카톡 대리", torso:"torsoKkondae", hat:"hatSangmuVisor", tint:[0.92,0.95,1], hp:76, speed:3.1, taunts:["주말인데 카톡 왜 안 봐?!", "월요일 아침까지 수정해!"] },
+          { title:"회식강요 부장", torso:"torsoBujang", hat:"hatBonbujangPompadour", tint:[1,0.92,0.92], hp:86, speed:2.9, taunts:["오늘 3차까지 필참이다!", "5시 퇴근이 웬 말이냐!"] }
         ],
         bosses: [
-          { idx:0, rank:"부장", badgeBg:"#475569", name:"꼰대 김부장", scale:1.12, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:180, bounty:120000, homeX:-10, homeZ:3, speed:2.7, taunts:["오늘 전원 밤샘 야근이다!!", "결재 서류 다시 가져와!"] },
-          { idx:1, rank:"상무", badgeBg:"#65a30d", name:"골프광 박상무", scale:1.22, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:230, bounty:180000, homeX:10, homeZ:3, speed:3.1, taunts:["근무시간엔 역시 퍼팅이지~", "법인카드로 한우 회식 가자!"] },
-          { idx:2, rank:"본부장", badgeBg:"#7e22ce", name:"어깨깡패 최본부장", scale:1.40, wideX:1.24, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, hp:310, bounty:260000, homeX:-6, homeZ:-8, speed:2.9, taunts:["서울본사를 쑥대밭으로 만들 셈이냐?!", "야근 결재 전원 올려!!"] },
-          { idx:3, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.52, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:380, bounty:420000, homeX:6, homeZ:-10, speed:2.6, taunts:["그룹본사 회장님께 이른다!!", "내 비자금에 손대지 마!!"] }
+          { idx:0, rank:"부장", badgeBg:"#475569", name:"꼰대 김부장", scale:1.12, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:650, bounty:120000, homeX:-10, homeZ:3, speed:2.7, taunts:["오늘 전원 밤샘 야근이다!!", "결재 서류 다시 가져와!"] },
+          { idx:1, rank:"상무", badgeBg:"#65a30d", name:"골프광 박상무", scale:1.22, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:820, bounty:180000, homeX:10, homeZ:3, speed:3.1, taunts:["근무시간엔 역시 퍼팅이지~", "법인카드로 한우 회식 가자!"] },
+          { idx:2, rank:"본부장", badgeBg:"#7e22ce", name:"어깨깡패 최본부장", scale:1.40, wideX:1.24, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, hp:1080, bounty:260000, homeX:-6, homeZ:-8, speed:2.9, taunts:["서울본사를 쑥대밭으로 만들 셈이냐?!", "야근 결재 전원 올려!!"] },
+          { idx:3, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.52, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:1480, bounty:420000, homeX:6, homeZ:-10, speed:2.6, taunts:["그룹본사 회장님께 이른다!!", "내 비자금에 손대지 마!!"] }
         ]
       },
       {
         idx: 2, code: "GROUP_HQ", badge: "👑 3/3 그룹본사", short: "👑 그룹본사",
-        targetKills: 40, activeMobs: 28, isFinal: true,
+        targetKills: 55, activeMobs: 28, isFinal: true,
         portalPos: [0, -16.8], portalLabel: "💥 그룹본사 폭파 스위치!!",
         mobPool: [
-          { title:"갑질 수석부장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,0.96,0.92], hp:52, speed:3.1, taunts:["감히 5시에 퇴근을 해?!", "결재 서류 백 번 다시 써와!", "어디서 눈을 똑바로 떠!"] },
-          { title:"꼰대 감사팀장", torso:"torsoKkondae", hat:"hatBonbujangPompadour", tint:[0.94,0.94,1], hp:50, speed:3.2, taunts:["근태 불량 시말서 제출해!", "연차? 그런 거 없다!"] },
-          { title:"낙하산 상무보", torso:"torsoSangmu", hat:"hatSangmuVisor", tint:[0.95,1,0.92], hp:54, speed:3.1, taunts:["내가 누군지 알고 대들어?!", "내 골프채부터 닦아!"] },
-          { title:"총수 친위전무", torso:"torsoBonbujang", hat:"hatBonbujangPompadour", tint:[1,0.9,0.95], hp:56, speed:3.0, taunts:["회장님 만세!!", "야근은 애사심이다!"] },
-          { title:"야근지옥 이사", torso:"torsoCEO", hat:"hatBujangBald", tint:[1,0.92,0.88], hp:56, speed:3.1, taunts:["칼퇴하면 인사평가 F다!", "밤새워 보고서 올려!"] }
+          { title:"갑질 수석부장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,0.96,0.92], hp:86, speed:3.1, taunts:["감히 5시에 퇴근을 해?!", "결재 서류 백 번 다시 써와!", "어디서 눈을 똑바로 떠!"] },
+          { title:"꼰대 감사팀장", torso:"torsoKkondae", hat:"hatBonbujangPompadour", tint:[0.94,0.94,1], hp:84, speed:3.2, taunts:["근태 불량 시말서 제출해!", "연차? 그런 거 없다!"] },
+          { title:"낙하산 상무보", torso:"torsoSangmu", hat:"hatSangmuVisor", tint:[0.95,1,0.92], hp:90, speed:3.1, taunts:["내가 누군지 알고 대들어?!", "내 골프채부터 닦아!"] },
+          { title:"총수 친위전무", torso:"torsoBonbujang", hat:"hatBonbujangPompadour", tint:[1,0.9,0.95], hp:94, speed:3.0, taunts:["회장님 만세!!", "야근은 애사심이다!"] },
+          { title:"야근지옥 이사", torso:"torsoCEO", hat:"hatBujangBald", tint:[1,0.92,0.88], hp:94, speed:3.1, taunts:["칼퇴하면 인사평가 F다!", "밤새워 보고서 올려!"] }
         ],
         bosses: [
-          { idx:0, rank:"전무", badgeBg:"#0f766e", name:"갑질왕 구전무", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:6, clubInHand:true, hp:240, bounty:200000, homeX:-10, homeZ:2, speed:3.2, taunts:["전 임원진 총동원해서 칼퇴 막아!!", "5시 퇴근? 내 눈에 흙이 들어가기 전엔 안 돼!"] },
-          { idx:1, rank:"부회장", badgeBg:"#7e22ce", name:"황태자 천부회장", scale:1.42, wideX:1.22, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, dropsCashOnHit:true, hp:340, bounty:350000, homeX:10, homeZ:2, speed:3.0, taunts:["내가 차기 그룹 총수다!!", "돈다발로 싸대기를 날려주마!"] },
-          { idx:2, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.50, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:390, bounty:450000, homeX:-7, homeZ:-9, speed:2.7, taunts:["천회장님 제발 살려주십시오!!", "그룹본사가 무너진다!!"] },
-          { idx:3, rank:"🐉총수회장", badgeBg:"#dc2626", name:"그룹 총수 천회장", scale:1.72, torso:"torsoChairman", hat:"hatChairman", face:7, onThrone:true, dropsCashOnHit:true, hp:600, bounty:1500000, homeX:3, homeZ:-10, speed:3.2, taunts:["감히 개미 따위가 5시 칼퇴를 꿈꿔?!", "황금 전동 옥좌 풀파워 돌진!!", "임원 꼰대들 뭐하느냐!! 전원 야근시켜!!"] }
+          { idx:0, rank:"전무", badgeBg:"#0f766e", name:"갑질왕 구전무", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:6, clubInHand:true, hp:860, bounty:200000, homeX:-10, homeZ:2, speed:3.2, taunts:["전 임원진 총동원해서 칼퇴 막아!!", "5시 퇴근? 내 눈에 흙이 들어가기 전엔 안 돼!"] },
+          { idx:1, rank:"부회장", badgeBg:"#7e22ce", name:"황태자 천부회장", scale:1.42, wideX:1.22, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, dropsCashOnHit:true, hp:1180, bounty:350000, homeX:10, homeZ:2, speed:3.0, taunts:["내가 차기 그룹 총수다!!", "돈다발로 싸대기를 날려주마!"] },
+          { idx:2, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.50, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:1380, bounty:450000, homeX:-7, homeZ:-9, speed:2.7, taunts:["천회장님 제발 살려주십시오!!", "그룹본사가 무너진다!!"] },
+          { idx:3, rank:"🐉총수회장", badgeBg:"#dc2626", name:"그룹 총수 천회장", scale:1.72, torso:"torsoChairman", hat:"hatChairman", face:7, onThrone:true, dropsCashOnHit:true, hp:2300, bounty:1500000, homeX:3, homeZ:-10, speed:3.2, taunts:["감히 개미 따위가 5시 칼퇴를 꿈꿔?!", "황금 전동 옥좌 풀파워 돌진!!", "임원 꼰대들 뭐하느냐!! 전원 야근시켜!!"] }
         ]
       }
     ];
 
     const player = {
       x: 0, y: 0, z: 12.5, vx: 0, vz: 0, yaw: Math.PI, rx: 0, walk: 0,
-      hp: 100, maxHp: 100, invuln: 0, hurtFlash: 0,
+      hp: 150, maxHp: 150, invuln: 0, hurtFlash: 0,
       atkTimer: 0, atkDur: 0.20, atkType: "jab", comboStep: 0, comboReset: 0,
       deathfistCd: 0,
       grapple: null,     // { target, isBoss, bossIdx, phase: "hold"|"suplex"|"swing"|"powerbomb", timer, dur, origX, origZ }
@@ -1550,7 +1550,7 @@
       myEmote: "", myEmoteT: 0, netJustAttacked: false
     };
 
-    const WORK_TOTAL_REAL_SEC = 270; // 4분 30초 = 오후 4:00 (16:00) -> 오후 5:00 (17:00) 칼퇴 마감!
+    const WORK_TOTAL_REAL_SEC = 900; // 15분 = 오후 4:00 (16:00) -> 오후 5:00 (17:00) 칼퇴 마감!
     let workRemainSec = WORK_TOTAL_REAL_SEC;
     let warnedFiveMin = false;
     let warnedOneMin = false;
@@ -1968,7 +1968,7 @@
       const subBosses = bosses.slice(0, -1);
       if (finalBoss && finalBoss.waiting) {
         const allSubDead = subBosses.length === 0 || subBosses.every((b) => b.ko);
-        if (allSubDead) {
+        if (allSubDead && stageKills >= st.targetKills) {
           summonOfficeFinalBoss();
         }
         return;
@@ -2669,7 +2669,7 @@
         kpEl.textContent = "🎉 보스 격파!";
         kpEl.style.color = "#4ade80";
       } else {
-        kpEl.textContent = `🥊 중간보스 ${deadSubCnt}/${subBosses.length}`;
+        kpEl.textContent = `🥊 임원${deadSubCnt}/${subBosses.length} · ${Math.min(stageKills, st.targetKills)}/${st.targetKills}`;
         kpEl.style.color = "#fde047";
       }
 
@@ -2735,7 +2735,7 @@
         }
       }
 
-      document.getElementById("koHud").textContent = `v15 · ${koTotal}`;
+      document.getElementById("koHud").textContent = `v16 · ${koTotal}`;
       document.getElementById("cashHud").textContent = formatCompactWon(cash);
       const nextCost = player.powerLv * 120000;
       document.getElementById("upgradeLabel").textContent = cash >= nextCost ? `LV.${player.powerLv} UP!` : `LV.${player.powerLv}`;
