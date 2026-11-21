@@ -496,9 +496,7 @@
             </div>
             <div class="flex items-center" style="gap:4px; flex-shrink:0;">
               <span id="comboBadge" class="nowrap" style="opacity:0; transition:opacity 0.15s; padding:0 5px; border-radius:999px; background:linear-gradient(90deg,#fbbf24,#f43f5e); color:#090d16; font-size:8.5px; font-weight:900;">2C</span>
-              <button id="btnPortalQuick" class="pointer-events-auto nowrap" style="height:18px; padding:0 6px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); font-size:9px; font-weight:900; color:#cbd5e1;">
-                🔒 포털대기
-              </button>
+              <button id="btnPortalQuick" class="hidden"></button>
             </div>
           </div>
           <!-- Slim Boss HP Bar -->
@@ -515,7 +513,7 @@
               </div>
             </div>
             <span id="bossProgressText" class="hidden"></span>
-            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v16 · 0</span>
+            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v17 · 0</span>
             <div id="clockHud" class="nowrap" style="padding:0 6px; border-radius:999px; background:rgba(15,23,42,0.75); border:1px solid rgba(125,211,252,0.45); font-size:9.5px; font-weight:900; font-family:monospace; color:#7dd3fc;">
               🕔 16:00/17:00
             </div>
@@ -1065,12 +1063,17 @@
             c = Math.abs(z) < 4.2 ? (chk ? rgb(0x334155) : rgb(0x293548)) : (chk ? rgb(0x27272a) : rgb(0x1f242d));
             if (Math.abs(Math.abs(z) - 4.5) < 0.85) c = gx % 2 === 0 ? rgb(0xeab308) : rgb(0x18181b);
           } else if (stIdx === 1) {
-            // 1: 서울본사 - Modern Corporate Open Office + Blue Executive Zone
+            // 1: 대전연구소 - Clean R&D Laboratory White/Teal Tiles + Glowing Cyan Test Lanes
+            c = chk ? rgb(0x164e63) : rgb(0x155e75);
+            if (Math.abs(x) < 4.2 || Math.abs(z) < 3.0) c = chk ? rgb(0x0f766e) : rgb(0x115e59);
+            if (Math.abs(Math.abs(x) - 4.8) < 0.7) c = rgb(0x22d3ee);
+          } else if (stIdx === 2) {
+            // 2: 서울본사 - Modern Corporate Open Office + Blue Executive Zone
             c = chk ? rgb(0x252e42) : rgb(0x1f2738);
             if (z < -6) c = chk ? rgb(0x1e3a8a) : rgb(0x172554);
             else if (Math.abs(x) < 4.5) c = chk ? rgb(0x334155) : rgb(0x2b3648);
           } else {
-            // 2: 그룹본사 (총수 펜트하우스) - Obsidian Marble + Royal Crimson Carpet + Gold Trim
+            // 3: 그룹본사 (총수 펜트하우스) - Obsidian Marble + Royal Crimson Carpet + Gold Trim
             c = chk ? rgb(0x18181b) : rgb(0x121318);
             if (Math.abs(x) < 5.2) c = chk ? rgb(0x7f1d1d) : rgb(0x691616);
             else if (Math.abs(Math.abs(x) - 5.6) < 0.8) c = rgb(0xd97706);
@@ -1080,26 +1083,28 @@
       }
 
       // Arena Perimeter Walls & Panoramic Windows
-      const wallCol = stIdx === 0 ? rgb(0x475569) : (stIdx === 1 ? rgb(0xcbd5e1) : rgb(0x27272a));
-      const winCol = stIdx === 0 ? rgb(0xfacc15) : (stIdx === 1 ? rgb(0x38bdf8) : rgb(0xf59e0b));
+      const wallCol = stIdx === 0 ? rgb(0x475569) : (stIdx === 1 ? rgb(0xe2e8f0) : (stIdx === 2 ? rgb(0xcbd5e1) : rgb(0x27272a)));
+      const winCol = stIdx === 0 ? rgb(0xfacc15) : (stIdx === 1 ? rgb(0x22d3ee) : (stIdx === 2 ? rgb(0x38bdf8) : rgb(0xf59e0b)));
       g.addBox(51.0, 4.0, 0.5, wallCol, 0, 2.0, -21.0);
       for (let wx = -20; wx <= 20; wx += 8.0) g.addBox(5.2, 2.1, 0.55, winCol, wx, 2.2, -20.96);
       g.addBox(0.5, 2.8, 42.5, rgb(0x334155), -25.2, 1.4, 0);
       g.addBox(0.5, 2.8, 42.5, rgb(0x334155),  25.2, 1.4, 0);
 
       if (stIdx === 0) {
-        // Ulsan Overhead Yellow Gantry Crane Beams
         for (const cx of [-13, 13]) {
           g.addBox(0.85, 4.4, 0.85, rgb(0xeab308), cx, 2.2, -14);
           g.addBox(0.85, 4.4, 0.85, rgb(0xeab308), cx, 2.2,  14);
           g.addBox(1.0, 0.45, 28.8, rgb(0xf59e0b), cx, 4.3, 0);
         }
       } else if (stIdx === 1) {
-        // Seoul HQ Glass Partitions
+        // Daejeon R&D Cleanroom Cyan Glass Partitions & Research Chambers
+        g.addBox(10.0, 1.8, 0.25, rgb(0x22d3ee), -15.5, 0.9, -4.5);
+        g.addBox(10.0, 1.8, 0.25, rgb(0x22d3ee),  15.5, 0.9, -4.5);
+        for (const lx of [-10, 10]) g.addLathe([[0.48,0],[0.48,3.4]], 12, rgb(0x06b6d4), lx, 0, -14);
+      } else if (stIdx === 2) {
         g.addBox(11.0, 1.35, 0.28, rgb(0x38bdf8), -16.5, 0.68, -4.5);
         g.addBox(11.0, 1.35, 0.28, rgb(0x38bdf8),  16.5, 0.68, -4.5);
       } else {
-        // Group HQ Golden Imperial Columns
         for (const gx of [-11, 11]) {
           for (const gz of [-11, 2, 13]) {
             g.addLathe([[0.52,0],[0.45,3.8]], 12, rgb(0xfacc15), gx, 0, gz);
@@ -1108,7 +1113,7 @@
       }
       return g.build();
     }
-    M.stageMaps = [0, 1, 2].map(buildStageMap);
+    M.stageMaps = [0, 1, 2, 3].map(buildStageMap);
 
     function buildTekkenRoom() {
       const g = new Geo();
@@ -1483,9 +1488,9 @@
     // =========================================================================
     const STAGES = [
       {
-        idx: 0, code: "ULSAN", badge: "🏭 1/3 울산공장", short: "🏭 울산공장",
+        idx: 0, code: "ULSAN", badge: "🏭 1/4 울산공장", short: "🏭 울산공장",
         targetKills: 35, activeMobs: 24, isFinal: false,
-        portalPos: [0, -16.8], portalLabel: "🌀 서울본사 이동 포털",
+        portalPos: [0, -16.8], portalLabel: "🧪 대전연구소",
         mobPool: [
           { title:"잔소리 조장", torso:"torsoFactory", hat:"hatHardhat", tint:[1,1,1], hp:64, speed:2.9, taunts:["특근 뛰고 가!", "라인 빨리 돌려!", "딴짓하지 마!"] },
           { title:"시말서 주임", torso:"torsoFactory", hat:"hatBujangBald", tint:[0.9,0.95,1], hp:70, speed:3.0, taunts:["시말서 써와!", "화장실 금지!", "휴식시간 끝!"] },
@@ -1496,13 +1501,30 @@
         bosses: [
           { idx:0, rank:"반장", badgeBg:"#d97706", name:"독사 강반장", scale:1.12, torso:"torsoFactory", hat:"hatHardhat", face:2, hp:520, bounty:90000, homeX:-9, homeZ:2, speed:2.7, taunts:["라인 멈추면 주말도 출근이다!", "스패너 어딨어!!"] },
           { idx:1, rank:"생산부장", badgeBg:"#475569", name:"철야 남부장", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:700, bounty:140000, homeX:9, homeZ:1, speed:2.8, taunts:["울산공장 목표량 200% 채워!", "5시 칼퇴는 꿈도 꾸지 마!"] },
-          { idx:2, rank:"공장장", badgeBg:"#b91c1c", name:"울산 폭군 마공장장", scale:1.38, wideX:1.20, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:1050, bounty:220000, homeX:0, homeZ:-9, speed:2.9, taunts:["내가 울산공장 왕이다!! 다 막아!!", "서울본사엔 절대 못 간다!!"] }
+          { idx:2, rank:"공장장", badgeBg:"#b91c1c", name:"울산 폭군 마공장장", scale:1.38, wideX:1.20, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:1050, bounty:220000, homeX:0, homeZ:-9, speed:2.9, taunts:["내가 울산공장 왕이다!! 다 막아!!", "대전연구소엔 절대 못 간다!!"] }
         ]
       },
       {
-        idx: 1, code: "SEOUL_HQ", badge: "🏢 2/3 서울본사", short: "🏢 서울본사",
+        idx: 1, code: "DAEJEON_LAB", badge: "🧪 2/4 대전연구소", short: "🧪 대전연구소",
+        targetKills: 40, activeMobs: 25, isFinal: false,
+        portalPos: [0, -16.8], portalLabel: "🏢 서울본사",
+        mobPool: [
+          { title:"특허도둑 선임", torso:"torsoKkondae", hat:"hairHero", tint:[0.85,1,1], hp:70, speed:3.0, taunts:["네 아이디어 내 이름으로 올린다!", "실험 다시 돌려!"] },
+          { title:"철야실험 책임", torso:"torsoBujang", hat:"hatBujangBald", tint:[0.92,0.98,1], hp:76, speed:2.9, taunts:["새벽 3시까지 데이터 뽑아!", "칼퇴하면 논문 저자 뺀다!"] },
+          { title:"논문갑질 수석", torso:"torsoSangmu", hat:"hatBonbujangPompadour", tint:[0.9,1,0.95], hp:80, speed:3.0, taunts:["초등학생도 알게 그래프 다시 그려!", "글자 간격 왜 이래!"] },
+          { title:"스펙트집 팀장", torso:"torsoKkondae", hat:"hatSangmuVisor", tint:[0.95,0.95,1], hp:78, speed:3.1, taunts:["스펙 0.01% 오차도 용납 못 해!", "오늘 야근일세!"] },
+          { title:"주말세미나 파트장", torso:"torsoBujang", hat:"hairHero", tint:[1,0.95,0.95], hp:82, speed:3.0, taunts:["토요일 오전 9시 세미나 필참!", "발표자료 폰트 통일해!"] }
+        ],
+        bosses: [
+          { idx:0, rank:"팀장", badgeBg:"#0284c7", name:"스펙트집 오팀장", scale:1.16, torso:"torsoKkondae", hat:"hatBujangBald", face:2, hp:580, bounty:110000, homeX:-9, homeZ:2, speed:2.8, taunts:["이걸 보고서라고 가져왔냐?!", "실험실 밤샘 확정이다!"] },
+          { idx:1, rank:"수석", badgeBg:"#0d9488", name:"특허도둑 한수석", scale:1.26, torso:"torsoSangmu", hat:"hatBonbujangPompadour", face:5, clubInHand:true, hp:740, bounty:160000, homeX:9, homeZ:2, speed:3.0, taunts:["네 특허는 다 내 성과야~", "5시 퇴근? 실험 끝나고 가!"] },
+          { idx:2, rank:"연구소장", badgeBg:"#0f766e", name:"광기 박연구소장", scale:1.42, wideX:1.22, torso:"torsoBonbujang", hat:"hatBujangBald", face:6, hp:1250, bounty:280000, homeX:0, homeZ:-9, speed:3.0, taunts:["초등학생도 이해하게 논문 다시 써와!!", "대전연구소에서 한 발짝도 못 나간다!!"] }
+        ]
+      },
+      {
+        idx: 2, code: "SEOUL_HQ", badge: "🏢 3/4 서울본사", short: "🏢 서울본사",
         targetKills: 45, activeMobs: 26, isFinal: false,
-        portalPos: [0, -16.8], portalLabel: "🌀 그룹본사 결전 포털",
+        portalPos: [0, -16.8], portalLabel: "👑 그룹본사",
         mobPool: [
           { title:"야근강요 과장", torso:"torsoKkondae", hat:"hairHero", tint:[0.85,0.9,1], hp:74, speed:3.0, taunts:["야근하고 퇴근해!", "피피티 폰트 바꿔!", "주말에 카톡 봐!"] },
           { title:"보고서 차장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,1,1], hp:80, speed:2.9, taunts:["처음부터 다시 해와!", "라떼는 말이야!", "회식 불참 금지!"] },
@@ -1518,9 +1540,9 @@
         ]
       },
       {
-        idx: 2, code: "GROUP_HQ", badge: "👑 3/3 그룹본사", short: "👑 그룹본사",
+        idx: 3, code: "GROUP_HQ", badge: "👑 4/4 그룹본사", short: "👑 그룹본사",
         targetKills: 55, activeMobs: 28, isFinal: true,
-        portalPos: [0, -16.8], portalLabel: "💥 그룹본사 폭파 스위치!!",
+        portalPos: [0, -16.8], portalLabel: "💥 그룹본사 폭파",
         mobPool: [
           { title:"갑질 수석부장", torso:"torsoBujang", hat:"hatBujangBald", tint:[1,0.96,0.92], hp:86, speed:3.1, taunts:["감히 5시에 퇴근을 해?!", "결재 서류 백 번 다시 써와!", "어디서 눈을 똑바로 떠!"] },
           { title:"꼰대 감사팀장", torso:"torsoKkondae", hat:"hatBonbujangPompadour", tint:[0.94,0.94,1], hp:84, speed:3.2, taunts:["근태 불량 시말서 제출해!", "연차? 그런 거 없다!"] },
@@ -1550,7 +1572,7 @@
       myEmote: "", myEmoteT: 0, netJustAttacked: false
     };
 
-    const WORK_TOTAL_REAL_SEC = 900; // 15분 = 오후 4:00 (16:00) -> 오후 5:00 (17:00) 칼퇴 마감!
+    const WORK_TOTAL_REAL_SEC = 1080; // 18분 = 오후 4:00 (16:00) -> 오후 5:00 (17:00) 칼퇴 마감!
     let workRemainSec = WORK_TOTAL_REAL_SEC;
     let warnedFiveMin = false;
     let warnedOneMin = false;
@@ -1669,7 +1691,7 @@
 
       healPlayer(35, "🔥 1:1 결투 돌입");
       const st = STAGES[stageIdx];
-      const roomNames = ["공장장실", "대표이사실", "회장 집무실"];
+      const roomNames = ["공장장실", "연구소장실", "대표이사실", "회장 집무실"];
       const roomName = roomNames[stageIdx] || "임원실";
 
       // Full-screen Tekken VS Screen Transition Cut-in!
@@ -1811,7 +1833,8 @@
       if (hf) hf.style.opacity = "0";
 
       if (shouldResetClock) {
-        workRemainSec = stageIdx === 0 ? WORK_TOTAL_REAL_SEC : (stageIdx === 1 ? Math.round(WORK_TOTAL_REAL_SEC * 0.67) : Math.round(WORK_TOTAL_REAL_SEC * 0.38));
+        const splits = [1.0, 0.75, 0.50, 0.28];
+        workRemainSec = Math.round(WORK_TOTAL_REAL_SEC * (splits[stageIdx] || 1.0));
         warnedFiveMin = false;
         warnedOneMin = false;
       }
@@ -1977,16 +2000,28 @@
         bossDuelActive = false;
         portalOpen = true;
         unlockedStage = Math.max(unlockedStage, Math.min(STAGES.length - 1, stageIdx + 1));
-        player.x = 0; player.z = 2.0;
-        playSfx("ko"); haptic(90);
+        playSfx("ko"); haptic(95);
         const tk = document.getElementById("eventTicker");
-        tk.textContent = st.isFinal
-          ? "💥 최종 보스 1:1 격파!! 상단 [💥본사 폭파!] 버튼 또는 북쪽 폭파 스위치로 진입하세요!!"
-          : `🎉 보스 1:1 철권 승리!! 포털 개방! 상단 [🌀다음 거점➔] 버튼 또는 북쪽 포털로 이동하세요!`;
-        tk.classList.remove("hidden");
-        activeEvent = "portal"; eventRemain = 18;
-        popText(player.x, 2.8, player.z, st.isFinal ? "💥 그룹본사 폭파 스위치 OPEN!!" : `🌀 ${st.portalLabel} OPEN!!`, "#e879f9", 28);
-        spawnParticles(st.portalPos[0], 1.5, st.portalPos[1], 26, "shock");
+        if (st.isFinal) {
+          tk.textContent = "💥 그룹 총수 천회장 1:1 격파!! 그룹본사 대폭파 시퀀스 가동!!";
+          tk.classList.remove("hidden");
+          activeEvent = "portal"; eventRemain = 6;
+          setTimeout(() => { if (!campaignOver) triggerPortalAction(); }, 1200);
+        } else {
+          const nextSt = STAGES[stageIdx + 1];
+          tk.textContent = `🎉 ${st.short} 보스 1:1 격파!! 다음 거점 [${nextSt.short}]으로 이동합니다!!`;
+          tk.classList.remove("hidden");
+          activeEvent = "portal"; eventRemain = 4;
+          popText(player.x, 2.7, player.z, `🎉 STAGE CLEAR!! → ${nextSt.short}`, "#4ade80", 26);
+          setTimeout(() => {
+            if (!campaignOver && stageIdx < STAGES.length - 1) {
+              const wf = document.getElementById("whiteFlash");
+              if (wf) { wf.style.opacity = "0.88"; setTimeout(() => { wf.style.opacity = "0"; }, 260); }
+              loadStage(stageIdx + 1, true, { resetHp: false, resetClock: false });
+              popText(player.x, 2.5, player.z, "☕ 거점 돌파 커피 수혈 +35 HP!", "#4ade80", 22);
+            }
+          }, 2100);
+        }
         updateHud();
       }
     }
@@ -2652,7 +2687,7 @@
       const deadSubCnt = subBosses.filter((b) => b.ko).length;
 
       if (bossDuelActive && finalBoss) {
-        const roomNames = ["공장장실 1:1", "대표이사실 1:1", "회장집무실 1:1"];
+        const roomNames = ["공장장실 1:1", "연구소장실 1:1", "대표이사실 1:1", "회장집무실 1:1"];
         const pPct = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
         const bPct = Math.max(0, Math.min(100, (finalBoss.hp / finalBoss.maxHp) * 100));
         document.getElementById("tkPlayerHpTxt").textContent = `${Math.ceil(pPct)}%`;
@@ -2735,7 +2770,7 @@
         }
       }
 
-      document.getElementById("koHud").textContent = `v16 · ${koTotal}`;
+      document.getElementById("koHud").textContent = `v17 · ${koTotal}`;
       document.getElementById("cashHud").textContent = formatCompactWon(cash);
       const nextCost = player.powerLv * 120000;
       document.getElementById("upgradeLabel").textContent = cash >= nextCost ? `LV.${player.powerLv} UP!` : `LV.${player.powerLv}`;
@@ -2816,11 +2851,6 @@
       const mx = (x) => ((x + MAP_X) / (MAP_X * 2)) * w;
       const mz = (z) => ((z + MAP_Z) / (MAP_Z * 2)) * h;
       const st = STAGES[stageIdx];
-
-      const [px, pz] = st.portalPos;
-      rctx.strokeStyle = portalOpen ? "#e879f9" : "#64748b";
-      rctx.lineWidth = 2;
-      rctx.beginPath(); rctx.arc(mx(px), mz(pz), 4.2, 0, 6.28); rctx.stroke();
 
       rctx.fillStyle = "rgba(248, 113, 113, 0.85)";
       for (const m of mobs) {
@@ -2950,7 +2980,7 @@
     });
     document.getElementById("btnStayFree").addEventListener("click", () => {
       freePlayMode = true;
-      loadStage(2, false, { resetHp: true, resetClock: true });
+      loadStage(3, false, { resetHp: true, resetClock: true });
       popText(player.x, 2.4, player.z, "♾ 그룹본사 무한 대난투 모드!", "#4ade80", 24);
     });
 
@@ -3009,7 +3039,7 @@
       document.getElementById("finaleIcon").textContent = "💥🏢🔥🎊";
       document.getElementById("finaleTitle").textContent = `🕔 ${clkStr} 칼퇴 대성공!!`;
       document.getElementById("finaleTitle").style.color = "#fde047";
-      document.getElementById("finaleDesc").innerHTML = "5시 퇴근 시간 전에 울산공장 → 서울본사 → 그룹본사 천회장 일당과 꼰대 상사 군단을 모조리 참교육하고 본사를 시원하게 폭파했습니다!!";
+      document.getElementById("finaleDesc").innerHTML = "5시 퇴근 시간 전에 울산공장 → 대전연구소 → 서울본사 → 그룹본사 천회장 일당과 꼰대 상사 군단을 모조리 참교육하고 본사를 시원하게 폭파했습니다!!";
       document.getElementById("finaleStats").textContent = `칼퇴 시각: ${clkStr}  |  총 참교육: ${koTotal}명  |  비자금: ₩${cash.toLocaleString()}  |  체력 ${Math.ceil(player.hp)}/${player.maxHp}`;
       document.getElementById("btnRetryStage").classList.add("hidden");
       modal.classList.remove("hidden");
@@ -3847,28 +3877,9 @@
       mTRS(rootM, 0, 0, 0, 0, 0, 0);
       drawMesh(bossDuelActive ? M.tekkenRoom : M.stageMaps[stageIdx], rootM, { outline: 0 });
 
-      // 2. 3D Warp Portal / Group HQ Demolition Gate (Hidden during 1v1 Boss Room!)
-      const [pPosX, pPosZ] = st.portalPos;
-      if (!bossDuelActive) {
-        mTRS(rootM, pPosX, 0, pPosZ, 0, 0, 0);
-        drawMesh(M.portalGate, rootM, { tint: portalOpen ? [1.0, 0.85, 1.0] : [0.45, 0.45, 0.55] });
-        if (portalOpen) {
-          const pPulse = 1.0 + Math.sin(tSec * 7.0) * 0.12;
-          mTRS(rootM, pPosX, 0, pPosZ, 0, 0, tSec * 3.5, pPulse, pPulse, 1);
-          drawMesh(M.portalCore, rootM, { unlit: true, tint: st.isFinal ? [1.0, 0.35, 0.55] : [0.35, 0.92, 1.0] });
-        }
-      }
-
+      // 2. Portal removed — defeating the 1:1 Office Boss auto-advances directly to the next stage!
       const pTag = document.getElementById("portalTag");
-      const pSc = project2D(pPosX, 4.1, pPosZ, vpM, window.innerWidth, window.innerHeight);
-      if (pSc && pSc.x > 10 && pSc.x < window.innerWidth - 10 && pSc.y > 75 && pSc.y < window.innerHeight - 20) {
-        pTag.style.left = `${pSc.x.toFixed(0)}px`;
-        pTag.style.top = `${pSc.y.toFixed(0)}px`;
-        pTag.style.opacity = "1";
-        pTag.textContent = portalOpen ? `✨ ${st.portalLabel} (진입!)` : `🔒 ${st.portalLabel} (목표 달성시 개방)`;
-      } else {
-        pTag.style.opacity = "0";
-      }
+      if (pTag) pTag.style.opacity = "0";
 
       const remoteHtml = [];
       const pushTag = (wx, wy, wz, text, cls = "player-tag") => {
