@@ -386,6 +386,13 @@
       <div id="cutinBossQuote" style="margin-top:14px; padding:11px 13px; border-radius:14px; background:rgba(255,255,255,0.96); color:#0f172a; font-size:13px; font-weight:900; line-height:1.45;">"글자 간격이 안 맞잖아!! 초등학생도 알아볼 수 있게 보고서를 써야지 왜 어렵냐?!"</div>
     </div>
   </div>
+  <div id="tekkenAnnounce" class="fixed inset-0 hidden items-center justify-center pointer-events-none" style="z-index:59;">
+    <div id="tekkenAnnounceTxt" style="font-size:52px; font-weight:900; font-style:italic; letter-spacing:0.06em; color:#fde047; text-shadow:0 4px 0 #b91c1c, 0 0 28px rgba(250,204,21,0.95); transform:skewX(-10deg);">ROUND 1</div>
+  </div>
+  <div id="tkComboBanner" class="fixed pointer-events-none hidden" style="left:14px; top:36%; z-index:45; transform:skewX(-10deg);">
+    <div id="tkComboNum" style="font-size:34px; font-weight:900; font-style:italic; color:#fde047; line-height:1; text-shadow:0 3px 0 #be123c, 0 0 16px rgba(251,191,36,0.85);">5 HITS!</div>
+    <div id="tkComboSub" style="font-size:11px; font-weight:900; color:#38bdf8; letter-spacing:0.08em; text-shadow:0 2px 4px #000;">GREAT!!</div>
+  </div>
   <div id="bossWarningBanner" class="boss-banner hidden">
     <div id="bossBannerTop" style="font-size:11px; font-weight:900; color:#fde047; letter-spacing:0.06em;">🚨 WARNING // 사무실 보스 출현!!</div>
     <div id="bossBannerName" style="font-size:17px; font-weight:900; color:#ffffff; margin-top:2px;">울산 폭군 마공장장</div>
@@ -532,7 +539,7 @@
               </div>
             </div>
             <span id="bossProgressText" class="hidden"></span>
-            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v21 · 0</span>
+            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v22 · 0</span>
             <div id="clockHud" class="nowrap" style="padding:0 6px; border-radius:999px; background:rgba(15,23,42,0.75); border:1px solid rgba(125,211,252,0.45); font-size:9.5px; font-weight:900; font-family:monospace; color:#7dd3fc;">
               🕔 16:00/17:00
             </div>
@@ -1449,23 +1456,136 @@
     M.dumbbell = new Geo().addBox(0.64,0.07,0.07,rgb(0x94a3b8),0,0.20,0).addBox(0.14,0.36,0.36,rgb(0x1e293b),-0.26,0.20,0).addBox(0.14,0.36,0.36,rgb(0x1e293b), 0.26,0.20,0).build();
     M.waterJug = new Geo().addLathe([[0,0],[0.24,0.03],[0.25,0.52],[0.09,0.64],[0.09,0.74],[0,0.74]],12,rgb(0x60a5fa)).build();
     M.trophy = new Geo().addBox(0.28,0.12,0.28,rgb(0x451a03),0,0.06,0).addLathe([[0.05,0.12],[0.04,0.32],[0.22,0.58],[0.24,0.74],[0,0.74]],12,rgb(0xfacc15)).build();
-    // 코믹 파티 총기 3종 (난이도 상승 시 등장! 유혈 없는 꽃가루/별 탄환 발사)
+
+    // ==================== 4대 보스 전용 개성 의상·모자·소품·3D 휠체어 ====================
+    // 1) 술고래 공장장: 안전모 + 빨간 술톤 코/취기 볼 + 초록 소주병
+    M.hatDrunkHardhat = new Geo()
+      .addLathe([[0.38,0.68],[0.42,0.76],[0.38,0.96],[0.18,1.08],[0,1.10]], 14, rgb(0xfacc15))
+      .addBox(0.46, 0.05, 0.28, rgb(0xeab308), 0, 0.72, 0.28)
+      .addBox(0.08, 0.24, 0.42, rgb(0xdc2626), 0, 0.96, 0.02)
+      .addEllipsoid(0.11, 0.09, 0.11, 8, 8, rgb(0xef4444), 0, 0.36, 0.43) // 새빨간 술고래 코!
+      .addEllipsoid(0.10, 0.07, 0.06, 8, 8, rgb(0xfb7185), -0.22, 0.32, 0.34)
+      .addEllipsoid(0.10, 0.07, 0.06, 8, 8, rgb(0xfb7185),  0.22, 0.32, 0.34)
+      .build();
+    M.sojuBottle = new Geo()
+      .addLathe([[0,0],[0.13,0.01],[0.13,0.48],[0.055,0.62],[0.055,0.82],[0,0.83]], 12, rgb(0x16a34a))
+      .addBox(0.24, 0.22, 0.24, rgb(0xf8fafc), 0, 0.27, 0)
+      .addLathe([[0.06,0.81],[0.06,0.88],[0,0.89]], 10, rgb(0x15803d))
+      .build();
+
+    // 2) 괴짜 연구소장: 하얀 연구원 가운 + 아인슈타인 폭탄 흰머리 & 왕안경 + 빛나는 플라스크
+    M.torsoLabCoat = new Geo()
+      .addLathe([[0.34,0],[0.46,0.18],[0.50,0.58],[0.40,0.76],[0,0.78]], 14, rgb(0xf8fafc))
+      .addBox(0.16, 0.62, 0.10, rgb(0x0f766e), 0, 0.40, 0.40)
+      .addBox(0.08, 0.48, 0.12, rgb(0x38bdf8), 0, 0.38, 0.43)
+      .build();
+    M.hatMadScientist = new Geo()
+      .addEllipsoid(0.24, 0.24, 0.22, 10, 10, rgb(0xf1f5f9), -0.34, 0.66, -0.02)
+      .addEllipsoid(0.24, 0.24, 0.22, 10, 10, rgb(0xf1f5f9),  0.34, 0.66, -0.02)
+      .addEllipsoid(0.26, 0.24, 0.24, 10, 10, rgb(0xe2e8f0), -0.22, 0.86, -0.10)
+      .addEllipsoid(0.26, 0.24, 0.24, 10, 10, rgb(0xe2e8f0),  0.22, 0.86, -0.10)
+      .addEllipsoid(0.22, 0.22, 0.24, 10, 10, rgb(0xf8fafc),  0.00, 0.92, -0.16)
+      // 둥근 왕안경!
+      .addEllipsoid(0.14, 0.14, 0.05, 10, 10, rgb(0x0f172a), -0.16, 0.46, 0.39)
+      .addEllipsoid(0.10, 0.10, 0.06, 10, 10, rgb(0x38bdf8), -0.16, 0.46, 0.41)
+      .addEllipsoid(0.14, 0.14, 0.05, 10, 10, rgb(0x0f172a),  0.16, 0.46, 0.39)
+      .addEllipsoid(0.10, 0.10, 0.06, 10, 10, rgb(0x38bdf8),  0.16, 0.46, 0.41)
+      .addBox(0.10, 0.04, 0.04, rgb(0x0f172a), 0, 0.46, 0.40)
+      .build();
+    M.flask = new Geo()
+      .addLathe([[0,0],[0.26,0.02],[0.18,0.28],[0.07,0.52],[0.08,0.72],[0,0.72]], 12, rgb(0x2dd4bf))
+      .addEllipsoid(0.16, 0.12, 0.16, 8, 8, rgb(0x4ade80), 0, 0.14, 0)
+      .build();
+
+    // 3) 영구 바보 사장: 헐렁한 삐뚤 넥타이 정장 + 영구 바가지 단발 가발 & 앞니 빠진 개그 포인트 + 뿅망치
+    M.torsoFoolCEO = new Geo()
+      .addLathe([[0.34,0],[0.45,0.20],[0.48,0.58],[0.38,0.76],[0,0.78]], 14, rgb(0x334155))
+      .addBox(0.24, 0.50, 0.12, rgb(0xf8fafc), 0, 0.44, 0.38)
+      .addBox(0.12, 0.42, 0.14, rgb(0xf43f5e), 0.08, 0.36, 0.41) // 삐뚤어진 빨간 넥타이!
+      .build();
+    M.hatYounggu = new Geo()
+      .addLathe([[0.42,0.52],[0.44,0.72],[0.38,0.96],[0.18,1.06],[0,1.08]], 14, rgb(0x111827)) // 둥근 바가지 머리!
+      .addBox(0.56, 0.14, 0.16, rgb(0x111827), 0, 0.68, 0.35) // 일자 앞머리 바가지 뱅!
+      .addBox(0.14, 0.30, 0.36, rgb(0x111827), -0.38, 0.50, -0.02)
+      .addBox(0.14, 0.30, 0.36, rgb(0x111827),  0.38, 0.50, -0.02)
+      // 영구 트레이드마크: 삐뚤 입 + 까만 빠진 앞니!
+      .addBox(0.22, 0.09, 0.06, rgb(0xfef2f2), 0, 0.21, 0.39)
+      .addBox(0.08, 0.09, 0.08, rgb(0x090d16), 0.02, 0.21, 0.41)
+      .build();
+    M.toyHammer = new Geo()
+      .addLathe([[0.04,0],[0.045,0.88]], 10, rgb(0x38bdf8))
+      .addBox(0.58, 0.30, 0.30, rgb(0xfacc15), 0, 0.92, 0)
+      .addBox(0.10, 0.34, 0.34, rgb(0xf43f5e), -0.28, 0.92, 0)
+      .addBox(0.10, 0.34, 0.34, rgb(0xf43f5e),  0.28, 0.92, 0)
+      .build();
+
+    // 4) 검찰 출두 휠체어 회장: 환자복+검정 고급 담요 + 흰 머리 붕대 & 마스크 + 3D 휠체어 & 수액 링거대!
+    M.torsoChairmanWheel = new Geo()
+      .addLathe([[0.36,0],[0.48,0.20],[0.50,0.58],[0.40,0.78],[0,0.80]], 14, rgb(0xbfdbfe)) // 하늘색 병원 환자복
+      .addBox(0.76, 0.42, 0.52, rgb(0x1e293b), 0, 0.16, 0.10) // 무릎 덮은 고급 검정 담요
+      .addBox(0.68, 0.32, 0.14, rgb(0x0f172a), 0, 0.54, -0.34) // 걸친 검정 코트
+      .build();
+    M.hatChairmanBandage = new Geo()
+      .addLathe([[0.41,0.58],[0.43,0.78],[0.38,0.96],[0.16,1.06],[0,1.08]], 14, rgb(0xf8fafc)) // 머리 둘둘 감은 흰 붕대!
+      .addBox(0.62, 0.12, 0.46, rgb(0xe2e8f0), 0, 0.72, 0.06)
+      .addBox(0.12, 0.10, 0.08, rgb(0xef4444), 0.14, 0.74, 0.41) // 붕대 위 빨간 십자 포인트
+      .addBox(0.32, 0.18, 0.10, rgb(0xf8fafc), 0, 0.25, 0.38) // 검찰 출두 필수템 흰 마스크!
+      .build();
+    M.wheelchair = new Geo()
+      // 시트 & 등받이 & 발받침
+      .addBox(0.96, 0.14, 0.88, rgb(0x1e293b), 0, 0.52, 0)
+      .addBox(0.94, 0.92, 0.12, rgb(0x0f172a), 0, 0.98, -0.42)
+      .addBox(0.10, 0.38, 0.84, rgb(0x475569), -0.50, 0.72, -0.02)
+      .addBox(0.10, 0.38, 0.84, rgb(0x475569),  0.50, 0.72, -0.02)
+      .addBox(0.76, 0.07, 0.30, rgb(0x94a3b8), 0, 0.16, 0.56) // 발받침
+      // 양쪽 큰 휠체어 바퀴 (림 + 은색 손잡이 링)
+      .addBox(0.10, 0.86, 0.86, rgb(0x0f172a), -0.58, 0.43, -0.10)
+      .addBox(0.13, 0.56, 0.56, rgb(0xcbd5e1), -0.58, 0.43, -0.10)
+      .addBox(0.10, 0.86, 0.86, rgb(0x0f172a),  0.58, 0.43, -0.10)
+      .addBox(0.13, 0.56, 0.56, rgb(0xcbd5e1),  0.58, 0.43, -0.10)
+      // 앞 보조바퀴 2개
+      .addBox(0.08, 0.24, 0.24, rgb(0x1e293b), -0.44, 0.12, 0.44)
+      .addBox(0.08, 0.24, 0.24, rgb(0x1e293b),  0.44, 0.12, 0.44)
+      // 옆에 세워진 수액 링거대 & 투명 수액백!
+      .addBox(0.05, 1.85, 0.05, rgb(0xe2e8f0), 0.62, 1.25, -0.34)
+      .addBox(0.28, 0.05, 0.05, rgb(0xe2e8f0), 0.62, 2.15, -0.34)
+      .addBox(0.18, 0.32, 0.10, rgb(0x38bdf8), 0.72, 1.94, -0.34)
+      .build();
+
+    // ==================== 진짜 총 실루엣 3D 총기 3종 (+Z가 총구, +Y가 위) ====================
+    // 1) 파티 권총 (슬라이드 + 은색 총열 + 프레임 + 그립 + 방아쇠울 + 가늠쇠)
     M.blaster = new Geo()
-      .addBox(0.16, 0.20, 0.56, rgb(0x38bdf8), 0, 0.36, 0.10)
-      .addBox(0.14, 0.28, 0.15, rgb(0xfacc15), 0, 0.16, -0.08)
-      .addBox(0.20, 0.20, 0.12, rgb(0xf472b6), 0, 0.36, 0.40)
+      .addBox(0.13, 0.15, 0.56, rgb(0x1e293b), 0, 0.38, 0.16)  // 상부 슬라이드
+      .addBox(0.08, 0.08, 0.14, rgb(0x94a3b8), 0, 0.38, 0.48)  // 총열 끝
+      .addBox(0.14, 0.05, 0.38, rgb(0x38bdf8), 0, 0.40, 0.16)  // 네온 포인트 라인
+      .addBox(0.11, 0.08, 0.44, rgb(0x475569), 0, 0.28, 0.12)  // 하부 프레임
+      .addBox(0.11, 0.30, 0.15, rgb(0x0f172a), 0, 0.14, -0.06) // 권총 손잡이(그립)
+      .addBox(0.06, 0.03, 0.16, rgb(0x334155), 0, 0.18, 0.08)  // 방아쇠울 하단
+      .addBox(0.04, 0.06, 0.04, rgb(0xfacc15), 0, 0.47, 0.40)  // 가늠쇠
       .build();
+
+    // 2) 꽃가루 산탄총 / 펌프 샷건 (2중 긴 총열 + 펌프 핸드가드 + 우드 개머리판 + 리시버)
     M.shotgun = new Geo()
-      .addBox(0.18, 0.18, 0.96, rgb(0xf43f5e), 0, 0.36, 0.16)
-      .addBox(0.22, 0.14, 0.34, rgb(0xfde047), 0, 0.28, 0.30)
-      .addBox(0.16, 0.24, 0.30, rgb(0x7c3aed), 0, 0.26, -0.34)
-      .addBox(0.24, 0.24, 0.10, rgb(0x4ade80), 0, 0.36, 0.66)
+      .addBox(0.09, 0.09, 0.92, rgb(0x1e293b), 0, 0.42, 0.36)  // 상부 긴 총열
+      .addBox(0.08, 0.08, 0.72, rgb(0x334155), 0, 0.33, 0.28)  // 하부 탄창 튜브
+      .addBox(0.15, 0.12, 0.34, rgb(0xd97706), 0, 0.32, 0.34)  // 펌프 핸드가드
+      .addBox(0.14, 0.18, 0.34, rgb(0x0f172a), 0, 0.37, -0.06) // 리시버 몸체
+      .addBox(0.12, 0.19, 0.42, rgb(0x92400e), 0, 0.29, -0.40) // 우드 개머리판(스톡)
+      .addBox(0.10, 0.16, 0.12, rgb(0x78350f), 0, 0.20, -0.20) // 손잡이 목
+      .addBox(0.12, 0.12, 0.08, rgb(0xf472b6), 0, 0.42, 0.84)  // 꽃가루 머즐팁
       .build();
+
+    // 3) 연발 파티 돌격소총 (긴 총열 + 소염기 + 상단 스코프 + 바나나 탄창 + 핸드가드 + 스톡)
     M.partyRifle = new Geo()
-      .addBox(0.20, 0.22, 1.08, rgb(0xa855f7), 0, 0.38, 0.18)
-      .addBox(0.16, 0.34, 0.18, rgb(0xfacc15), 0, 0.14, 0.14)
-      .addBox(0.16, 0.26, 0.32, rgb(0x38bdf8), 0, 0.28, -0.36)
-      .addBox(0.26, 0.26, 0.14, rgb(0xf472b6), 0, 0.38, 0.74)
+      .addBox(0.08, 0.08, 1.05, rgb(0x1e293b), 0, 0.40, 0.42)  // 긴 총열
+      .addBox(0.12, 0.12, 0.14, rgb(0xf472b6), 0, 0.40, 0.96)  // 머즐 소염기
+      .addBox(0.14, 0.14, 0.46, rgb(0x334155), 0, 0.38, 0.36)  // 전술 핸드가드
+      .addBox(0.15, 0.20, 0.40, rgb(0x0f172a), 0, 0.37, -0.02) // 리시버
+      .addBox(0.10, 0.34, 0.14, rgb(0xfacc15), 0, 0.13, 0.12)  // 노란 탄창
+      .addBox(0.10, 0.26, 0.12, rgb(0x1e293b), 0, 0.17, -0.14) // 권총 손잡이
+      .addBox(0.12, 0.22, 0.36, rgb(0x334155), 0, 0.34, -0.38) // 개머리판 스톡
+      .addBox(0.08, 0.06, 0.34, rgb(0x64748b), 0, 0.49, 0.02)  // 상단 레일
+      .addBox(0.11, 0.11, 0.30, rgb(0x38bdf8), 0, 0.57, 0.02)  // 원통형 조준경 스코프!
       .build();
 
     // Quest Collectibles, C4 Bomb Pillars & 3D Warp Portal!
@@ -1658,7 +1778,7 @@
         bosses: [
           { idx:0, rank:"반장", badgeBg:"#d97706", name:"독사 강반장", scale:1.12, torso:"torsoFactory", hat:"hatHardhat", face:2, hp:520, bounty:90000, homeX:-9, homeZ:2, speed:2.7, taunts:["라인 멈추면 주말도 출근이다!", "스패너 어딨어!!"] },
           { idx:1, rank:"생산부장", badgeBg:"#475569", name:"철야 남부장", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:700, bounty:140000, homeX:9, homeZ:1, speed:2.8, taunts:["울산공장 목표량 200% 채워!", "5시 칼퇴는 꿈도 꾸지 마!"] },
-          { idx:2, rank:"공장장", badgeBg:"#b91c1c", name:"울산 폭군 마공장장", scale:1.38, wideX:1.20, torso:"torsoBonbujang", hat:"hatHardhat", face:6, hp:1050, bounty:220000, homeX:0, homeZ:-9, speed:2.9, taunts:["내가 울산공장 왕이다!! 다 막아!!", "대전연구소엔 절대 못 간다!!"] }
+          { idx:2, rank:"🍺공장장", badgeBg:"#b91c1c", name:"술고래 마공장장", scale:1.38, wideX:1.20, torso:"torsoBonbujang", hat:"hatDrunkHardhat", heldItem:"sojuBottle", face:6, hp:1050, bounty:220000, homeX:0, homeZ:-9, speed:2.9, taunts:["어이~ 소주 한 병 더 마시고 야근해야지~ 딸꾹!", "회식 안 오면 고과 C야~ 크으~", "내가 울산공장 술고래다!! 한 잔 받아!!"] }
         ]
       },
       {
@@ -1675,7 +1795,7 @@
         bosses: [
           { idx:0, rank:"팀장", badgeBg:"#0284c7", name:"스펙트집 오팀장", scale:1.16, torso:"torsoKkondae", hat:"hatBujangBald", face:2, hp:580, bounty:110000, homeX:-9, homeZ:2, speed:2.8, taunts:["이걸 보고서라고 가져왔냐?!", "실험실 밤샘 확정이다!"] },
           { idx:1, rank:"수석", badgeBg:"#0d9488", name:"특허도둑 한수석", scale:1.26, torso:"torsoSangmu", hat:"hatBonbujangPompadour", face:5, clubInHand:true, hp:740, bounty:160000, homeX:9, homeZ:2, speed:3.0, taunts:["네 특허는 다 내 성과야~", "5시 퇴근? 실험 끝나고 가!"] },
-          { idx:2, rank:"연구소장", badgeBg:"#0f766e", name:"광기 박연구소장", scale:1.42, wideX:1.22, torso:"torsoBonbujang", hat:"hatBujangBald", face:6, hp:1250, bounty:280000, homeX:0, homeZ:-9, speed:3.0, taunts:["초등학생도 이해하게 논문 다시 써와!!", "대전연구소에서 한 발짝도 못 나간다!!"] }
+          { idx:2, rank:"🧪연구소장", badgeBg:"#0f766e", name:"괴짜 박연구소장", scale:1.42, wideX:1.20, torso:"torsoLabCoat", hat:"hatMadScientist", heldItem:"flask", face:6, hp:1250, bounty:280000, homeX:0, homeZ:-9, speed:3.0, taunts:["이론상으론 오늘 밤새면 노벨상 완성돼!!", "논문 3편만 더 써와, 내 이름으로 낼게!!", "실험 데이터 나올 때까지 퇴근 금지야!!"] }
         ]
       },
       {
@@ -1693,7 +1813,7 @@
           { idx:0, rank:"부장", badgeBg:"#475569", name:"꼰대 김부장", scale:1.12, torso:"torsoBujang", hat:"hatBujangBald", face:2, hp:650, bounty:120000, homeX:-10, homeZ:3, speed:2.7, taunts:["오늘 전원 밤샘 야근이다!!", "결재 서류 다시 가져와!"] },
           { idx:1, rank:"상무", badgeBg:"#65a30d", name:"골프광 박상무", scale:1.22, torso:"torsoSangmu", hat:"hatSangmuVisor", face:5, clubInHand:true, hp:820, bounty:180000, homeX:10, homeZ:3, speed:3.1, taunts:["근무시간엔 역시 퍼팅이지~", "법인카드로 한우 회식 가자!"] },
           { idx:2, rank:"본부장", badgeBg:"#7e22ce", name:"어깨깡패 최본부장", scale:1.40, wideX:1.24, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, hp:1080, bounty:260000, homeX:-6, homeZ:-8, speed:2.9, taunts:["서울본사를 쑥대밭으로 만들 셈이냐?!", "야근 결재 전원 올려!!"] },
-          { idx:3, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.52, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:1480, bounty:420000, homeX:6, homeZ:-10, speed:2.6, taunts:["그룹본사 회장님께 이른다!!", "내 비자금에 손대지 마!!"] }
+          { idx:3, rank:"🤪바보사장", badgeBg:"#d97706", name:"영구 왕사장", scale:1.50, torso:"torsoFoolCEO", hat:"hatYounggu", heldItem:"toyHammer", face:7, dropsCashOnHit:true, hp:1480, bounty:420000, homeX:6, homeZ:-10, speed:2.6, taunts:["띠리리리~ 야근이 뭐야? 먹는 거야? 헤헤~", "나 사장인데~ 결재 도장 어디 뒀더라~ 우헤헤!", "아무튼 다 다시 해와~ 나도 잘 모르겠어~", "영구 없다~ 칼퇴도 없다~ 띠리리!"] }
         ]
       },
       {
@@ -1711,7 +1831,7 @@
           { idx:0, rank:"전무", badgeBg:"#0f766e", name:"갑질왕 구전무", scale:1.22, torso:"torsoBujang", hat:"hatBujangBald", face:6, clubInHand:true, hp:860, bounty:200000, homeX:-10, homeZ:2, speed:3.2, taunts:["전 임원진 총동원해서 칼퇴 막아!!", "5시 퇴근? 내 눈에 흙이 들어가기 전엔 안 돼!"] },
           { idx:1, rank:"부회장", badgeBg:"#7e22ce", name:"황태자 천부회장", scale:1.42, wideX:1.22, torso:"torsoBonbujang", hat:"hatBonbujangPompadour", face:6, dropsCashOnHit:true, hp:1180, bounty:350000, homeX:10, homeZ:2, speed:3.0, taunts:["내가 차기 그룹 총수다!!", "돈다발로 싸대기를 날려주마!"] },
           { idx:2, rank:"👑대표", badgeBg:"#d97706", name:"블랙기업 왕대표", scale:1.50, torso:"torsoCEO", hat:"hatCEOCrown", face:7, dropsCashOnHit:true, hp:1380, bounty:450000, homeX:-7, homeZ:-9, speed:2.7, taunts:["천회장님 제발 살려주십시오!!", "그룹본사가 무너진다!!"] },
-          { idx:3, rank:"🐉총수회장", badgeBg:"#dc2626", name:"그룹 총수 천회장", scale:1.72, torso:"torsoChairman", hat:"hatChairman", face:7, onThrone:true, dropsCashOnHit:true, hp:2300, bounty:1500000, homeX:3, homeZ:-10, speed:3.2, taunts:["감히 개미 따위가 5시 칼퇴를 꿈꿔?!", "황금 전동 옥좌 풀파워 돌진!!", "임원 꼰대들 뭐하느냐!! 전원 야근시켜!!"] }
+          { idx:3, rank:"♿총수회장", badgeBg:"#dc2626", name:"검찰출두 천회장", scale:1.68, torso:"torsoChairmanWheel", hat:"hatChairmanBandage", face:7, onThrone:true, onWheelchair:true, dropsCashOnHit:true, hp:2300, bounty:1500000, homeX:3, homeZ:-10, speed:3.2, taunts:["아이고 내 허리... 검찰 출두해야 해서 급해...", "건강이 안 좋아서 야근 수당은 못 줘... 콜록!", "기억이 잘 안 나네... 다 밑에 놈들이 한 거야...", "링거 맞으면서 경영하는 거 안 보여?! 휠체어 풀파워!!"] }
         ]
       }
     ];
@@ -1904,6 +2024,22 @@
       if (isUlt) popText(player.x, 2.55, player.z, line, "#fde047", 24);
     }
 
+    let tkAnnounceTimer = null;
+    function showTekkenAnnounce(txt, col = "#fde047", dur = 900) {
+      const box = document.getElementById("tekkenAnnounce");
+      const el = document.getElementById("tekkenAnnounceTxt");
+      if (!box || !el) return;
+      el.textContent = txt;
+      el.style.color = col;
+      box.classList.remove("hidden");
+      box.style.display = "flex";
+      clearTimeout(tkAnnounceTimer);
+      tkAnnounceTimer = setTimeout(() => {
+        box.classList.add("hidden");
+        box.style.display = "";
+      }, dur);
+    }
+
     function summonOfficeFinalBoss() {
       const finalBoss = bosses[bosses.length - 1];
       if (!finalBoss || !finalBoss.waiting) return;
@@ -1914,31 +2050,31 @@
       finalBoss.z = 0;
       finalBoss.yaw = -Math.PI * 0.5;
       finalBoss.vx = 0; finalBoss.vy = 0; finalBoss.vz = 0;
-      finalBoss.stun = 3.0;
+      finalBoss.stun = 3.5;
       focusBossIdx = bosses.length - 1;
 
       player.x = -3.6; player.y = 0; player.z = 0;
       player.vx = 0; player.vz = 0; player.yaw = Math.PI * 0.5;
       player.heldProp = null; player.ridingChair = null;
       player.grapple = null; player.chainThrow = null;
-      player.invuln = 3.2;
+      player.invuln = 3.6;
 
       mobs = [];
       props = [];
       hazards = [];
 
-      healPlayer(35, "🔥 1:1 결투 돌입");
+      healPlayer(35, "🔥");
       const st = STAGES[stageIdx];
       const ch = getCurrentChar();
-      const roomNames = ["공장장실", "연구소장실", "대표이사실", "회장 집무실"];
+      const roomNames = ["🍺 공장장실", "🧪 연구소장실", "🤪 사장실", "♿ 회장 집무실"];
       const roomName = roomNames[stageIdx] || "임원실";
 
-      const cutinLine = pickRandomBanter().boss;
+      const cutinLine = finalBoss.def.taunts[0] || pickRandomBanter().boss;
       const wf = document.getElementById("whiteFlash");
       if (wf) { wf.style.opacity = "0.9"; setTimeout(() => { wf.style.opacity = "0"; }, 260); }
       const cutin = document.getElementById("duelCutin");
       if (cutin) {
-        document.getElementById("cutinRoom").textContent = `🚪 ${roomName} 진입 // 1 vs 1 철권 보스전!!`;
+        document.getElementById("cutinRoom").textContent = `GET READY FOR THE NEXT BATTLE // ${roomName}`;
         document.getElementById("cutinPlayerName").textContent = `${ch.icon} ${ch.name}`;
         document.getElementById("cutinBossName").textContent = `${finalBoss.def.rank} ${finalBoss.def.name}`;
         document.getElementById("cutinBossQuote").textContent = `"${cutinLine}"`;
@@ -1947,7 +2083,14 @@
         setTimeout(() => {
           cutin.classList.add("hidden");
           cutin.style.display = "";
-        }, 2800);
+          showTekkenAnnounce(`ROUND ${stageIdx + 1}`, "#fde047", 850);
+          playSfx("heavy");
+          setTimeout(() => {
+            showTekkenAnnounce("FIGHT!!", "#fb7185", 800);
+            playSfx("ewgf");
+            shakeMag = 0.65; shakeT = 0.25;
+          }, 900);
+        }, 2000);
       }
 
       bossIntroTimers.forEach((tid) => clearTimeout(tid));
@@ -2401,13 +2544,14 @@
       b.ko = true;
       b.respawn = freePlayMode ? 6.0 : 999999;
       b.vy = 11.8;
-      slowMo = 0.45;
+      slowMo = bossDuelActive ? 0.85 : 0.45;
       stageKills++;
       koTotal++;
       addCash(b.def.bounty);
       playSfx("ko");
       playSfx("confetti");
       haptic(65);
+      if (bossDuelActive) showTekkenAnnounce("K.O.!!", "#4ade80", 1400);
       spawnParticles(b.x, b.y + 1.1, b.z, 26, "confetti");
       spawnParticles(b.x, b.y + 1.2, b.z, 12, "star");
       spawnParticles(b.x, b.y + 1.0, b.z, 8, "cash");
@@ -2606,7 +2750,7 @@
         }
         const gx = Math.sin(player.yaw), gz = Math.cos(player.yaw);
         const gk = gun.gunKind || "pistol";
-        player.atkType = "weaponSwing";
+        player.atkType = "gunShoot";
         player.atkDur = gk === "rifle" ? 0.13 : (gk === "shotgun" ? 0.28 : 0.18);
         player.atkTimer = player.atkDur;
         player.netJustAttacked = true;
@@ -4261,7 +4405,11 @@
       drawMesh(M.limbArm, worldM, { tint: o.tint, flash: o.flash });
 
       if (o.heldMesh) {
-        mTRS(partM, 0, -0.38, 0.12, Math.PI * 0.45, 0, 0, 0.85, 0.85, 0.85);
+        if (o.isGun) {
+          mTRS(partM, 0, -0.34, 0.24, 0, 0, 0, 1.0, 1.0, 1.0);
+        } else {
+          mTRS(partM, 0, -0.38, 0.12, Math.PI * 0.45, 0, 0, 0.85, 0.85, 0.85);
+        }
         mMul(wepM, worldM, partM);
         drawMesh(o.heldMesh, wepM, { outline: 0.016 });
       }
@@ -4305,10 +4453,21 @@
 
       const duelDist = fbDuel && !fbDuel.ko ? Math.hypot(player.x - fbDuel.x, player.z - fbDuel.z) : 5.0;
       const camPos = bossDuelActive
-        ? [camX + sx, 4.1 + sy, camZ + Math.max(portrait ? 9.8 : 7.6, duelDist * 1.15 + 4.4)]
+        ? [camX + sx, 3.15 + sy, camZ + Math.max(portrait ? 9.2 : 6.9, duelDist * 1.12 + 3.9)]
         : [camX + sx, 11.6 + zoom * 0.80 + sy, camZ + 11.8 + zoom];
       mPersp(projM, portrait ? 0.90 : 0.75, cw / ch, 0.4, 110.0);
-      mLook(viewM, camPos, [camX, bossDuelActive ? 1.25 : 0.9, camZ], [0, 1, 0]);
+      mLook(viewM, camPos, [camX, bossDuelActive ? 1.38 : 0.9, camZ], [0, 1, 0]);
+      // 1:1 철권 대전 콤보 배너 갱신
+      const tkCb = document.getElementById("tkComboBanner");
+      if (tkCb) {
+        if (bossDuelActive && comboCount >= 2 && comboTimer > 0) {
+          tkCb.classList.remove("hidden");
+          document.getElementById("tkComboNum").textContent = `${comboCount} HITS!`;
+          document.getElementById("tkComboSub").textContent = comboCount >= 8 ? "MARVELLOUS!!" : (comboCount >= 5 ? "GREAT!!" : "NICE COMBO!");
+        } else {
+          tkCb.classList.add("hidden");
+        }
+      }
       mMul(vpM, projM, viewM);
       lastVP.set(vpM);
 
@@ -4385,16 +4544,20 @@
       {
         const mv = Math.min(1, Math.hypot(player.vx, player.vz) / 6.5);
         let py = player.yaw, swL = 0, swR = 0, fs = 1 + (player.powerLv - 1) * 0.22;
+        const holdingGun = !!(player.heldProp && player.heldProp.isGun);
         if (player.grapple) {
           swL = -1.45; swR = -1.45; fs += 0.35;
         } else if (player.atkTimer > 0 && !player.ridingChair) {
           const pr = 1 - player.atkTimer / player.atkDur, arc = Math.sin(pr * Math.PI);
-          if (player.atkType === "airJuggle" || player.atkType === "weaponSwing") { py += pr * 6.28; swR = -1.9 * arc; fs += 0.45 * arc; }
+          if (player.atkType === "gunShoot") { swR = -1.45 - 0.35 * arc; swL = -0.5; }
+          else if (player.atkType === "airJuggle" || player.atkType === "weaponSwing") { py += pr * 6.28; swR = -1.9 * arc; fs += 0.45 * arc; }
           else if (player.atkType === "ewgf") { swR = -2.75 * arc; swL = 0.6 * arc; fs += 0.9 * arc; }
           else if (player.atkType === "tornadoBound") { swL = -2.45 * arc; swR = -2.45 * arc; fs += 0.75 * arc; }
           else if (player.atkType === "deathfist") { swR = -2.0 * arc; swL = 0.8 * arc; fs += 1.05 * arc; }
           else if (player.atkType === "jab") swL = -1.65 * arc;
           else { swR = -2.1 * arc; fs += 0.55 * arc; }
+        } else if (holdingGun && !player.ridingChair) {
+          swR = -1.35; swL = -0.35;
         }
         drawCharacter({
           x: player.x, y: player.ridingChair ? 0.42 : player.y, z: player.z,
@@ -4402,7 +4565,7 @@
           scale: 1.0 + (player.powerLv - 1) * 0.04,
           torso: M.torsoWorker, tint: getCurrentChar().tint, hat: M.hairHero,
           face: (player.atkTimer > 0 || player.grapple) ? 1 : 0, walk: player.walk, moveAmt: (player.ridingChair || player.grapple) ? 0 : mv,
-          swL, swR, fistScale: fs, heldMesh: player.heldProp ? player.heldProp.mesh : null
+          swL, swR, fistScale: fs, heldMesh: player.heldProp ? player.heldProp.mesh : null, isGun: holdingGun
         });
       }
 
@@ -4466,9 +4629,9 @@
         const jitterX = (b.shockT > 0 || b.hurtExprT > 0.65) ? (Math.random() - 0.5) * 0.22 : 0;
         const flail = (rag || b.shockT > 0) ? Math.sin(tSec * 26) * 1.4 : 0;
 
-        if (b.def.onThrone) {
-          mTRS(rootM, b.x, b.y, b.z, b.rx * 0.3, b.yaw, b.rz * 0.3, 1.35, 1.35, 1.35);
-          drawMesh(M.goldenThrone, rootM, { flash: b.flash });
+        if (b.def.onThrone || b.def.onWheelchair) {
+          mTRS(rootM, b.x, b.y, b.z, b.rx * 0.3, b.yaw, b.rz * 0.3, 1.38, 1.38, 1.38);
+          drawMesh(b.def.onWheelchair ? M.wheelchair : M.goldenThrone, rootM, { flash: b.flash });
         }
 
         drawCharacter({
@@ -4477,7 +4640,7 @@
           scale: b.def.scale, wideX: b.def.wideX || 1.0,
           torso: M[b.def.torso], tint: [1, 1, 1], hat: M[b.def.hat], face,
           walk: b.walk, moveAmt: (rag || b.def.onThrone) ? 0 : 0.65, swL: flail, swR: -flail,
-          heldMesh: b.def.clubInHand ? M.golfClub : null,
+          heldMesh: b.def.heldItem ? M[b.def.heldItem] : (b.def.clubInHand ? M.golfClub : null),
           flash: (b.flash > 0 || b.shockT > 0) ? 0.75 : 0
         });
 
