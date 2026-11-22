@@ -532,7 +532,7 @@
               </div>
             </div>
             <span id="bossProgressText" class="hidden"></span>
-            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v18 · 0</span>
+            <span id="koHud" class="nowrap" style="font-size:9px; font-weight:800; color:#94a3b8;">v21 · 0</span>
             <div id="clockHud" class="nowrap" style="padding:0 6px; border-radius:999px; background:rgba(15,23,42,0.75); border:1px solid rgba(125,211,252,0.45); font-size:9.5px; font-weight:900; font-family:monospace; color:#7dd3fc;">
               🕔 16:00/17:00
             </div>
@@ -753,6 +753,25 @@
         for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.4);
         const s = ctx.createBufferSource(); s.buffer = buf;
         const ng = ctx.createGain(); ng.gain.setValueAtTime(0.45, t); ng.gain.exponentialRampToValueAtTime(0.005, t + 0.18);
+        s.connect(ng).connect(ctx.destination); s.start(t);
+      } else if (kind === "gun" || kind === "confetti") {
+        // 코믹 파티 총 / 꽃가루 폭죽 사운드 (빵야! + 팡!)
+        const freqs = kind === "confetti" ? [520, 780, 1040] : [640, 260];
+        freqs.forEach((fq, i) => {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = kind === "confetti" ? "triangle" : "square";
+          const st = t + i * 0.025;
+          o.frequency.setValueAtTime(fq, st);
+          o.frequency.exponentialRampToValueAtTime(kind === "confetti" ? fq * 1.35 : 95, st + 0.09);
+          g.gain.setValueAtTime(0.18, st); g.gain.exponentialRampToValueAtTime(0.001, st + 0.10);
+          o.connect(g).connect(ctx.destination); o.start(st); o.stop(st + 0.11);
+        });
+        const len = Math.floor(ctx.sampleRate * 0.07);
+        const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+        const s = ctx.createBufferSource(); s.buffer = buf;
+        const ng = ctx.createGain(); ng.gain.setValueAtTime(0.24, t); ng.gain.exponentialRampToValueAtTime(0.005, t + 0.07);
         s.connect(ng).connect(ctx.destination); s.start(t);
       } else if (kind === "coin" || kind === "ko") {
         const notes = kind === "ko" ? [523, 659, 784, 1046] : [784, 1174];
@@ -1430,6 +1449,24 @@
     M.dumbbell = new Geo().addBox(0.64,0.07,0.07,rgb(0x94a3b8),0,0.20,0).addBox(0.14,0.36,0.36,rgb(0x1e293b),-0.26,0.20,0).addBox(0.14,0.36,0.36,rgb(0x1e293b), 0.26,0.20,0).build();
     M.waterJug = new Geo().addLathe([[0,0],[0.24,0.03],[0.25,0.52],[0.09,0.64],[0.09,0.74],[0,0.74]],12,rgb(0x60a5fa)).build();
     M.trophy = new Geo().addBox(0.28,0.12,0.28,rgb(0x451a03),0,0.06,0).addLathe([[0.05,0.12],[0.04,0.32],[0.22,0.58],[0.24,0.74],[0,0.74]],12,rgb(0xfacc15)).build();
+    // 코믹 파티 총기 3종 (난이도 상승 시 등장! 유혈 없는 꽃가루/별 탄환 발사)
+    M.blaster = new Geo()
+      .addBox(0.16, 0.20, 0.56, rgb(0x38bdf8), 0, 0.36, 0.10)
+      .addBox(0.14, 0.28, 0.15, rgb(0xfacc15), 0, 0.16, -0.08)
+      .addBox(0.20, 0.20, 0.12, rgb(0xf472b6), 0, 0.36, 0.40)
+      .build();
+    M.shotgun = new Geo()
+      .addBox(0.18, 0.18, 0.96, rgb(0xf43f5e), 0, 0.36, 0.16)
+      .addBox(0.22, 0.14, 0.34, rgb(0xfde047), 0, 0.28, 0.30)
+      .addBox(0.16, 0.24, 0.30, rgb(0x7c3aed), 0, 0.26, -0.34)
+      .addBox(0.24, 0.24, 0.10, rgb(0x4ade80), 0, 0.36, 0.66)
+      .build();
+    M.partyRifle = new Geo()
+      .addBox(0.20, 0.22, 1.08, rgb(0xa855f7), 0, 0.38, 0.18)
+      .addBox(0.16, 0.34, 0.18, rgb(0xfacc15), 0, 0.14, 0.14)
+      .addBox(0.16, 0.26, 0.32, rgb(0x38bdf8), 0, 0.28, -0.36)
+      .addBox(0.26, 0.26, 0.14, rgb(0xf472b6), 0, 0.38, 0.74)
+      .build();
 
     // Quest Collectibles, C4 Bomb Pillars & 3D Warp Portal!
     M.questKey = new Geo()
@@ -1457,6 +1494,17 @@
     M.paper = new Geo().addBox(0.28, 0.018, 0.38, rgb(0xffffff)).build();
     M.cashBill = new Geo().addBox(0.32, 0.02, 0.16, rgb(0x4ade80)).build();
     M.spark = new Geo().addEllipsoid(0.12, 0.12, 0.12, 6, 8, rgb(0xfde047)).build();
+    M.confetti = new Geo().addBox(0.22, 0.022, 0.22, rgb(0xffffff)).build();
+    M.star = new Geo()
+      .addBox(0.28, 0.08, 0.08, rgb(0xffffff))
+      .addBox(0.08, 0.28, 0.08, rgb(0xffffff))
+      .addBox(0.08, 0.08, 0.28, rgb(0xffffff))
+      .build();
+    M.bullet = new Geo()
+      .addEllipsoid(0.16, 0.16, 0.30, 8, 10, rgb(0xfef08a))
+      .addBox(0.34, 0.06, 0.06, rgb(0xf472b6))
+      .addBox(0.06, 0.34, 0.06, rgb(0x38bdf8))
+      .build();
     M.shadow = new Geo().addLathe([[0.5,0],[0,0.005]], 12, rgb(0x050811)).build();
     M.ring = new Geo().addLathe([[0.62,0],[0.74,0.01],[0.62,0.02]], 18, rgb(0x38bdf8)).build();
 
@@ -1846,14 +1894,14 @@
 
     function shoutCiderReply(isUlt = false) {
       const now = performance.now();
-      if (!isUlt && now - lastCiderAt < 850) return;
+      if (!isUlt && now - lastCiderAt < 3800) return;
       lastCiderAt = now;
       const line = isUlt
         ? CIDER_ULT_LINES[ciderUltIdx++ % CIDER_ULT_LINES.length]
         : pickRandomCider();
       player.myEmote = isUlt ? line : `💥 ${line}`;
-      player.myEmoteT = isUlt ? 3.4 : 2.3;
-      popText(player.x, 2.55, player.z, isUlt ? line : `💬 ${line}`, isUlt ? "#fde047" : "#7dd3fc", isUlt ? 25 : 21);
+      player.myEmoteT = isUlt ? 3.4 : 2.6;
+      if (isUlt) popText(player.x, 2.55, player.z, line, "#fde047", 24);
     }
 
     function summonOfficeFinalBoss() {
@@ -1944,6 +1992,7 @@
     let hazards = [];
     let particles = [];
     let shockRings = [];
+    let projectiles = [];
 
     let cash = 0, koTotal = 0, comboCount = 0, comboTimer = 0;
     let focusBossIdx = 0;
@@ -2025,7 +2074,7 @@
       player.heldProp = null; player.ridingChair = null;
       player.grapple = null; player.chainThrow = null;
 
-      props = []; hazards = []; particles = []; shockRings = [];
+      props = []; hazards = []; particles = []; shockRings = []; projectiles = [];
 
       if (stageIdx === 0) {
         addProp({ type:"forklift", label:"노란 지게차", icon:"🚜", mesh:M.forklift, x:-4.5, y:0, z:11.0, rideable:true, grabbable:false, radius:0.95 });
@@ -2040,6 +2089,10 @@
         for (const [wx, wz] of [[-7, 9], [7, 9], [-14, -1], [14, -1], [0, 7]]) {
           addProp({ type:"wrench", label:"특대 스패너", icon:"🔧", mesh:M.wrench, x:wx, y:0, z:wz, dmg:56, uses:7 });
           addProp({ type:"extinguisher", label:"공업용 소화기", icon:"🧯", mesh:M.extinguisher, x:wx+1.8, y:0, z:wz, dmg:48, uses:5 });
+        }
+        if (clearCount >= 1) {
+          addProp({ type:"blaster", label:"파티 별빛권총", icon:"🔫", mesh:M.blaster, x:-3.2, y:0, z:6.8, dmg:46, uses:14, isGun:true, gunKind:"pistol" });
+          addProp({ type:"blaster", label:"파티 별빛권총", icon:"🔫", mesh:M.blaster, x: 3.2, y:0, z:6.8, dmg:46, uses:14, isGun:true, gunKind:"pistol" });
         }
       } else {
         for (const [dx, dz] of [[-14, 5], [-7, 5], [7, 5], [14, 5], [-13, -2], [13, -2]]) {
@@ -2065,6 +2118,19 @@
         for (const gx of [-4, 0, 4]) {
           addProp({ type:"golfClub", label:"황금 골프채", icon:"⛳", mesh:M.golfClub, x:gx, y:0, z:8.5, dmg:62, uses:8 });
           addProp({ type:"trophy", label:"순금 트로피", icon:"🏆", mesh:M.trophy, x:gx+9, y:0, z:-10.5, dmg:70, uses:6 });
+        }
+        // 스테이지 난이도 상승에 따른 코믹 꽃가루 총기 등장!
+        if (stageIdx >= 1) {
+          addProp({ type:"blaster", label:"파티 별빛권총", icon:"🔫", mesh:M.blaster, x:-3.0, y:0, z:6.2, dmg:46, uses:14, isGun:true, gunKind:"pistol" });
+          addProp({ type:"blaster", label:"파티 별빛권총", icon:"🔫", mesh:M.blaster, x: 3.0, y:0, z:6.2, dmg:46, uses:14, isGun:true, gunKind:"pistol" });
+        }
+        if (stageIdx >= 2) {
+          addProp({ type:"shotgun", label:"꽃가루 샷건", icon:"🎉", mesh:M.shotgun, x:-6.5, y:0, z:2.2, dmg:28, uses:10, isGun:true, gunKind:"shotgun" });
+          addProp({ type:"shotgun", label:"꽃가루 샷건", icon:"🎉", mesh:M.shotgun, x: 6.5, y:0, z:2.2, dmg:28, uses:10, isGun:true, gunKind:"shotgun" });
+        }
+        if (stageIdx >= 3 || clearCount >= 1) {
+          addProp({ type:"partyRifle", label:"연발 파티캐논", icon:"🔫", mesh:M.partyRifle, x:0, y:0, z:4.5, dmg:30, uses:24, isGun:true, gunKind:"rifle" });
+          addProp({ type:"partyRifle", label:"연발 파티캐논", icon:"🔫", mesh:M.partyRifle, x:0, y:0, z:-5.5, dmg:30, uses:24, isGun:true, gunKind:"rifle" });
         }
       }
 
@@ -2124,7 +2190,15 @@
     const overlayLayer = document.getElementById("overlayLayer");
     let lastVP = mId();
 
+    const CONFETTI_COLORS = [
+      [1.0, 0.35, 0.68], [1.0, 0.85, 0.20], [0.28, 0.92, 0.65],
+      [0.28, 0.78, 1.0], [0.80, 0.48, 1.0], [1.0, 0.56, 0.24], [0.68, 1.0, 0.30]
+    ];
+    const HIT_ICONS = ["⭐", "✨", "🌸", "🎉", "💥", "🌟"];
+    let activePopCount = 0;
+
     function popText(wx, wy, wz, txt, col = "#fde047", sz = 22) {
+      if (activePopCount > 7 && String(txt).length <= 4) return;
       const sc = project2D(wx, wy, wz, lastVP, window.innerWidth, window.innerHeight);
       if (!sc) return;
       const el = document.createElement("div");
@@ -2134,7 +2208,9 @@
       el.style.color = col; el.style.fontSize = `${sz}px`;
       el.style.setProperty("--r", `${(Math.random() * 16 - 8).toFixed(1)}deg`);
       overlayLayer.appendChild(el);
-      setTimeout(() => el.remove(), 720);
+      activePopCount++;
+      const dur = String(txt).length <= 5 ? 580 : 1250;
+      setTimeout(() => { el.remove(); activePopCount = Math.max(0, activePopCount - 1); }, dur);
     }
 
     function spawnShockRing(x, z, maxR = 4.2, tint = [1.0, 0.25, 0.55]) {
@@ -2142,22 +2218,27 @@
     }
 
     function spawnParticles(x, y, z, cnt, kind = "paper") {
-      const mesh = kind === "cash" ? M.cashBill : (kind === "paper" ? M.paper : M.spark);
-      const tint = kind === "shock"
+      const isConfetti = kind === "confetti";
+      const isStar = kind === "star";
+      const baseMesh = isConfetti ? M.confetti : (isStar ? M.star : (kind === "cash" ? M.cashBill : (kind === "paper" ? M.paper : M.spark)));
+      const fixedTint = kind === "shock"
         ? [0.22, 0.92, 1.0]
         : (kind === "tekken"
-          ? [1.0, 0.16, 0.48]
-          : (kind === "fire" ? [1.0, 0.38, 0.12] : (kind === "spark" ? [1.0, 0.85, 0.2] : [1, 1, 1])));
+          ? [1.0, 0.42, 0.78]
+          : (kind === "fire" ? [1.0, 0.62, 0.18] : (kind === "spark" ? [1.0, 0.88, 0.24] : [1, 1, 1])));
       for (let i = 0; i < cnt; i++) {
         const a = Math.random() * Math.PI * 2;
-        const spd = (kind === "fire" || kind === "tekken" ? 5.5 : 2.5) + Math.random() * (kind === "fire" ? 13.0 : 8.5);
+        const spd = (kind === "fire" || kind === "tekken" || isStar ? 5.2 : 2.6) + Math.random() * (kind === "fire" ? 12.0 : 8.2);
+        const tint = (isConfetti || isStar)
+          ? CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0]
+          : fixedTint;
         particles.push({
-          mesh, tint, x, y: y + 0.4, z,
-          vx: Math.cos(a) * spd, vy: 3.5 + Math.random() * (kind === "fire" ? 11.0 : 6.5), vz: Math.sin(a) * spd,
-          rx: Math.random() * 3, ry: Math.random() * 3, vrx: 12, vry: 14,
-          scale: kind === "fire" ? 2.4 : (kind === "tekken" ? 1.55 : (kind === "cash" ? 1.25 : 0.95)),
-          life: kind === "paper" || kind === "cash" ? 2.2 : (kind === "fire" ? 1.1 : 0.45),
-          flutter: kind === "paper" || kind === "cash"
+          mesh: baseMesh, tint, x, y: y + 0.45, z,
+          vx: Math.cos(a) * spd, vy: (isConfetti ? 4.8 : 3.6) + Math.random() * (kind === "fire" ? 10.5 : 6.5), vz: Math.sin(a) * spd,
+          rx: Math.random() * 3, ry: Math.random() * 3, vrx: isConfetti ? 16 : 12, vry: isConfetti ? 18 : 14,
+          scale: kind === "fire" ? 2.1 : (isStar ? 1.15 : (isConfetti ? 1.15 : (kind === "tekken" ? 1.35 : (kind === "cash" ? 1.25 : 0.95)))),
+          life: (kind === "paper" || kind === "cash" || isConfetti) ? 2.1 : (isStar ? 0.65 : (kind === "fire" ? 1.0 : 0.45)),
+          flutter: kind === "paper" || kind === "cash" || isConfetti
         });
       }
     }
@@ -2295,7 +2376,8 @@
       comboCount++; comboTimer = 3.2;
       player.fever = Math.min(100, player.fever + (heavy ? 5.5 : 3.5) * ch.feverMult);
       addCash(9500);
-      spawnParticles(m.x, m.y + 0.9, m.z, heavy ? 4 : 2, "spark");
+      spawnParticles(m.x, m.y + 0.9, m.z, heavy ? 6 : 3, "confetti");
+      spawnParticles(m.x, m.y + 1.0, m.z, heavy ? 3 : 2, "star");
 
       if (m.hp <= 0) {
         m.ko = true;
@@ -2304,14 +2386,14 @@
         stageKills++;
         koTotal++;
         addCash(22000);
-        spawnParticles(m.x, m.y + 1.0, m.z, 5, Math.random() < 0.45 ? "cash" : "paper");
-        if (showTxt) popText(m.x, m.y + 2.0, m.z, `💥 ${m.tpl.title} 참교육!`, "#4ade80", 19);
-        if (heavy || showTxt) shoutCiderReply(false);
-        if (stageKills % 8 === 0) healPlayer(6, "☕ 커피 수혈");
+        spawnParticles(m.x, m.y + 1.0, m.z, 9, "confetti");
+        spawnParticles(m.x, m.y + 1.1, m.z, 4, "star");
+        if (Math.random() < 0.4) spawnParticles(m.x, m.y + 1.0, m.z, 3, "cash");
+        if (showTxt) popText(m.x, m.y + 2.0, m.z, HIT_ICONS[(Math.random() * HIT_ICONS.length) | 0], "#fde047", 24);
+        if (stageKills % 8 === 0) healPlayer(6, "☕");
         checkStageObjectives();
-      } else if (showTxt) {
-        popText(m.x, m.y + 1.9, m.z, "죽방!", "#fde047", 18);
-        if (heavy) shoutCiderReply(false);
+      } else if (showTxt && Math.random() < 0.45) {
+        popText(m.x, m.y + 1.9, m.z, HIT_ICONS[(Math.random() * HIT_ICONS.length) | 0], "#fde047", 20);
       }
     }
 
@@ -2324,10 +2406,13 @@
       koTotal++;
       addCash(b.def.bounty);
       playSfx("ko");
+      playSfx("confetti");
       haptic(65);
-      spawnParticles(b.x, b.y + 1.0, b.z, 22, b.def.dropsCashOnHit ? "cash" : "paper");
-      popText(b.x, b.y + 2.6, b.z, `🎉 ${b.def.name} 제압!! +₩${b.def.bounty.toLocaleString()}`, "#4ade80", 26);
-      healPlayer(20, "☕ 임원 참교육 아아");
+      spawnParticles(b.x, b.y + 1.1, b.z, 26, "confetti");
+      spawnParticles(b.x, b.y + 1.2, b.z, 12, "star");
+      spawnParticles(b.x, b.y + 1.0, b.z, 8, "cash");
+      popText(b.x, b.y + 2.6, b.z, `🎉 ${b.def.name} KO!`, "#4ade80", 26);
+      healPlayer(20, "☕");
       checkStageObjectives();
       updateHud();
     }
@@ -2349,20 +2434,25 @@
       b.hurtExprT = heavy || isCounter ? 1.45 : 0.85;
       b.vrx = (Math.random() - 0.5) * 15; b.vrz = (Math.random() - 0.5) * 15;
 
-      const hurts = ["억!! 결재 승인!!", "살려줘!! 칼퇴해!!", "글자 간격 괜찮아!!", "아악 내 법인카드!!", "오늘 야근 취소!!", "꾸웨에엑!!"];
-      b.speech = hurts[(Math.random() * hurts.length) | 0];
-      b.hurtSpeech = true; b.speechT = 2.0;
+      // 맞아도 계속 킹받는 꼰대 멘트 시전! (55% 킹받는 적반하장 꼰대 대사, 45% 비명)
+      if (Math.random() < 0.55) {
+        const pair = pickRandomBanter();
+        b.speech = pair.boss;
+        b.hurtSpeech = false;
+        b.speechT = 3.6;
+      } else {
+        const hurts = ["억!! 그래도 야근해!!", "요즘 애들은 버릇이 없어!!", "글자 간격 다시 맞춰와!!", "아악 내 법인카드!!", "내가 자네 나이 땐 참았어!!", "이래서 MZ는 안 돼!!"];
+        b.speech = hurts[(Math.random() * hurts.length) | 0];
+        b.hurtSpeech = true; b.speechT = 3.0;
+      }
 
       if (isCounter) {
-        const pair = KKONDAE_BANTER[banterIdx++ % KKONDAE_BANTER.length];
-        player.myEmote = `💥 ${pair.reply}`;
-        player.myEmoteT = 2.6;
-        popText(b.x, b.y + 2.5, b.z, `⚡ 사이다 카운터!! -${dmg}`, "#38bdf8", 25);
+        popText(b.x, b.y + 2.5, b.z, `⚡ 카운터!`, "#38bdf8", 25);
         spawnShockRing(b.x, b.z, 4.5, [0.22, 0.92, 1.0]);
+        spawnParticles(b.x, b.y + 1.2, b.z, 12, "star");
       }
 
       if (fromLocal) {
-        if (!isCounter) shoutCiderReply(false);
         comboCount++; comboTimer = 3.2;
         player.fever = Math.min(100, player.fever + (heavy ? 12 : 7));
         addCash(dmg * 600);
@@ -2374,8 +2464,9 @@
       shakeMag = Math.max(shakeMag, heavy ? 0.42 : 0.18);
       shakeT = Math.max(shakeT, heavy ? 0.22 : 0.11);
       haptic(heavy ? 28 : 14);
-      spawnParticles(b.x, b.y + 1.1, b.z, heavy ? 7 : 4, "spark");
-      popText(b.x, b.y + 2.2, b.z, label, heavy ? "#fb7185" : "#fde047", heavy ? 26 : 21);
+      spawnParticles(b.x, b.y + 1.1, b.z, heavy ? 10 : 5, "confetti");
+      spawnParticles(b.x, b.y + 1.2, b.z, heavy ? 5 : 3, "star");
+      if (heavy) popText(b.x, b.y + 2.2, b.z, HIT_ICONS[(Math.random() * HIT_ICONS.length) | 0], "#fde047", 26);
       playSfx(heavy ? "heavy" : "hit");
 
       if (b.hp <= 0) triggerBossKO(b, idx);
@@ -2506,6 +2597,64 @@
       const wielding = !!player.heldProp;
       const dirX = Math.sin(player.yaw), dirZ = Math.cos(player.yaw);
 
+      // 3.5. 코믹 파티 총기 발사! (꽃가루 & 별빛 탄환)
+      if (wielding && player.heldProp.isGun) {
+        const gun = player.heldProp;
+        const aim = nearestEnemy(17.5);
+        if (aim.e) {
+          player.yaw = Math.atan2(aim.e.x - player.x, aim.e.z - player.z);
+        }
+        const gx = Math.sin(player.yaw), gz = Math.cos(player.yaw);
+        const gk = gun.gunKind || "pistol";
+        player.atkType = "weaponSwing";
+        player.atkDur = gk === "rifle" ? 0.13 : (gk === "shotgun" ? 0.28 : 0.18);
+        player.atkTimer = player.atkDur;
+        player.netJustAttacked = true;
+
+        const spawnShot = (angleOffset, speed, dmgVal) => {
+          const ang = player.yaw + angleOffset;
+          const sx = Math.sin(ang), sz = Math.cos(ang);
+          projectiles.push({
+            x: player.x + sx * 0.95, y: 1.15, z: player.z + sz * 0.95,
+            vx: sx * speed, vz: sz * speed,
+            dmg: dmgVal, life: 1.05,
+            tint: CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0],
+            heavy: gk === "shotgun"
+          });
+        };
+
+        if (gk === "shotgun") {
+          for (const off of [-0.26, -0.13, 0, 0.13, 0.26]) spawnShot(off, 25.0, gun.dmg);
+          playSfx("confetti");
+          spawnParticles(player.x + gx * 1.0, 1.15, player.z + gz * 1.0, 12, "confetti");
+          spawnParticles(player.x + gx * 1.0, 1.15, player.z + gz * 1.0, 5, "star");
+          shakeMag = Math.max(shakeMag, 0.24); shakeT = Math.max(shakeT, 0.12);
+          haptic(22);
+        } else if (gk === "rifle") {
+          spawnShot((Math.random() - 0.5) * 0.08, 29.0, gun.dmg);
+          setTimeout(() => { if (!campaignOver) spawnShot((Math.random() - 0.5) * 0.10, 29.0, gun.dmg); }, 55);
+          setTimeout(() => { if (!campaignOver) spawnShot((Math.random() - 0.5) * 0.10, 29.0, gun.dmg); }, 110);
+          playSfx("gun");
+          spawnParticles(player.x + gx * 1.0, 1.15, player.z + gz * 1.0, 6, "confetti");
+          haptic(12);
+        } else {
+          spawnShot(0, 28.0, gun.dmg);
+          playSfx("gun");
+          spawnParticles(player.x + gx * 1.0, 1.15, player.z + gz * 1.0, 6, "star");
+          haptic(14);
+        }
+
+        player.weaponUses--;
+        if (player.weaponUses <= 0) {
+          const i = props.indexOf(player.heldProp);
+          if (i >= 0) props.splice(i, 1);
+          player.heldProp = null;
+          popText(player.x, 2.3, player.z, "🎉 탄약 끝!", "#fde047", 20);
+        }
+        updateHud();
+        return;
+      }
+
       // 4. Tekken Dash Deathfist (붕권! When pushing joystick + starting combo)
       if (!wielding && moveMag > 0.72 && player.comboStep === 0 && player.deathfistCd <= 0) {
         player.deathfistCd = 2.0;
@@ -2534,7 +2683,9 @@
           }
         });
         hitArenaHazards(3.6, false);
-        popText(player.x, 2.55, player.z, dfHits >= 2 ? `👊💥 붕권 ${dfHits}명 관통!!` : "👊💥 우오오!! 붕권!!", "#fb7185", 27);
+        spawnParticles(player.x + dirX * 1.2, 1.1, player.z + dirZ * 1.2, 14, "confetti");
+        spawnParticles(player.x + dirX * 1.2, 1.2, player.z + dirZ * 1.2, 7, "star");
+        popText(player.x, 2.55, player.z, "💥", "#fb7185", 28);
         updateHud();
         return;
       }
@@ -2622,15 +2773,17 @@
       });
 
       if (isEwgf && hitCount > 0) {
-        popText(player.x, 2.65, player.z, `⚡ 도랴!! 초풍신권 (${hitCount}명 공중띄우기!)`, "#67e8f9", 25);
+        spawnParticles(player.x + dirX * 1.1, 1.2, player.z + dirZ * 1.1, 10, "star");
+        popText(player.x, 2.55, player.z, "⚡", "#67e8f9", 28);
         haptic(30);
       } else if (isBound && hitCount > 0) {
         playSfx("slam");
         shakeMag = Math.max(shakeMag, 0.58); shakeT = 0.24; haptic(36);
-        popText(player.x, 2.65, player.z, `💥 토네이도 바운드 스매시!!`, "#fb7185", 26);
+        spawnParticles(player.x + dirX * 1.1, 1.1, player.z + dirZ * 1.1, 14, "confetti");
+        popText(player.x, 2.55, player.z, "🎉", "#fb7185", 28);
       } else if (juggledCount > 0) {
         playSfx("heavy");
-        popText(player.x, 2.55, player.z, `⚡ 공중 콤보 ${juggledCount}명 저글링!!`, "#fde047", 23);
+        spawnParticles(player.x + dirX * 1.1, 1.2, player.z + dirZ * 1.1, 6, "star");
         haptic(20);
       } else if (hitCount > 0 && !isEwgf) {
         playSfx(fin ? "heavy" : "hit");
@@ -3006,7 +3159,9 @@
         document.getElementById("atkText").textContent = "부스터!";
       } else if (player.heldProp) {
         document.getElementById("atkIcon").textContent = player.heldProp.icon;
-        document.getElementById("atkText").textContent = `스윙(${player.weaponUses})`;
+        document.getElementById("atkText").textContent = player.heldProp.isGun
+          ? `발사(${player.weaponUses})`
+          : `스윙(${player.weaponUses})`;
       } else {
         const nextLabels = [
           ["🥊", "철권콤보"],
@@ -3877,12 +4032,13 @@
         }
 
         b.speechT -= rawDt;
-        if (b.speechT <= 0 && !b.ko) {
-          if (Math.hypot(b.x - player.x, b.z - player.z) < 13.5 && Math.random() < 0.7) {
+        if (b.speechT <= 0.35 && !b.ko) {
+          if (Math.random() < 0.85) {
             triggerKkondaeBanter(b);
+            b.speechT = 3.8;
           } else {
             b.speech = b.def.taunts[(Math.random() * b.def.taunts.length) | 0];
-            b.hurtSpeech = false; b.speechT = 4.2;
+            b.hurtSpeech = false; b.speechT = 3.6;
           }
         }
       });
@@ -3960,6 +4116,53 @@
             }
           }
         }
+      }
+
+      // Party Gun Projectiles (꽃가루 & 별빛 탄환!)
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const pr = projectiles[i];
+        pr.life -= dt;
+        pr.x += pr.vx * dt;
+        pr.z += pr.vz * dt;
+        if (pr.life <= 0 || Math.abs(pr.x) > 36 || Math.abs(pr.z) > 30) {
+          projectiles.splice(i, 1);
+          continue;
+        }
+        let hit = false;
+        const spd = Math.hypot(pr.vx, pr.vz) || 1;
+        const dx = pr.vx / spd, dz = pr.vz / spd;
+        for (const m of mobs) {
+          if (!m.ko && Math.hypot(pr.x - m.x, pr.z - m.z) < 1.05) {
+            hitMob(m, pr.dmg, dx, dz, pr.heavy ? 12.0 : 8.5, pr.heavy ? 6.5 : 4.2, pr.heavy, true);
+            spawnParticles(pr.x, pr.y, pr.z, pr.heavy ? 8 : 5, "confetti");
+            spawnParticles(pr.x, pr.y, pr.z, 3, "star");
+            hit = true;
+            break;
+          }
+        }
+        if (!hit) {
+          for (let bi = 0; bi < bosses.length; bi++) {
+            const b = bosses[bi];
+            if (!b.ko && !b.waiting && Math.hypot(pr.x - b.x, pr.z - b.z) < 1.25 * b.def.scale) {
+              hitBoss(b, bi, pr.dmg, dx, dz, pr.heavy ? 9.5 : 6.0, pr.heavy ? 5.0 : 2.8, "🎉", pr.heavy);
+              spawnParticles(pr.x, pr.y, pr.z, 9, "confetti");
+              spawnParticles(pr.x, pr.y, pr.z, 4, "star");
+              hit = true;
+              break;
+            }
+          }
+        }
+        if (!hit) {
+          for (let hi = hazards.length - 1; hi >= 0; hi--) {
+            const hz = hazards[hi];
+            if (hz.kind === "drum" && Math.hypot(pr.x - hz.x, pr.z - hz.z) < hz.radius + 0.65) {
+              explodeDrum(hz, hi);
+              hit = true;
+              break;
+            }
+          }
+        }
+        if (hit) projectiles.splice(i, 1);
       }
 
       // Tekken Ground Shockwave Rings
@@ -4301,12 +4504,24 @@
         }
       });
       if (!shownBubble && mobs.length > 0) {
-        const pickM = mobs[((tSec * 0.5) | 0) % mobs.length];
-        if (pickM && !pickM.ko && Math.hypot(pickM.x - player.x, pickM.z - player.z) < 9.5) {
-          const msc = project2D(pickM.x, pickM.y + 2.0, pickM.z, vpM, window.innerWidth, window.innerHeight);
-          if (msc && msc.x > 30 && msc.x < window.innerWidth - 30 && msc.y > 95) {
+        let nearM = null, bestMD = 14.5;
+        for (const m of mobs) {
+          if (m.ko) continue;
+          const md = Math.hypot(m.x - player.x, m.z - player.z);
+          if (md < bestMD) { bestMD = md; nearM = m; }
+        }
+        if (nearM) {
+          const msc = project2D(nearM.x, nearM.y + 2.05, nearM.z, vpM, window.innerWidth, window.innerHeight);
+          if (msc && msc.x > 25 && msc.x < window.innerWidth - 25 && msc.y > 85) {
+            const slot = (tSec / 2.8) | 0;
+            if (window.__mobBanterSlot !== slot) {
+              window.__mobBanterSlot = slot;
+              window.__mobBanterTxt = Math.random() < 0.72
+                ? pickRandomBanter().boss
+                : nearM.tpl.taunts[slot % nearM.tpl.taunts.length];
+            }
             shownBubble = true;
-            spBub.textContent = pickM.tpl.taunts[((tSec * 0.5) | 0) % pickM.tpl.taunts.length];
+            spBub.textContent = window.__mobBanterTxt || nearM.tpl.taunts[0];
             spBub.className = "speech-pill";
             spBub.style.left = `${msc.x.toFixed(0)}px`;
             spBub.style.top = `${msc.y.toFixed(0)}px`;
@@ -4315,6 +4530,13 @@
         }
       }
       if (!shownBubble) spBub.style.opacity = "0";
+
+      // 7.5. Party Gun Projectiles
+      for (const pr of projectiles) {
+        const yaw = Math.atan2(pr.vx, pr.vz);
+        mTRS(rootM, pr.x, pr.y, pr.z, tSec * 14, yaw, tSec * 10, 1.0, 1.0, 1.0);
+        drawMesh(M.bullet, rootM, { outline: 0.015, tint: pr.tint });
+      }
 
       // 8. Particles
       for (const pt of particles) {
